@@ -19,4 +19,43 @@ model User {
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
+
+    characters Character[]
+}
+
+model Character {
+    id String @id @default(uuid())
+
+    userId     String
+    user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    name        String
+    nickname    String
+    description String
+    imageUrl    String
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+
+    stats Stats[]
+}
+
+model Stats {
+    id String @id @default(uuid())
+
+    characterId String
+    character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+    strength     Int
+    dexterity    Int
+    intelligence Int
+    wisdom       Int
+    constitution Int
+    charisma     Int
+    destiny      Int
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
 }
