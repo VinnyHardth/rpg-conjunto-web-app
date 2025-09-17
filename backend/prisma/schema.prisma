@@ -73,15 +73,16 @@ model Inventory {
   name        String
   description String
   quantity    Int
-  equipped    Boolean     @default(false)
-  equipable   Boolean     @default(false)
+
+  type        String      @default("MISC") // "EQUIPMENT", "CONSUMABLE", "MISC"
+  equipped    Boolean     @default(false) // só faz sentido se type = EQUIPMENT
   slot        String?     // "head", "body", "legs", "weapon", "shield"
 
   bonuses     ItemBonus[]
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
 }
 
 model ItemBonus {
@@ -89,9 +90,9 @@ model ItemBonus {
   itemId    String
   item      Inventory @relation(fields: [itemId], references: [id], onDelete: Cascade)
 
-  stat      String   // ex: "strength", "intelligence", "hp"
-  type      String   // "flat", "percent", "dice"
-  value     String   // "2", "10%", "1d6"
+  attribute String   // "strength", "dexterity", "intelligence", "wisdom", "constitution", "charisma", "destiny", "maxHP", "maxMP", "maxTP", "magicRes", "fisicalRes", "perception", "intimidation", "faith", "inspiration", "determination", "bluff", "reflexes"
+  type      String   // "flat", "percentage", "dice"
+  value     String   // "2", "10%", "1d6+2"
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

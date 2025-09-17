@@ -4,6 +4,7 @@ import userRouter from "../resources/user/user.router";
 import characterRouter from "../resources/character/character.router";
 import statsRouter from "../resources/stats/stats.router";
 import charStateRouter from "../resources/charState/charState.router";
+import inventoryRouter from "../resources/inventory/inventory.router";
 
 const router = Router();
 
@@ -26,5 +27,10 @@ router.use(
     "/char-states",
     // #swagger.tags = ['Character States']
     charStateRouter);
+
+router.use(
+    "/inventory",
+    // #swagger.tags = ['Inventory']
+    inventoryRouter);
 
 export default router;
