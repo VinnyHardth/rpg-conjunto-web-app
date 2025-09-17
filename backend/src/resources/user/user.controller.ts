@@ -5,8 +5,6 @@ import { CreateUserDTO, DeleteUserDTO, UpdateUserDTO, UserDTO } from './user.typ
 import * as userServices from './user.services';
 
 
-
-
 const create = async (req: Request, res: Response): Promise<void> => {
   /*
     #swagger.summary = 'Create a new user'
