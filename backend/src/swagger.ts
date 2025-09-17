@@ -134,6 +134,62 @@ const doc = {
       id: "uuid"
     },
 
+    // Inventory definitions
+    InventoryDTO: {
+      id: "uuid",
+      name: "Sword of Truth",
+      description: "A legendary sword with magical properties.",
+      quantity: 1,
+      type: "Equipment",
+      equipped: true,
+      slot: "Weapon",
+      characterId: "uuid",
+      createdAt: "2023-10-01T12:00:00Z",
+      updatedAt: "2023-10-01T12:00:00Z",
+      deletedAt: null
+    },
+    CreateInventoryDTO: {
+      name: "Sword of Truth",
+      description: "A legendary sword with magical properties.",
+      quantity: 1,
+      type: "Equipment",
+      equipped: true,
+      slot: "Weapon",
+      characterId: "uuid"
+    },
+    UpdateInventoryDTO: {
+      name: "Updated Sword Name",
+      quantity: 2,
+      equipped: false
+    },
+    DeleteInventoryDTO: {
+      id: "uuid"
+    },
+
+    // ItemBonus definitions
+    ItemBonusDTO: {
+      id: "uuid",
+      itemId: "uuid",
+      atribute: "Strength",
+      type: "flat",
+      value: 2,
+      createdAt: "2023-10-01T12:00:00Z",
+      updatedAt: "2023-10-01T12:00:00Z",
+      deletedAt: null
+    },
+    
+    CreateItemBonusDTO: {
+      itemId: "uuid",
+      atribute: "Strength",
+      type: "flat",
+      value: 2
+    },
+    UpdateItemBonusDTO: {
+      value: 3
+    },
+    DeleteItemBonusDTO: {
+      id: "uuid"
+    }
   },
 };
 

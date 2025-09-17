@@ -90,12 +90,13 @@ model ItemBonus {
   itemId    String
   item      Inventory @relation(fields: [itemId], references: [id], onDelete: Cascade)
 
-  attribute String   // "strength", "dexterity", "intelligence", "wisdom", "constitution", "charisma", "destiny", "maxHP", "maxMP", "maxTP", "magicRes", "fisicalRes", "perception", "intimidation", "faith", "inspiration", "determination", "bluff", "reflexes"
+  attribute String   
   type      String   // "flat", "percentage", "dice"
   value     String   // "2", "10%", "1d6+2"
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  deletedAt DateTime?
 }
 
 

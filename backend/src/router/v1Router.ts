@@ -5,6 +5,7 @@ import characterRouter from "../resources/character/character.router";
 import statsRouter from "../resources/stats/stats.router";
 import charStateRouter from "../resources/charState/charState.router";
 import inventoryRouter from "../resources/inventory/inventory.router";
+import itemBonusRouter from "../resources/itemBonus/itemBonus.router";
 
 const router = Router();
 
@@ -32,5 +33,10 @@ router.use(
     "/inventory",
     // #swagger.tags = ['Inventory']
     inventoryRouter);
+
+router.use(
+    "/item-bonuses",
+    // #swagger.tags = ['Item Bonuses']
+    itemBonusRouter);
 
 export default router;

@@ -1087,6 +1087,436 @@
           }
         }
       }
+    },
+    "/inventory/": {
+      "get": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "Get inventory items by character ID",
+        "description": "Endpoint to retrieve all inventory items for a specific character by their ID.",
+        "parameters": [
+          {
+            "name": "characterId",
+            "in": "path",
+            "description": "ID of the character whose inventory items to retrieve",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Inventory items retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/InventoryDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/InventoryDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Character not found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "Create inventory item",
+        "description": "Endpoint to create an inventory item for a character.",
+        "responses": {
+          "201": {
+            "description": "Inventory item created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity (validation failed)"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInventoryDTO"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/inventory/{id}": {
+      "put": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "Update inventory item",
+        "description": "Endpoint to update an existing inventory item.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the inventory item to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Inventory item updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Inventory item not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateInventoryDTO"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "Delete inventory item",
+        "description": "Endpoint to delete an inventory item.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the inventory item to delete"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Inventory item deleted successfully."
+          },
+          "404": {
+            "description": "Inventory item not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/item-bonuses/{id}": {
+      "get": {
+        "tags": [
+          "Item Bonuses"
+        ],
+        "summary": "Get item bonus by ID",
+        "description": "Endpoint to retrieve an item bonus by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the item bonus to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Item bonus retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemBonusDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemBonusDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Item bonus not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Item Bonuses"
+        ],
+        "summary": "Update item bonus",
+        "description": "Endpoint to update an existing item bonus.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the item bonus to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Item bonus updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemBonusDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemBonusDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Item bonus not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateItemBonusDTO"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Item Bonuses"
+        ],
+        "summary": "Delete item bonus",
+        "description": "Endpoint to delete an item bonus by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the item bonus to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Item bonus deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemBonusDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemBonusDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Item bonus not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/item-bonuses/item/{itemId}": {
+      "get": {
+        "tags": [
+          "Item Bonuses"
+        ],
+        "summary": "Get item bonuses by item ID",
+        "description": "Endpoint to retrieve all item bonuses for a specific item by its ID.",
+        "parameters": [
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the item whose bonuses to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Item bonuses retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/ItemBonusDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/ItemBonusDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Item not found"
+          }
+        }
+      }
+    },
+    "/item-bonuses/": {
+      "post": {
+        "tags": [
+          "Item Bonuses"
+        ],
+        "summary": "Create item bonus",
+        "description": "Endpoint to create an item bonus for a specific item.",
+        "responses": {
+          "201": {
+            "description": "Item bonus created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemBonusDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemBonusDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity (validation failed)"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateItemBonusDTO"
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1523,6 +1953,208 @@
         },
         "xml": {
           "name": "DeleteCharStateDTO"
+        }
+      },
+      "InventoryDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "Sword of Truth"
+          },
+          "description": {
+            "type": "string",
+            "example": "A legendary sword with magical properties."
+          },
+          "quantity": {
+            "type": "number",
+            "example": 1
+          },
+          "type": {
+            "type": "string",
+            "example": "Equipment"
+          },
+          "equipped": {
+            "type": "boolean",
+            "example": true
+          },
+          "slot": {
+            "type": "string",
+            "example": "Weapon"
+          },
+          "characterId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "deletedAt": {}
+        },
+        "xml": {
+          "name": "InventoryDTO"
+        }
+      },
+      "CreateInventoryDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Sword of Truth"
+          },
+          "description": {
+            "type": "string",
+            "example": "A legendary sword with magical properties."
+          },
+          "quantity": {
+            "type": "number",
+            "example": 1
+          },
+          "type": {
+            "type": "string",
+            "example": "Equipment"
+          },
+          "equipped": {
+            "type": "boolean",
+            "example": true
+          },
+          "slot": {
+            "type": "string",
+            "example": "Weapon"
+          },
+          "characterId": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "CreateInventoryDTO"
+        }
+      },
+      "UpdateInventoryDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Updated Sword Name"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 2
+          },
+          "equipped": {
+            "type": "boolean",
+            "example": false
+          }
+        },
+        "xml": {
+          "name": "UpdateInventoryDTO"
+        }
+      },
+      "DeleteInventoryDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "DeleteInventoryDTO"
+        }
+      },
+      "ItemBonusDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "itemId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "atribute": {
+            "type": "string",
+            "example": "Strength"
+          },
+          "type": {
+            "type": "string",
+            "example": "flat"
+          },
+          "value": {
+            "type": "number",
+            "example": 2
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "deletedAt": {}
+        },
+        "xml": {
+          "name": "ItemBonusDTO"
+        }
+      },
+      "CreateItemBonusDTO": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "atribute": {
+            "type": "string",
+            "example": "Strength"
+          },
+          "type": {
+            "type": "string",
+            "example": "flat"
+          },
+          "value": {
+            "type": "number",
+            "example": 2
+          }
+        },
+        "xml": {
+          "name": "CreateItemBonusDTO"
+        }
+      },
+      "UpdateItemBonusDTO": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "example": 3
+          }
+        },
+        "xml": {
+          "name": "UpdateItemBonusDTO"
+        }
+      },
+      "DeleteItemBonusDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "DeleteItemBonusDTO"
         }
       }
     }
