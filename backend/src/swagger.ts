@@ -67,6 +67,38 @@ const doc = {
     DeleteCharacterDTO: {
       id: "uuid"
     },
+
+    // Stats definitions
+    StatsDTO: {
+      id: "uuid",
+      strength: 10,
+      dexterity: 14,
+      constitution: 12,
+      intelligence: 16,
+      wisdom: 11,
+      charisma: 13,
+      destiny: 5,
+      characterId: "uuid",
+      createdAt: "2023-10-01T12:00:00Z",
+      updatedAt: "2023-10-01T12:00:00Z",
+    },
+    CreateStatsDTO: {
+      strength: 10,
+      dexterity: 14,
+      constitution: 12,
+      intelligence: 16,
+      wisdom: 11,
+      charisma: 13,
+      destiny: 5,
+      characterId: "uuid"
+    },
+    UpdateStatsDTO: {
+      strength: 12,
+      dexterity: 15
+    },
+    DeleteStatsDTO: {
+      id: "uuid"
+    },
   },
 };
 

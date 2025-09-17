@@ -586,6 +586,235 @@
           }
         }
       }
+    },
+    "/stats/{id}": {
+      "get": {
+        "tags": [
+          "Stats"
+        ],
+        "summary": "Get stats by ID",
+        "description": "Endpoint to retrieve stats by their ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the stats to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stats retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stats not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Stats"
+        ],
+        "summary": "Update stats by ID",
+        "description": "Endpoint to update stats by their ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the stats to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stats updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Stats not found"
+          },
+          "422": {
+            "description": "Unprocessable Entity (validation failed)"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStatsDTO"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Stats"
+        ],
+        "summary": "Delete stats by ID",
+        "description": "Endpoint to delete stats by their ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the stats to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stats deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stats not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/stats/character/{characterId}": {
+      "get": {
+        "tags": [
+          "Stats"
+        ],
+        "summary": "Get stats by Character ID",
+        "description": "Endpoint to retrieve stats by their associated Character ID.",
+        "parameters": [
+          {
+            "name": "characterId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the character whose stats to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stats retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Stats not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/stats/": {
+      "post": {
+        "tags": [
+          "Stats"
+        ],
+        "summary": "Create stats for a character",
+        "description": "Endpoint to create stats for a character.",
+        "responses": {
+          "201": {
+            "description": "Stats created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatsDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity (validation failed)"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStatsDTO"
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -777,6 +1006,126 @@
         },
         "xml": {
           "name": "DeleteCharacterDTO"
+        }
+      },
+      "StatsDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "strength": {
+            "type": "number",
+            "example": 10
+          },
+          "dexterity": {
+            "type": "number",
+            "example": 14
+          },
+          "constitution": {
+            "type": "number",
+            "example": 12
+          },
+          "intelligence": {
+            "type": "number",
+            "example": 16
+          },
+          "wisdom": {
+            "type": "number",
+            "example": 11
+          },
+          "charisma": {
+            "type": "number",
+            "example": 13
+          },
+          "destiny": {
+            "type": "number",
+            "example": 5
+          },
+          "characterId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          }
+        },
+        "xml": {
+          "name": "StatsDTO"
+        }
+      },
+      "CreateStatsDTO": {
+        "type": "object",
+        "properties": {
+          "strength": {
+            "type": "number",
+            "example": 10
+          },
+          "dexterity": {
+            "type": "number",
+            "example": 14
+          },
+          "constitution": {
+            "type": "number",
+            "example": 12
+          },
+          "intelligence": {
+            "type": "number",
+            "example": 16
+          },
+          "wisdom": {
+            "type": "number",
+            "example": 11
+          },
+          "charisma": {
+            "type": "number",
+            "example": 13
+          },
+          "destiny": {
+            "type": "number",
+            "example": 5
+          },
+          "characterId": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "CreateStatsDTO"
+        }
+      },
+      "UpdateStatsDTO": {
+        "type": "object",
+        "properties": {
+          "strength": {
+            "type": "number",
+            "example": 12
+          },
+          "dexterity": {
+            "type": "number",
+            "example": 15
+          }
+        },
+        "xml": {
+          "name": "UpdateStatsDTO"
+        }
+      },
+      "DeleteStatsDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "DeleteStatsDTO"
         }
       }
     }
