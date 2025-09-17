@@ -15,6 +15,8 @@ const doc = {
     },
   ],
   definitions: {
+
+    // User definitions
     UserDTO: {
       id: "uuid",
       email: "user@example.com",
@@ -34,6 +36,35 @@ const doc = {
       password: "newSecurePassword456"
     },
     DeleteUserDTO: {
+      id: "uuid"
+    },
+
+    // Character definitions
+    CharacterDTO: {
+      id: "uuid",
+      name: "Leena Timestar",
+      nickname: "leena",
+      description: "A Rogue with time-manipulation abilities.",
+      userId: "uuid",
+      imageUrl: "http://example.com/images/leena.png",
+      createdAt: "2023-10-01T12:00:00Z",
+      updatedAt: "2023-10-01T12:00:00Z",
+      deletedAt: null
+    },
+    CreateCharacterDTO: {
+      name: "Leena Timestar",
+      nickname: "leena",
+      description: "A Rogue with time-manipulation abilities.",
+      imageUrl: "http://example.com/images/leena.png",
+      userId: "uuid"
+    },
+    UpdateCharacterDTO: {
+      name: "Updated Name",
+      nickname: "updated_nickname",
+      description: "Updated description.",
+      imageUrl: "http://example.com/images/updated_image.png"
+    },
+    DeleteCharacterDTO: {
       id: "uuid"
     },
   },

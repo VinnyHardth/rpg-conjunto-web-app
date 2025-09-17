@@ -288,6 +288,304 @@
           }
         }
       }
+    },
+    "/characters/": {
+      "get": {
+        "tags": [
+          "Characters"
+        ],
+        "summary": "Get all characters",
+        "description": "Endpoint to retrieve all characters.",
+        "responses": {
+          "200": {
+            "description": "Characters retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/CharacterDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/CharacterDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Characters"
+        ],
+        "summary": "Create a new character",
+        "description": "Endpoint to create a new character.",
+        "responses": {
+          "201": {
+            "description": "Character created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity (validation failed)"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCharacterDTO"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/characters/{id}": {
+      "get": {
+        "tags": [
+          "Characters"
+        ],
+        "summary": "Get character by ID",
+        "description": "Endpoint to retrieve a character by their ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the character to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Character retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Character not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Characters"
+        ],
+        "summary": "Update a character",
+        "description": "Endpoint to update an existing character.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the character to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Character updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Character not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCharacterDTO"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Characters"
+        ],
+        "summary": "Delete a character",
+        "description": "Endpoint to delete a character by their ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the character to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Character deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Character not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/characters/user/{userId}": {
+      "get": {
+        "tags": [
+          "Characters"
+        ],
+        "summary": "Get characters by user ID",
+        "description": "Endpoint to retrieve all characters for a specific user.",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the user whose characters to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Characters retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/CharacterDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/CharacterDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -374,6 +672,111 @@
         },
         "xml": {
           "name": "DeleteUserDTO"
+        }
+      },
+      "CharacterDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "Leena Timestar"
+          },
+          "nickname": {
+            "type": "string",
+            "example": "leena"
+          },
+          "description": {
+            "type": "string",
+            "example": "A Rogue with time-manipulation abilities."
+          },
+          "userId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "imageUrl": {
+            "type": "string",
+            "example": "http://example.com/images/leena.png"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "deletedAt": {}
+        },
+        "xml": {
+          "name": "CharacterDTO"
+        }
+      },
+      "CreateCharacterDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Leena Timestar"
+          },
+          "nickname": {
+            "type": "string",
+            "example": "leena"
+          },
+          "description": {
+            "type": "string",
+            "example": "A Rogue with time-manipulation abilities."
+          },
+          "imageUrl": {
+            "type": "string",
+            "example": "http://example.com/images/leena.png"
+          },
+          "userId": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "CreateCharacterDTO"
+        }
+      },
+      "UpdateCharacterDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Updated Name"
+          },
+          "nickname": {
+            "type": "string",
+            "example": "updated_nickname"
+          },
+          "description": {
+            "type": "string",
+            "example": "Updated description."
+          },
+          "imageUrl": {
+            "type": "string",
+            "example": "http://example.com/images/updated_image.png"
+          }
+        },
+        "xml": {
+          "name": "UpdateCharacterDTO"
+        }
+      },
+      "DeleteCharacterDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "DeleteCharacterDTO"
         }
       }
     }

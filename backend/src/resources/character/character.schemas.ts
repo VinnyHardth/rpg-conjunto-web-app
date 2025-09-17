@@ -7,7 +7,7 @@ const createCharacterSchema = Joi.object<CreateCharacterDTO>({
     nickname: Joi.string().min(2).max(50).required(),
     description: Joi.string().max(500),
     imageUrl: Joi.string().uri(),
-    userId: Joi.number().integer().positive().required(),
+    userId: Joi.string().uuid().required(),
 });
 
 const updateCharacterSchema = Joi.object<UpdateCharacterDTO>({
@@ -15,7 +15,7 @@ const updateCharacterSchema = Joi.object<UpdateCharacterDTO>({
     nickname: Joi.string().min(2).max(50),
     description: Joi.string().max(500),
     imageUrl: Joi.string().uri(),
-    userId: Joi.number().integer().positive(),
+    userId: Joi.string().uuid().required(),
 }).min(1); // At least one field must be provided for update
 
 export { createCharacterSchema, updateCharacterSchema };
