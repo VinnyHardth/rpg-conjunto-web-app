@@ -9,12 +9,14 @@ const characterFields = {
     nickname: true,
     description: true,
     imageUrl: true,
+    archetype: true,
     userId: true,
     createdAt: true,
     updatedAt: true,
     deletedAt: true,
 };
 
+// CRUD operations -------------------------------------------------------------
 const createCharacter = async (data: CreateCharacterDTO): Promise<CharacterDTO> => {
     return prisma.character.create({
         data,
@@ -58,6 +60,8 @@ const deleteCharacter = async (id: string): Promise<CharacterDTO> => {
         select: characterFields,
     });
 }
+
+// character actions -------------------------------------------------------------
 
 export {
     createCharacter,

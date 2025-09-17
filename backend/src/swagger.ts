@@ -99,6 +99,41 @@ const doc = {
     DeleteStatsDTO: {
       id: "uuid"
     },
+
+    // CharState definitions
+    CharStateDTO: {
+      id: "uuid",
+      characterId: "uuid",
+      currentHP: 35,
+      maxHP: 50,
+      currentMP: 20,
+      maxMP: 30,
+      currentTP: 5,
+      maxTP: 10,
+      magicRes: 14,
+      fisicalRes: 12,
+      perception: 13,
+      intimidation: 11,
+      faith: 15,
+      inspiration: 10,
+      determination: 12,
+      bluff: 14,
+      reflexes: 13,
+      createdAt: "2023-10-01T12:00:00Z",
+      updatedAt: "2023-10-01T12:00:00Z",
+      deletedAt: null
+    },
+    CreateCharStateDTO: {
+      characterId: "uuid"
+    },
+    UpdateCharStateDTO: {
+      currentHP: 40,
+      currentMP: 25
+    },
+    DeleteCharStateDTO: {
+      id: "uuid"
+    },
+
   },
 };
 

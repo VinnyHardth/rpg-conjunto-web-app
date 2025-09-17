@@ -33,12 +33,17 @@ model Character {
     nickname    String
     description String
     imageUrl    String
+    archetype   String @default("None")
 
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
 
     stats Stats[]
+    inventory Inventory[]
+    money Money[]
+    skills Skill[]
+    expertise CharacterState[]
 }
 
 model Stats {
@@ -54,6 +59,85 @@ model Stats {
     constitution Int
     charisma     Int
     destiny      Int
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+}
+
+model Inventory {
+    id String @id @default(uuid())
+
+    characterId String
+    character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+    name        String
+    description String
+    bonus       String // e.g., "+1 INT", "+2 DEX", +'1d6 DMG"
+    quantity    Int
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+}
+
+model CharacterState {
+  id String @id @default(uuid())
+  characterId String
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  // Valores máximos
+  maxHP Int
+  maxMP Int
+  maxTP Int
+
+  // Valores atuais
+  currentHP Int
+  currentMP Int
+  currentTP Int
+
+  // Perícias
+  magicRes Int
+  fisicalRes Int
+  perception Int
+  intimidation Int
+  faith Int
+  inspiration Int
+  determination Int
+  bluff Int
+  reflexes Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+}
+
+
+model Skill {
+    id String @id @default(uuid())
+
+    characterId String
+    character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+    name        String
+    cost        Int
+    effect      String
+    description String
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    deletedAt DateTime?
+}
+
+model Money {
+    id String @id @default(uuid())
+
+    characterId String
+    character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+    earned  Int
+    spent   Int
+    current Int
 
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt

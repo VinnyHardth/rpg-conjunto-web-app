@@ -815,6 +815,278 @@
           }
         }
       }
+    },
+    "/char-states/{id}": {
+      "get": {
+        "tags": [
+          "Character States"
+        ],
+        "summary": "Get character state by ID",
+        "description": "Endpoint to retrieve a character state by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the character state to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Character state retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharStateDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharStateDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Character state not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Character States"
+        ],
+        "summary": "Update character state",
+        "description": "Endpoint to update a character state by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the character state to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Character state updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharStateDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharStateDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Character state not found"
+          },
+          "422": {
+            "description": "Unprocessable Entity (validation failed)"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCharStateDTO"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Character States"
+        ],
+        "summary": "Delete character state",
+        "description": "Endpoint to delete a character state by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the character state to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Character state deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharStateDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharStateDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Character state not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/char-states/character/{characterId}": {
+      "get": {
+        "tags": [
+          "Character States"
+        ],
+        "summary": "Get character state by Character ID",
+        "description": "Endpoint to retrieve a character state by the associated Character ID.",
+        "parameters": [
+          {
+            "name": "characterId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the character whose state to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Character state retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharStateDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharStateDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Character state not found"
+          }
+        }
+      }
+    },
+    "/char-states/": {
+      "post": {
+        "tags": [
+          "Character States"
+        ],
+        "summary": "Create character state",
+        "description": "Endpoint to create a character state.",
+        "responses": {
+          "201": {
+            "description": "Character state created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharStateDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharStateDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity (validation failed)"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCharStateDTO"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/char-states/system/{characterId}": {
+      "put": {
+        "tags": [
+          "Character States"
+        ],
+        "summary": "System update character state by Character id",
+        "description": "Endpoint for system to update a character state based on character stats.",
+        "parameters": [
+          {
+            "name": "characterId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the character whose state to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Character state updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharStateDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharStateDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Character or character state not found"
+          },
+          "422": {
+            "description": "Unprocessable Entity (validation failed)"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1126,6 +1398,131 @@
         },
         "xml": {
           "name": "DeleteStatsDTO"
+        }
+      },
+      "CharStateDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "characterId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "currentHP": {
+            "type": "number",
+            "example": 35
+          },
+          "maxHP": {
+            "type": "number",
+            "example": 50
+          },
+          "currentMP": {
+            "type": "number",
+            "example": 20
+          },
+          "maxMP": {
+            "type": "number",
+            "example": 30
+          },
+          "currentTP": {
+            "type": "number",
+            "example": 5
+          },
+          "maxTP": {
+            "type": "number",
+            "example": 10
+          },
+          "magicRes": {
+            "type": "number",
+            "example": 14
+          },
+          "fisicalRes": {
+            "type": "number",
+            "example": 12
+          },
+          "perception": {
+            "type": "number",
+            "example": 13
+          },
+          "intimidation": {
+            "type": "number",
+            "example": 11
+          },
+          "faith": {
+            "type": "number",
+            "example": 15
+          },
+          "inspiration": {
+            "type": "number",
+            "example": 10
+          },
+          "determination": {
+            "type": "number",
+            "example": 12
+          },
+          "bluff": {
+            "type": "number",
+            "example": 14
+          },
+          "reflexes": {
+            "type": "number",
+            "example": 13
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "deletedAt": {}
+        },
+        "xml": {
+          "name": "CharStateDTO"
+        }
+      },
+      "CreateCharStateDTO": {
+        "type": "object",
+        "properties": {
+          "characterId": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "CreateCharStateDTO"
+        }
+      },
+      "UpdateCharStateDTO": {
+        "type": "object",
+        "properties": {
+          "currentHP": {
+            "type": "number",
+            "example": 40
+          },
+          "currentMP": {
+            "type": "number",
+            "example": 25
+          }
+        },
+        "xml": {
+          "name": "UpdateCharStateDTO"
+        }
+      },
+      "DeleteCharStateDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "DeleteCharStateDTO"
         }
       }
     }
