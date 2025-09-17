@@ -1,31 +1,70 @@
-import {v4 as uuidv4, v1} from 'uuid';
-
-import cookieParser from "cookie-parser"
-import cors from "cors"
-import dotenv from "dotenv"
-import express from "express"
+import { v4 as uuidv4, v1 } from 'uuid';
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import dotenv from "dotenv";
+import express, { Request, Response, NextFunction } from "express";
 import swaggerUi from 'swagger-ui-express';
+import http from 'http';
+import { Server, Socket } from 'socket.io';
 
-import v1Router from "./router/v1Router"
+import v1Router from "./router/v1Router";
 import swaggerFile from './swagger-output.json';
 
+// Extende o tipo Request para incluir 'io'
+declare module 'express-serve-static-core' {
+  interface Request {
+    io?: Server;
+  }
+}
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Middlewares
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Swagger
 app.use("/api", swaggerUi.serve, swaggerUi.setup(swaggerFile));
-app.use("/test", (req, res) => {
-    res.json({ message: "API is working!", uuidv1: v1(), uuidv4: uuidv4() })
+
+// Teste de rota
+app.use("/test", (req: Request, res: Response) => {
+  res.json({ message: "API is working!", uuidv1: v1(), uuidv4: uuidv4() });
 });
+
+// Cria o servidor HTTP e instancia o Socket.io
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: "*" } });
+
+// Middleware para injetar io nas rotas
+app.use((req: Request, res: Response, next: NextFunction) => {
+  req.io = io;
+  next();
+});
+
+// Rotas
 app.use(v1Router);
 
+// Socket.io: conexão
+io.on('connection', (socket: Socket) => {
+  console.log(`Novo cliente conectado: ${socket.id}`);
 
-app.listen(PORT, () => {
-    console.log(`Server started on port ${PORT}`);
-    console.log(`Swagger UI available at http://localhost:${PORT}/api`);
+  socket.on('joinRoom', (room: string) => {
+    socket.join(room);
+    console.log(`Socket ${socket.id} entrou na sala ${room}`);
+  });
+
+  socket.on('disconnect', () => {
+    console.log(`Cliente desconectado: ${socket.id}`);
+  });
+});
+
+// Inicia servidor
+server.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
+  console.log(`Swagger UI available at http://localhost:${PORT}/api`);
 });
