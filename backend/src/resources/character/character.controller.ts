@@ -1,9 +1,17 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { Request, Response } from 'express';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 
 import { CreateCharacterDTO, DeleteCharacterDTO, UpdateCharacterDTO, CharacterDTO } from './character.types';
 import * as characterServices from './character.services';
+
+const handleError = (res: Response, err: any, context: string): void => {
+  console.error(`${context}:`, err);
+  res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+    error: ReasonPhrases.INTERNAL_SERVER_ERROR,
+  });
+};
+
 
 const create = async (req: Request, res: Response): Promise<void> => {
   /*
@@ -31,206 +39,191 @@ const create = async (req: Request, res: Response): Promise<void> => {
   const characterData: CreateCharacterDTO = req.body;
 
   try {
-    const newCharacter: CharacterDTO = await characterServices.createCharacter(characterData);
+    const newCharacter: CharacterDTO = await characterServices.createCharacter(
+      characterData
+    );
     res.status(StatusCodes.CREATED).json(newCharacter);
   } catch (err) {
-    console.error("Error creating character:", err);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: ReasonPhrases.INTERNAL_SERVER_ERROR,
-    });
+    handleError(res, err, "Error creating character");
   }
 };
 
 const getById = async (req: Request, res: Response): Promise<void> => {
-    /*
-      #swagger.summary = 'Get character by ID'
-      #swagger.description = 'Endpoint to retrieve a character by their ID.'
+  /*
+    #swagger.summary = 'Get character by ID'
+    #swagger.description = 'Endpoint to retrieve a character by their ID.'
 
-      #swagger.parameters['id'] = {
-        in: 'path',
-        description: 'ID of the character to retrieve',
-        required: true,
-        type: 'string'
-      }
+    #swagger.parameters['id'] = {
+      in: 'path',
+      description: 'ID of the character to retrieve',
+      required: true,
+      type: 'string'
+    }
 
-      #swagger.responses[200] = {
-        description: 'Character retrieved successfully.',
-        schema: { $ref: '#/definitions/CharacterDTO' }
-      }
-      #swagger.responses[404] = { description: 'Character not found' }
-      #swagger.responses[500] = { description: 'Internal Server Error' }
-    */
+    #swagger.responses[200] = {
+      description: 'Character retrieved successfully.',
+      schema: { $ref: '#/definitions/CharacterDTO' }
+    }
+    #swagger.responses[404] = { description: 'Character not found' }
+    #swagger.responses[500] = { description: 'Internal Server Error' }
+  */
 
-    const { id } = req.params;
+  const { id } = req.params;
 
-    try {
-        const character: CharacterDTO | null = await characterServices.getCharacterById(id);
+  try {
+    const character: CharacterDTO | null = await characterServices.getCharacterById(id);
 
-        if (!character) {
-            res.status(StatusCodes.NOT_FOUND).json({
-                message: "Character not found",
-            });
-            return;
-        }
-
-        res.status(StatusCodes.OK).json(character);
+    if (!character) {
+      res.status(StatusCodes.NOT_FOUND).json({
+        message: "Character not found",
+      });
+      return;
+    }
+    res.status(StatusCodes.OK).json(character);
     } catch (err) {
-        console.error("Error retrieving character:", err);
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-            message: ReasonPhrases.INTERNAL_SERVER_ERROR,
-        });
+        handleError(res, err, "Error retrieving character");
     }
 };
 
 const getUserCharacters = async (req: Request, res: Response): Promise<void> => {
-    /*
-      #swagger.summary = 'Get characters by user ID'
-      #swagger.description = 'Endpoint to retrieve all characters for a specific user.'
+  /*
+    #swagger.summary = 'Get characters by user ID'
+    #swagger.description = 'Endpoint to retrieve all characters for a specific user.'
 
-      #swagger.parameters['userId'] = {
-        in: 'path',
-        description: 'ID of the user whose characters to retrieve',
-        required: true,
-        type: 'string'
-      }
-
-      #swagger.responses[200] = {
-        description: 'Characters retrieved successfully.',
-        schema: { type: 'array', items: { $ref: '#/definitions/CharacterDTO' } }
-      }
-      #swagger.responses[500] = { description: 'Internal Server Error' }
-    */
-
-    const { userId } = req.params;
-
-    try {
-        const characters: CharacterDTO[] = await characterServices.getUserCharacters(userId);
-        res.status(StatusCodes.OK).json(characters);
-    } catch (err) {
-        console.error("Error retrieving characters:", err);
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-            message: ReasonPhrases.INTERNAL_SERVER_ERROR,
-        });
+    #swagger.parameters['userId'] = {
+      in: 'path',
+      description: 'ID of the user whose characters to retrieve',
+      required: true,
+      type: 'string'
     }
+
+    #swagger.responses[200] = {
+      description: 'Characters retrieved successfully.',
+      schema: { type: 'array', items: { $ref: '#/definitions/CharacterDTO' } }
+    }
+
+    #swagger.responses[500] = { description: 'Internal Server Error' }
+  */
+
+ const { userId } = req.params;
+
+  try {
+    const characters: CharacterDTO[] = await characterServices.getUserCharacters(userId);
+    res.status(StatusCodes.OK).json(characters);
+  } catch (err) {
+    handleError(res, err, "Error retrieving user characters");
+  }
 };
 
 const getAll = async (req: Request, res: Response): Promise<void> => {
-    /*
-      #swagger.summary = 'Get all characters'
-      #swagger.description = 'Endpoint to retrieve all characters.'
+  /*
+    #swagger.summary = 'Get all characters'
+    #swagger.description = 'Endpoint to retrieve all characters.'
 
-      #swagger.responses[200] = {
-        description: 'Characters retrieved successfully.',
-        schema: { type: 'array', items: { $ref: '#/definitions/CharacterDTO' } }
-      }
-      #swagger.responses[500] = { description: 'Internal Server Error' }
-    */
-
-    try {
-        const characters: CharacterDTO[] = await characterServices.getCharacters();
-        res.status(StatusCodes.OK).json(characters);
-    } catch (err) {
-        console.error("Error retrieving characters:", err);
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-            message: ReasonPhrases.INTERNAL_SERVER_ERROR,
-        });
+    #swagger.responses[200] = {
+      description: 'Characters retrieved successfully.',
+      schema: { type: 'array', items: { $ref: '#/definitions/CharacterDTO' } }
     }
+    #swagger.responses[500] = { description: 'Internal Server Error' }
+  */
+
+  try {
+    const characters: CharacterDTO[] = await characterServices.getCharacters();
+    res.status(StatusCodes.OK).json(characters);
+  } catch (err) {
+    handleError(res, err, "Error retrieving characters");
+  }
 };
 
 const update = async (req: Request, res: Response): Promise<void> => {
-    /*
-      #swagger.summary = 'Update a character'
-      #swagger.description = 'Endpoint to update an existing character.'
+  /*
+    #swagger.summary = 'Update a character'
+    #swagger.description = 'Endpoint to update an existing character.'
 
-      #swagger.parameters['id'] = {
-        in: 'path',
-        description: 'ID of the character to update',
-        required: true,
-        type: 'string'
-      }
+    #swagger.parameters['id'] = {
+      in: 'path',
+      description: 'ID of the character to update',
+      required: true,
+      type: 'string'
+    }
 
-      #swagger.requestBody = {
-        required: true,
-        content: {
-          "application/json": {
-            schema: { $ref: '#/definitions/UpdateCharacterDTO' }
-          }
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        "application/json": {
+          schema: { $ref: '#/definitions/UpdateCharacterDTO' }
         }
       }
-
-      #swagger.responses[200] = {
-        description: 'Character updated successfully.',
-        schema: { $ref: '#/definitions/CharacterDTO' }  
     }
-      #swagger.responses[400] = { description: 'Bad Request' }
-      #swagger.responses[404] = { description: 'Character not found' }
-      #swagger.responses[500] = { description: 'Internal Server Error' }
-    */
 
-    const { id } = req.params;
-    const characterData: UpdateCharacterDTO = req.body;
+    #swagger.responses[200] = {
+      description: 'Character updated successfully.',
+      schema: { $ref: '#/definitions/CharacterDTO' }  
+  }
+    #swagger.responses[400] = { description: 'Bad Request' }
+    #swagger.responses[404] = { description: 'Character not found' }
+    #swagger.responses[500] = { description: 'Internal Server Error' }
+  */
 
-    try {
-        const existingCharacter: CharacterDTO | null = await characterServices.getCharacterById(id);
+  const { id } = req.params;
+  const characterData: UpdateCharacterDTO = req.body;
 
-        if (!existingCharacter) {
-            res.status(StatusCodes.NOT_FOUND).json({
-                message: "Character not found",
-            });
-            return;
-        }
+  try {
+    const updatedCharacter: CharacterDTO =
+      await characterServices.updateCharacter(id, characterData);
 
-        const updatedCharacter: CharacterDTO = await characterServices.updateCharacter(id, characterData);
-        res.status(StatusCodes.OK).json(updatedCharacter);
-    } catch (err) {
-        console.error("Error updating character:", err);
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-            message: ReasonPhrases.INTERNAL_SERVER_ERROR,
-        });
+    res.status(StatusCodes.OK).json(updatedCharacter);
+  } catch (err) {
+    if (
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === "P2025"
+    ) {
+      res.status(StatusCodes.NOT_FOUND).json({ error: "Character not found" });
+      return;
     }
-}
+    handleError(res, err, "Error updating character");
+  }
+};
 
 const remove = async (req: Request, res: Response): Promise<void> => {
-    /*
-      #swagger.summary = 'Delete a character'
-      #swagger.description = 'Endpoint to delete a character by their ID.'
+  /*
+    #swagger.summary = 'Delete a character'
+    #swagger.description = 'Endpoint to delete a character by their ID.'
 
-      #swagger.parameters['id'] = {
-        in: 'path',
-        description: 'ID of the character to delete',
-        required: true,
-        type: 'string'
-      }
-
-      #swagger.responses[200] = {
-        description: 'Character deleted successfully.',
-        schema: { $ref: '#/definitions/CharacterDTO' }
-      }
-      #swagger.responses[404] = { description: 'Character not found' }
-      #swagger.responses[500] = { description: 'Internal Server Error' }
-    */
-
-    const { id } = req.params;
-
-    try {
-        const existingCharacter: CharacterDTO | null = await characterServices.getCharacterById(id);
-
-        if (!existingCharacter) {
-            res.status(StatusCodes.NOT_FOUND).json({
-                message: "Character not found",
-            });
-            return;
-        }
-
-        const deletedCharacter: CharacterDTO = await characterServices.deleteCharacter(id);
-        res.status(StatusCodes.OK).json(deletedCharacter);
-    } catch (err) {
-        console.error("Error deleting character:", err);
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-            message: ReasonPhrases.INTERNAL_SERVER_ERROR,
-        });
+    #swagger.parameters['id'] = {
+      in: 'path',
+      description: 'ID of the character to delete',
+      required: true,
+      type: 'string'
     }
-}
+
+    #swagger.responses[200] = {
+      description: 'Character deleted successfully.',
+      schema: { $ref: '#/definitions/CharacterDTO' }
+    }
+    #swagger.responses[404] = { description: 'Character not found' }
+    #swagger.responses[500] = { description: 'Internal Server Error' }
+  */
+
+  const { id } = req.params;
+
+  try {
+    const deletedCharacter: CharacterDTO =
+      await characterServices.deleteCharacter(id);
+
+    res.status(StatusCodes.OK).json(deletedCharacter);
+  } catch (err) {
+    if (
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === "P2025"
+    ) {
+      res.status(StatusCodes.NOT_FOUND).json({ error: "Character not found" });
+      return;
+    }
+    handleError(res, err, "Error deleting character");
+  }
+};
+
 
 export default{
     create,

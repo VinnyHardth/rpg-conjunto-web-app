@@ -1,7 +1,7 @@
 import { Character } from "@prisma/client";
 
 type CreateCharacterDTO = Pick<
-    Character, "name" | "nickname" | "description" | "imageUrl" | "archetype" | "userId"
+    Character, "name" | "race" | "age" | "height" | "money" | "imageUrl" | "userId" | "characterArchetypeId" 
 >;
 type UpdateCharacterDTO = Partial<CreateCharacterDTO>;
 type DeleteCharacterDTO = Pick<Character, "id">;

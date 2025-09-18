@@ -20,20 +20,24 @@ const doc = {
     UserDTO: {
       id: "uuid",
       email: "user@example.com",
-      name: "John Doe",
       nickname: "johnd",
+      imageUrl: "http://example.com/images/user.png",
+
+      createdAt: "2023-10-01T12:00:00Z",
+      updatedAt: "2023-10-01T12:00:00Z",
+      deletedAt: null
     },
     CreateUserDTO: {
       email: "user@example.com",
-      name: "John Doe",
       nickname: "johnd",
-      password: "securePassword123"
+      password: "securePassword123",
+      imageUrl: "http://example.com/images/user.png",
     },
     UpdateUserDTO: {
       email: "new_email@example.com",
-      name: "New Name",
       nickname: "new_nickname",
-      password: "newSecurePassword456"
+      password: "newSecurePassword456",
+      imageUrl: "http://example.com/images/new_user.png"
     },
     DeleteUserDTO: {
       id: "uuid"
@@ -43,153 +47,41 @@ const doc = {
     CharacterDTO: {
       id: "uuid",
       name: "Leena Timestar",
-      nickname: "leena",
-      description: "A Rogue with time-manipulation abilities.",
-      userId: "uuid",
+      race: "Human",
+      age: 25,
+      height: 170,
+      money: 1000,
       imageUrl: "http://example.com/images/leena.png",
+
+      userId: "uuid",
+      characterArchetypeId: "uuid",
+
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
       deletedAt: null
     },
     CreateCharacterDTO: {
       name: "Leena Timestar",
-      nickname: "leena",
-      description: "A Rogue with time-manipulation abilities.",
+      race: "Human",
+      age: 25,
+      height: 170,
+      money: 1000,
       imageUrl: "http://example.com/images/leena.png",
-      userId: "uuid"
+
+      userId: "uuid",
+      characterArchetypeId: "uuid"
     },
     UpdateCharacterDTO: {
       name: "Updated Name",
-      nickname: "updated_nickname",
-      description: "Updated description.",
-      imageUrl: "http://example.com/images/updated_image.png"
+      race: "Updated Race",
+      age: 30,
+      height: 175,
+      money: 1500,
+      imageUrl: "http://example.com/images/updated_leena.png"
     },
     DeleteCharacterDTO: {
       id: "uuid"
     },
-
-    // Stats definitions
-    StatsDTO: {
-      id: "uuid",
-      strength: 10,
-      dexterity: 14,
-      constitution: 12,
-      intelligence: 16,
-      wisdom: 11,
-      charisma: 13,
-      destiny: 5,
-      characterId: "uuid",
-      createdAt: "2023-10-01T12:00:00Z",
-      updatedAt: "2023-10-01T12:00:00Z",
-    },
-    CreateStatsDTO: {
-      strength: 10,
-      dexterity: 14,
-      constitution: 12,
-      intelligence: 16,
-      wisdom: 11,
-      charisma: 13,
-      destiny: 5,
-      characterId: "uuid"
-    },
-    UpdateStatsDTO: {
-      strength: 12,
-      dexterity: 15
-    },
-    DeleteStatsDTO: {
-      id: "uuid"
-    },
-
-    // CharState definitions
-    CharStateDTO: {
-      id: "uuid",
-      characterId: "uuid",
-      currentHP: 35,
-      maxHP: 50,
-      currentMP: 20,
-      maxMP: 30,
-      currentTP: 5,
-      maxTP: 10,
-      magicRes: 14,
-      fisicalRes: 12,
-      perception: 13,
-      intimidation: 11,
-      faith: 15,
-      inspiration: 10,
-      determination: 12,
-      bluff: 14,
-      reflexes: 13,
-      createdAt: "2023-10-01T12:00:00Z",
-      updatedAt: "2023-10-01T12:00:00Z",
-      deletedAt: null
-    },
-    CreateCharStateDTO: {
-      characterId: "uuid"
-    },
-    UpdateCharStateDTO: {
-      currentHP: 40,
-      currentMP: 25
-    },
-    DeleteCharStateDTO: {
-      id: "uuid"
-    },
-
-    // Inventory definitions
-    InventoryDTO: {
-      id: "uuid",
-      name: "Sword of Truth",
-      description: "A legendary sword with magical properties.",
-      quantity: 1,
-      type: "Equipment",
-      equipped: true,
-      slot: "Weapon",
-      characterId: "uuid",
-      createdAt: "2023-10-01T12:00:00Z",
-      updatedAt: "2023-10-01T12:00:00Z",
-      deletedAt: null
-    },
-    CreateInventoryDTO: {
-      name: "Sword of Truth",
-      description: "A legendary sword with magical properties.",
-      quantity: 1,
-      type: "Equipment",
-      equipped: true,
-      slot: "Weapon",
-      characterId: "uuid"
-    },
-    UpdateInventoryDTO: {
-      name: "Updated Sword Name",
-      quantity: 2,
-      equipped: false
-    },
-    DeleteInventoryDTO: {
-      id: "uuid"
-    },
-
-    // ItemBonus definitions
-    ItemBonusDTO: {
-      id: "uuid",
-      itemId: "uuid",
-      atribute: "Strength",
-      type: "flat",
-      value: 2,
-      createdAt: "2023-10-01T12:00:00Z",
-      updatedAt: "2023-10-01T12:00:00Z",
-      deletedAt: null
-    },
-    
-    CreateItemBonusDTO: {
-      itemId: "uuid",
-      atribute: "Strength",
-      type: "flat",
-      value: 2
-    },
-    UpdateItemBonusDTO: {
-      value: 3
-    },
-    DeleteItemBonusDTO: {
-      id: "uuid"
-    }
   },
 };
 

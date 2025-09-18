@@ -586,937 +586,6 @@
           }
         }
       }
-    },
-    "/stats/{id}": {
-      "get": {
-        "tags": [
-          "Stats"
-        ],
-        "summary": "Get stats by ID",
-        "description": "Endpoint to retrieve stats by their ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the stats to retrieve"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Stats retrieved successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StatsDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/StatsDTO"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Stats not found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Stats"
-        ],
-        "summary": "Update stats by ID",
-        "description": "Endpoint to update stats by their ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the stats to update"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Stats updated successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StatsDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/StatsDTO"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Stats not found"
-          },
-          "422": {
-            "description": "Unprocessable Entity (validation failed)"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateStatsDTO"
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Stats"
-        ],
-        "summary": "Delete stats by ID",
-        "description": "Endpoint to delete stats by their ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the stats to delete"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Stats deleted successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StatsDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/StatsDTO"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Stats not found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/stats/character/{characterId}": {
-      "get": {
-        "tags": [
-          "Stats"
-        ],
-        "summary": "Get stats by Character ID",
-        "description": "Endpoint to retrieve stats by their associated Character ID.",
-        "parameters": [
-          {
-            "name": "characterId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the character whose stats to retrieve"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Stats retrieved successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StatsDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/StatsDTO"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Stats not found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/stats/": {
-      "post": {
-        "tags": [
-          "Stats"
-        ],
-        "summary": "Create stats for a character",
-        "description": "Endpoint to create stats for a character.",
-        "responses": {
-          "201": {
-            "description": "Stats created successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StatsDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/StatsDTO"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "422": {
-            "description": "Unprocessable Entity (validation failed)"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateStatsDTO"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/char-states/{id}": {
-      "get": {
-        "tags": [
-          "Character States"
-        ],
-        "summary": "Get character state by ID",
-        "description": "Endpoint to retrieve a character state by its ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the character state to retrieve"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Character state retrieved successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CharStateDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/CharStateDTO"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Character state not found"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Character States"
-        ],
-        "summary": "Update character state",
-        "description": "Endpoint to update a character state by its ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the character state to update"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Character state updated successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CharStateDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/CharStateDTO"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Character state not found"
-          },
-          "422": {
-            "description": "Unprocessable Entity (validation failed)"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateCharStateDTO"
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Character States"
-        ],
-        "summary": "Delete character state",
-        "description": "Endpoint to delete a character state by its ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the character state to delete"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Character state deleted successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CharStateDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/CharStateDTO"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Character state not found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/char-states/character/{characterId}": {
-      "get": {
-        "tags": [
-          "Character States"
-        ],
-        "summary": "Get character state by Character ID",
-        "description": "Endpoint to retrieve a character state by the associated Character ID.",
-        "parameters": [
-          {
-            "name": "characterId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the character whose state to retrieve"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Character state retrieved successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CharStateDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/CharStateDTO"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Character state not found"
-          }
-        }
-      }
-    },
-    "/char-states/": {
-      "post": {
-        "tags": [
-          "Character States"
-        ],
-        "summary": "Create character state",
-        "description": "Endpoint to create a character state.",
-        "responses": {
-          "201": {
-            "description": "Character state created successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CharStateDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/CharStateDTO"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "422": {
-            "description": "Unprocessable Entity (validation failed)"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateCharStateDTO"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/char-states/system/{characterId}": {
-      "put": {
-        "tags": [
-          "Character States"
-        ],
-        "summary": "System update character state by Character id",
-        "description": "Endpoint for system to update a character state based on character stats.",
-        "parameters": [
-          {
-            "name": "characterId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the character whose state to update"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Character state updated successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CharStateDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/CharStateDTO"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Character or character state not found"
-          },
-          "422": {
-            "description": "Unprocessable Entity (validation failed)"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/inventory/": {
-      "get": {
-        "tags": [
-          "Inventory"
-        ],
-        "summary": "Get inventory items by character ID",
-        "description": "Endpoint to retrieve all inventory items for a specific character by their ID.",
-        "parameters": [
-          {
-            "name": "characterId",
-            "in": "path",
-            "description": "ID of the character whose inventory items to retrieve",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Inventory items retrieved successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "example": "array"
-                    },
-                    "items": {
-                      "$ref": "#/components/schemas/InventoryDTO"
-                    }
-                  },
-                  "xml": {
-                    "name": "main"
-                  }
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "example": "array"
-                    },
-                    "items": {
-                      "$ref": "#/components/schemas/InventoryDTO"
-                    }
-                  },
-                  "xml": {
-                    "name": "main"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Character not found"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Inventory"
-        ],
-        "summary": "Create inventory item",
-        "description": "Endpoint to create an inventory item for a character.",
-        "responses": {
-          "201": {
-            "description": "Inventory item created successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/InventoryDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/InventoryDTO"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "422": {
-            "description": "Unprocessable Entity (validation failed)"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateInventoryDTO"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/inventory/{id}": {
-      "put": {
-        "tags": [
-          "Inventory"
-        ],
-        "summary": "Update inventory item",
-        "description": "Endpoint to update an existing inventory item.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the inventory item to update"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Inventory item updated successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/InventoryDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/InventoryDTO"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Inventory item not found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateInventoryDTO"
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Inventory"
-        ],
-        "summary": "Delete inventory item",
-        "description": "Endpoint to delete an inventory item.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the inventory item to delete"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Inventory item deleted successfully."
-          },
-          "404": {
-            "description": "Inventory item not found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/item-bonuses/{id}": {
-      "get": {
-        "tags": [
-          "Item Bonuses"
-        ],
-        "summary": "Get item bonus by ID",
-        "description": "Endpoint to retrieve an item bonus by its ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the item bonus to retrieve"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Item bonus retrieved successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItemBonusDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItemBonusDTO"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Item bonus not found"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Item Bonuses"
-        ],
-        "summary": "Update item bonus",
-        "description": "Endpoint to update an existing item bonus.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the item bonus to update"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Item bonus updated successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItemBonusDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItemBonusDTO"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Item bonus not found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateItemBonusDTO"
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Item Bonuses"
-        ],
-        "summary": "Delete item bonus",
-        "description": "Endpoint to delete an item bonus by its ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the item bonus to delete"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Item bonus deleted successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItemBonusDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItemBonusDTO"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Item bonus not found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/item-bonuses/item/{itemId}": {
-      "get": {
-        "tags": [
-          "Item Bonuses"
-        ],
-        "summary": "Get item bonuses by item ID",
-        "description": "Endpoint to retrieve all item bonuses for a specific item by its ID.",
-        "parameters": [
-          {
-            "name": "itemId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the item whose bonuses to retrieve"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Item bonuses retrieved successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "example": "array"
-                    },
-                    "items": {
-                      "$ref": "#/components/schemas/ItemBonusDTO"
-                    }
-                  },
-                  "xml": {
-                    "name": "main"
-                  }
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "example": "array"
-                    },
-                    "items": {
-                      "$ref": "#/components/schemas/ItemBonusDTO"
-                    }
-                  },
-                  "xml": {
-                    "name": "main"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Item not found"
-          }
-        }
-      }
-    },
-    "/item-bonuses/": {
-      "post": {
-        "tags": [
-          "Item Bonuses"
-        ],
-        "summary": "Create item bonus",
-        "description": "Endpoint to create an item bonus for a specific item.",
-        "responses": {
-          "201": {
-            "description": "Item bonus created successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItemBonusDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItemBonusDTO"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "422": {
-            "description": "Unprocessable Entity (validation failed)"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateItemBonusDTO"
-              }
-            }
-          }
-        }
-      }
     }
   },
   "components": {
@@ -1532,14 +601,23 @@
             "type": "string",
             "example": "user@example.com"
           },
-          "name": {
-            "type": "string",
-            "example": "John Doe"
-          },
           "nickname": {
             "type": "string",
             "example": "johnd"
-          }
+          },
+          "imageUrl": {
+            "type": "string",
+            "example": "http://example.com/images/user.png"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "deletedAt": {}
         },
         "xml": {
           "name": "UserDTO"
@@ -1552,10 +630,6 @@
             "type": "string",
             "example": "user@example.com"
           },
-          "name": {
-            "type": "string",
-            "example": "John Doe"
-          },
           "nickname": {
             "type": "string",
             "example": "johnd"
@@ -1563,6 +637,10 @@
           "password": {
             "type": "string",
             "example": "securePassword123"
+          },
+          "imageUrl": {
+            "type": "string",
+            "example": "http://example.com/images/user.png"
           }
         },
         "xml": {
@@ -1576,10 +654,6 @@
             "type": "string",
             "example": "new_email@example.com"
           },
-          "name": {
-            "type": "string",
-            "example": "New Name"
-          },
           "nickname": {
             "type": "string",
             "example": "new_nickname"
@@ -1587,6 +661,10 @@
           "password": {
             "type": "string",
             "example": "newSecurePassword456"
+          },
+          "imageUrl": {
+            "type": "string",
+            "example": "http://example.com/images/new_user.png"
           }
         },
         "xml": {
@@ -1616,21 +694,33 @@
             "type": "string",
             "example": "Leena Timestar"
           },
-          "nickname": {
+          "race": {
             "type": "string",
-            "example": "leena"
+            "example": "Human"
           },
-          "description": {
+          "age": {
+            "type": "number",
+            "example": 25
+          },
+          "height": {
+            "type": "number",
+            "example": 170
+          },
+          "money": {
+            "type": "number",
+            "example": 1000
+          },
+          "imageUrl": {
             "type": "string",
-            "example": "A Rogue with time-manipulation abilities."
+            "example": "http://example.com/images/leena.png"
           },
           "userId": {
             "type": "string",
             "example": "uuid"
           },
-          "imageUrl": {
+          "characterArchetypeId": {
             "type": "string",
-            "example": "http://example.com/images/leena.png"
+            "example": "uuid"
           },
           "createdAt": {
             "type": "string",
@@ -1653,19 +743,31 @@
             "type": "string",
             "example": "Leena Timestar"
           },
-          "nickname": {
+          "race": {
             "type": "string",
-            "example": "leena"
+            "example": "Human"
           },
-          "description": {
-            "type": "string",
-            "example": "A Rogue with time-manipulation abilities."
+          "age": {
+            "type": "number",
+            "example": 25
+          },
+          "height": {
+            "type": "number",
+            "example": 170
+          },
+          "money": {
+            "type": "number",
+            "example": 1000
           },
           "imageUrl": {
             "type": "string",
             "example": "http://example.com/images/leena.png"
           },
           "userId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "characterArchetypeId": {
             "type": "string",
             "example": "uuid"
           }
@@ -1681,17 +783,25 @@
             "type": "string",
             "example": "Updated Name"
           },
-          "nickname": {
+          "race": {
             "type": "string",
-            "example": "updated_nickname"
+            "example": "Updated Race"
           },
-          "description": {
-            "type": "string",
-            "example": "Updated description."
+          "age": {
+            "type": "number",
+            "example": 30
+          },
+          "height": {
+            "type": "number",
+            "example": 175
+          },
+          "money": {
+            "type": "number",
+            "example": 1500
           },
           "imageUrl": {
             "type": "string",
-            "example": "http://example.com/images/updated_image.png"
+            "example": "http://example.com/images/updated_leena.png"
           }
         },
         "xml": {
@@ -1708,453 +818,6 @@
         },
         "xml": {
           "name": "DeleteCharacterDTO"
-        }
-      },
-      "StatsDTO": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "uuid"
-          },
-          "strength": {
-            "type": "number",
-            "example": 10
-          },
-          "dexterity": {
-            "type": "number",
-            "example": 14
-          },
-          "constitution": {
-            "type": "number",
-            "example": 12
-          },
-          "intelligence": {
-            "type": "number",
-            "example": 16
-          },
-          "wisdom": {
-            "type": "number",
-            "example": 11
-          },
-          "charisma": {
-            "type": "number",
-            "example": 13
-          },
-          "destiny": {
-            "type": "number",
-            "example": 5
-          },
-          "characterId": {
-            "type": "string",
-            "example": "uuid"
-          },
-          "createdAt": {
-            "type": "string",
-            "example": "2023-10-01T12:00:00Z"
-          },
-          "updatedAt": {
-            "type": "string",
-            "example": "2023-10-01T12:00:00Z"
-          }
-        },
-        "xml": {
-          "name": "StatsDTO"
-        }
-      },
-      "CreateStatsDTO": {
-        "type": "object",
-        "properties": {
-          "strength": {
-            "type": "number",
-            "example": 10
-          },
-          "dexterity": {
-            "type": "number",
-            "example": 14
-          },
-          "constitution": {
-            "type": "number",
-            "example": 12
-          },
-          "intelligence": {
-            "type": "number",
-            "example": 16
-          },
-          "wisdom": {
-            "type": "number",
-            "example": 11
-          },
-          "charisma": {
-            "type": "number",
-            "example": 13
-          },
-          "destiny": {
-            "type": "number",
-            "example": 5
-          },
-          "characterId": {
-            "type": "string",
-            "example": "uuid"
-          }
-        },
-        "xml": {
-          "name": "CreateStatsDTO"
-        }
-      },
-      "UpdateStatsDTO": {
-        "type": "object",
-        "properties": {
-          "strength": {
-            "type": "number",
-            "example": 12
-          },
-          "dexterity": {
-            "type": "number",
-            "example": 15
-          }
-        },
-        "xml": {
-          "name": "UpdateStatsDTO"
-        }
-      },
-      "DeleteStatsDTO": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "uuid"
-          }
-        },
-        "xml": {
-          "name": "DeleteStatsDTO"
-        }
-      },
-      "CharStateDTO": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "uuid"
-          },
-          "characterId": {
-            "type": "string",
-            "example": "uuid"
-          },
-          "currentHP": {
-            "type": "number",
-            "example": 35
-          },
-          "maxHP": {
-            "type": "number",
-            "example": 50
-          },
-          "currentMP": {
-            "type": "number",
-            "example": 20
-          },
-          "maxMP": {
-            "type": "number",
-            "example": 30
-          },
-          "currentTP": {
-            "type": "number",
-            "example": 5
-          },
-          "maxTP": {
-            "type": "number",
-            "example": 10
-          },
-          "magicRes": {
-            "type": "number",
-            "example": 14
-          },
-          "fisicalRes": {
-            "type": "number",
-            "example": 12
-          },
-          "perception": {
-            "type": "number",
-            "example": 13
-          },
-          "intimidation": {
-            "type": "number",
-            "example": 11
-          },
-          "faith": {
-            "type": "number",
-            "example": 15
-          },
-          "inspiration": {
-            "type": "number",
-            "example": 10
-          },
-          "determination": {
-            "type": "number",
-            "example": 12
-          },
-          "bluff": {
-            "type": "number",
-            "example": 14
-          },
-          "reflexes": {
-            "type": "number",
-            "example": 13
-          },
-          "createdAt": {
-            "type": "string",
-            "example": "2023-10-01T12:00:00Z"
-          },
-          "updatedAt": {
-            "type": "string",
-            "example": "2023-10-01T12:00:00Z"
-          },
-          "deletedAt": {}
-        },
-        "xml": {
-          "name": "CharStateDTO"
-        }
-      },
-      "CreateCharStateDTO": {
-        "type": "object",
-        "properties": {
-          "characterId": {
-            "type": "string",
-            "example": "uuid"
-          }
-        },
-        "xml": {
-          "name": "CreateCharStateDTO"
-        }
-      },
-      "UpdateCharStateDTO": {
-        "type": "object",
-        "properties": {
-          "currentHP": {
-            "type": "number",
-            "example": 40
-          },
-          "currentMP": {
-            "type": "number",
-            "example": 25
-          }
-        },
-        "xml": {
-          "name": "UpdateCharStateDTO"
-        }
-      },
-      "DeleteCharStateDTO": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "uuid"
-          }
-        },
-        "xml": {
-          "name": "DeleteCharStateDTO"
-        }
-      },
-      "InventoryDTO": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "uuid"
-          },
-          "name": {
-            "type": "string",
-            "example": "Sword of Truth"
-          },
-          "description": {
-            "type": "string",
-            "example": "A legendary sword with magical properties."
-          },
-          "quantity": {
-            "type": "number",
-            "example": 1
-          },
-          "type": {
-            "type": "string",
-            "example": "Equipment"
-          },
-          "equipped": {
-            "type": "boolean",
-            "example": true
-          },
-          "slot": {
-            "type": "string",
-            "example": "Weapon"
-          },
-          "characterId": {
-            "type": "string",
-            "example": "uuid"
-          },
-          "createdAt": {
-            "type": "string",
-            "example": "2023-10-01T12:00:00Z"
-          },
-          "updatedAt": {
-            "type": "string",
-            "example": "2023-10-01T12:00:00Z"
-          },
-          "deletedAt": {}
-        },
-        "xml": {
-          "name": "InventoryDTO"
-        }
-      },
-      "CreateInventoryDTO": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "Sword of Truth"
-          },
-          "description": {
-            "type": "string",
-            "example": "A legendary sword with magical properties."
-          },
-          "quantity": {
-            "type": "number",
-            "example": 1
-          },
-          "type": {
-            "type": "string",
-            "example": "Equipment"
-          },
-          "equipped": {
-            "type": "boolean",
-            "example": true
-          },
-          "slot": {
-            "type": "string",
-            "example": "Weapon"
-          },
-          "characterId": {
-            "type": "string",
-            "example": "uuid"
-          }
-        },
-        "xml": {
-          "name": "CreateInventoryDTO"
-        }
-      },
-      "UpdateInventoryDTO": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "Updated Sword Name"
-          },
-          "quantity": {
-            "type": "number",
-            "example": 2
-          },
-          "equipped": {
-            "type": "boolean",
-            "example": false
-          }
-        },
-        "xml": {
-          "name": "UpdateInventoryDTO"
-        }
-      },
-      "DeleteInventoryDTO": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "uuid"
-          }
-        },
-        "xml": {
-          "name": "DeleteInventoryDTO"
-        }
-      },
-      "ItemBonusDTO": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "uuid"
-          },
-          "itemId": {
-            "type": "string",
-            "example": "uuid"
-          },
-          "atribute": {
-            "type": "string",
-            "example": "Strength"
-          },
-          "type": {
-            "type": "string",
-            "example": "flat"
-          },
-          "value": {
-            "type": "number",
-            "example": 2
-          },
-          "createdAt": {
-            "type": "string",
-            "example": "2023-10-01T12:00:00Z"
-          },
-          "updatedAt": {
-            "type": "string",
-            "example": "2023-10-01T12:00:00Z"
-          },
-          "deletedAt": {}
-        },
-        "xml": {
-          "name": "ItemBonusDTO"
-        }
-      },
-      "CreateItemBonusDTO": {
-        "type": "object",
-        "properties": {
-          "itemId": {
-            "type": "string",
-            "example": "uuid"
-          },
-          "atribute": {
-            "type": "string",
-            "example": "Strength"
-          },
-          "type": {
-            "type": "string",
-            "example": "flat"
-          },
-          "value": {
-            "type": "number",
-            "example": 2
-          }
-        },
-        "xml": {
-          "name": "CreateItemBonusDTO"
-        }
-      },
-      "UpdateItemBonusDTO": {
-        "type": "object",
-        "properties": {
-          "value": {
-            "type": "number",
-            "example": 3
-          }
-        },
-        "xml": {
-          "name": "UpdateItemBonusDTO"
-        }
-      },
-      "DeleteItemBonusDTO": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "example": "uuid"
-          }
-        },
-        "xml": {
-          "name": "DeleteItemBonusDTO"
         }
       }
     }
