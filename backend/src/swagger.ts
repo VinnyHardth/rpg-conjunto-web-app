@@ -1,7 +1,7 @@
 import swaggerAutogen from 'swagger-autogen';
 import dotenv from 'dotenv';
 
-import { CostType, AttributeKind } from '@prisma/client';
+import { CostType, AttributeKind, itemType } from '@prisma/client';
 
 dotenv.config();
 
@@ -165,7 +165,54 @@ const doc = {
     },
     DeleteAttributesDTO: {
       id: "uuid"
-    },  
+    }, 
+
+    // Items definitions
+    ItemsDTO: {
+      id: "uuid",
+      name: "Health Potion",
+      description: "Restores 50 HP.",
+      imageURL: "http://example.com/images/health_potion.png",
+      value: 50,
+      itemType: Object.values(itemType)[0],
+      createdAt: "2023-10-01T12:00:00Z",
+      updatedAt: "2023-10-01T12:00:00Z",
+      deletedAt: null
+    },
+    CreateItemsDTO: {
+      name: "Health Potion",
+      description: "Restores 50 HP.",
+      imageURL: "http://example.com/images/health_potion.png",
+      value: 50,
+      itemType: Object.values(itemType)[0]
+    },
+    UpdateItemsDTO: {
+      name: "Mana Potion",
+      description: "Restores 30 MP.",
+      imageURL: "http://example.com/images/mana_potion.png",
+      value: 30,
+      itemType: Object.values(itemType)[1]
+    },
+    DeleteItemsDTO: {
+      id: "uuid"
+    },
+
+    // Effect definitions
+    EffectDTO: {
+      id: "uuid",
+      name: "Poison",
+  },
+    CreateEffectDTO: {
+      name: "Poison",
+      imgUrl: "http://example.com/images/poison.png",
+    },
+    UpdateEffectDTO: {
+      name: "Burn",
+      imgUrl: "http://example.com/images/burn.png",
+    },
+    DeleteEffectDTO: {
+      id: "uuid"
+    },
   },
 };
 

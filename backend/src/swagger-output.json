@@ -1267,6 +1267,468 @@
           }
         }
       }
+    },
+    "/effects/": {
+      "get": {
+        "tags": [
+          "Effects"
+        ],
+        "summary": "Get all effects",
+        "description": "Endpoint to retrieve all effects.",
+        "responses": {
+          "200": {
+            "description": "Effects retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/EffectDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/EffectDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Effects"
+        ],
+        "summary": "Create a new effect",
+        "description": "Endpoint to create a new effect.",
+        "responses": {
+          "201": {
+            "description": "Effect created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EffectDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/EffectDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEffectDTO"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/effects/{id}": {
+      "get": {
+        "tags": [
+          "Effects"
+        ],
+        "summary": "Get effect by ID",
+        "description": "Endpoint to retrieve a effect by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the effect to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Effect retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EffectDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/EffectDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Effect not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Effects"
+        ],
+        "summary": "Update a effect",
+        "description": "Endpoint to update an existing effect.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the effect to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Effect updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EffectDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/EffectDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Effect not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEffectDTO"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Effects"
+        ],
+        "summary": "Delete a effect",
+        "description": "Endpoint to delete a effect.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the effect to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Effect deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EffectDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/EffectDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Effect not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/items/": {
+      "get": {
+        "tags": [
+          "Items"
+        ],
+        "summary": "Get all itemss",
+        "description": "Endpoint to retrieve all itemss.",
+        "responses": {
+          "200": {
+            "description": "Itemss retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/ItemsDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/ItemsDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Items"
+        ],
+        "summary": "Create a new items",
+        "description": "Endpoint to create a new items.",
+        "responses": {
+          "201": {
+            "description": "Items created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemsDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemsDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateItemsDTO"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/items/{id}": {
+      "get": {
+        "tags": [
+          "Items"
+        ],
+        "summary": "Get items by ID",
+        "description": "Endpoint to retrieve a items by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the items to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Items retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemsDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemsDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Items not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Items"
+        ],
+        "summary": "Update a items",
+        "description": "Endpoint to update an existing items.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the items to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Items updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemsDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemsDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Items not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateItemsDTO"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Items"
+        ],
+        "summary": "Delete a items",
+        "description": "Endpoint to delete a items.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the items to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Items deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemsDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemsDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Items not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1790,6 +2252,175 @@
         },
         "xml": {
           "name": "DeleteAttributesDTO"
+        }
+      },
+      "ItemsDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "Health Potion"
+          },
+          "description": {
+            "type": "string",
+            "example": "Restores 50 HP."
+          },
+          "imageURL": {
+            "type": "string",
+            "example": "http://example.com/images/health_potion.png"
+          },
+          "value": {
+            "type": "number",
+            "example": 50
+          },
+          "itemType": {
+            "type": "string",
+            "example": "CONSUMABLE"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "deletedAt": {}
+        },
+        "xml": {
+          "name": "ItemsDTO"
+        }
+      },
+      "CreateItemsDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Health Potion"
+          },
+          "description": {
+            "type": "string",
+            "example": "Restores 50 HP."
+          },
+          "imageURL": {
+            "type": "string",
+            "example": "http://example.com/images/health_potion.png"
+          },
+          "value": {
+            "type": "number",
+            "example": 50
+          },
+          "itemType": {
+            "type": "string",
+            "example": "CONSUMABLE"
+          }
+        },
+        "xml": {
+          "name": "CreateItemsDTO"
+        }
+      },
+      "UpdateItemsDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Mana Potion"
+          },
+          "description": {
+            "type": "string",
+            "example": "Restores 30 MP."
+          },
+          "imageURL": {
+            "type": "string",
+            "example": "http://example.com/images/mana_potion.png"
+          },
+          "value": {
+            "type": "number",
+            "example": 30
+          },
+          "itemType": {
+            "type": "string",
+            "example": "EQUIPPABLE"
+          }
+        },
+        "xml": {
+          "name": "UpdateItemsDTO"
+        }
+      },
+      "DeleteItemsDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "DeleteItemsDTO"
+        }
+      },
+      "EffectDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "Poison"
+          }
+        },
+        "xml": {
+          "name": "EffectDTO"
+        }
+      },
+      "CreateEffectDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Poison"
+          },
+          "imgUrl": {
+            "type": "string",
+            "example": "http://example.com/images/poison.png"
+          }
+        },
+        "xml": {
+          "name": "CreateEffectDTO"
+        }
+      },
+      "UpdateEffectDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Burn"
+          },
+          "imgUrl": {
+            "type": "string",
+            "example": "http://example.com/images/burn.png"
+          }
+        },
+        "xml": {
+          "name": "UpdateEffectDTO"
+        }
+      },
+      "DeleteEffectDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "DeleteEffectDTO"
         }
       }
     }

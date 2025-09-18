@@ -45,6 +45,14 @@ enum AttributeKind {
   EXPERTISE
 }
 
+enum itemType {
+  CONSUMABLE
+  EQUIPPABLE
+  MATERIAL
+  QUEST
+  MISC
+}
+
 // ------------- Catálogos -------------
 model User {
   id        String      @id @default(uuid()) @db.Char(36)
@@ -280,16 +288,16 @@ model Skill {                      // instância por personagem
 
 // ------------- Itens / Inventário -------------
 model Items {
-  id            String  @id @default(uuid()) @db.Char(36)
-  name          String  @db.VarChar(191)
-  description   String? @db.Text
-  imgUrl        String? @db.VarChar(191)
-  value         Int     @default(0)
-  is_consumable Boolean @default(false)
-  is_equippable Boolean @default(false)
+  id            String   @id @default(uuid()) @db.Char(36)
+  name          String   @db.VarChar(191)
+  description   String?  @db.Text
+  imageURL        String?  @db.VarChar(191)
+  value         Int      @default(0)
+
+  itemType      itemType @default(MISC)
   
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
   deletedAt DateTime?
 
   inventory  CharacterHasItem[]
