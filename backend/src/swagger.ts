@@ -107,6 +107,38 @@ const doc = {
       id: "uuid"
     },
 
+    // Abilities definitions
+
+    AbilitiesDTO: {
+      id: "uuid",
+      name: "Fireball",
+      description: "A powerful fire attack.",
+      imageURL: "http://example.com/images/fireball.png",
+      cost_type: "Mana",
+      mp_cost: 20,
+      tp_cost: 0,
+      cooldown_value: 5,
+      createdAt: "2023-10-01T12:00:00Z",
+      updatedAt: "2023-10-01T12:00:00Z",
+      deletedAt: null
+    },
+    CreateAbilitiesDTO: {
+      name: "Fireball",
+      description: "A powerful fire attack.",
+      imageURL: "http://example.com/images/fireball.png",
+      cost_type: "Mana",
+      mp_cost: 20,
+      tp_cost: 0,
+      cooldown_value: 5
+    },
+    UpdateAbilitiesDTO: {
+      name: "Ice Blast",
+      description: "A chilling ice attack."
+    },
+    DeleteAbilitiesDTO: {
+      id: "uuid"
+    },
+
   },
 };
 

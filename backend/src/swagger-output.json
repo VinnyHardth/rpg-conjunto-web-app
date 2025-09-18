@@ -805,6 +805,237 @@
           }
         }
       }
+    },
+    "/abilities/": {
+      "get": {
+        "tags": [
+          "Abilities"
+        ],
+        "summary": "Get all abilitiess",
+        "description": "Endpoint to retrieve all abilitiess.",
+        "responses": {
+          "200": {
+            "description": "Abilitiess retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/AbilitiesDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/AbilitiesDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Abilities"
+        ],
+        "summary": "Create a new abilities",
+        "description": "Endpoint to create a new abilities.",
+        "responses": {
+          "201": {
+            "description": "Abilities created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbilitiesDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbilitiesDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAbilitiesDTO"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/abilities/{id}": {
+      "get": {
+        "tags": [
+          "Abilities"
+        ],
+        "summary": "Get abilities by ID",
+        "description": "Endpoint to retrieve a abilities by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the abilities to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Abilities retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbilitiesDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbilitiesDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Abilities not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Abilities"
+        ],
+        "summary": "Update a abilities",
+        "description": "Endpoint to update an existing abilities.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the abilities to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Abilities updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbilitiesDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbilitiesDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Abilities not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAbilitiesDTO"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Abilities"
+        ],
+        "summary": "Delete a abilities",
+        "description": "Endpoint to delete a abilities.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the abilities to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Abilities deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbilitiesDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbilitiesDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Abilities not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -937,7 +1168,7 @@
             "type": "string",
             "example": "uuid"
           },
-          "characterArchetypeId": {
+          "archetypeId": {
             "type": "string",
             "example": "uuid"
           },
@@ -986,7 +1217,7 @@
             "type": "string",
             "example": "uuid"
           },
-          "characterArchetypeId": {
+          "archetypeId": {
             "type": "string",
             "example": "uuid"
           }
@@ -1122,6 +1353,119 @@
         },
         "xml": {
           "name": "DeleteArchetypeDTO"
+        }
+      },
+      "AbilitiesDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "Fireball"
+          },
+          "description": {
+            "type": "string",
+            "example": "A powerful fire attack."
+          },
+          "imageURL": {
+            "type": "string",
+            "example": "http://example.com/images/fireball.png"
+          },
+          "cost_type": {
+            "type": "string",
+            "example": "Mana"
+          },
+          "mp_cost": {
+            "type": "number",
+            "example": 20
+          },
+          "tp_cost": {
+            "type": "number",
+            "example": 0
+          },
+          "cooldown_value": {
+            "type": "number",
+            "example": 5
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "deletedAt": {}
+        },
+        "xml": {
+          "name": "AbilitiesDTO"
+        }
+      },
+      "CreateAbilitiesDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Fireball"
+          },
+          "description": {
+            "type": "string",
+            "example": "A powerful fire attack."
+          },
+          "imageURL": {
+            "type": "string",
+            "example": "http://example.com/images/fireball.png"
+          },
+          "cost_type": {
+            "type": "string",
+            "example": "Mana"
+          },
+          "mp_cost": {
+            "type": "number",
+            "example": 20
+          },
+          "tp_cost": {
+            "type": "number",
+            "example": 0
+          },
+          "cooldown_value": {
+            "type": "number",
+            "example": 5
+          }
+        },
+        "xml": {
+          "name": "CreateAbilitiesDTO"
+        }
+      },
+      "UpdateAbilitiesDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Ice Blast"
+          },
+          "description": {
+            "type": "string",
+            "example": "A chilling ice attack."
+          }
+        },
+        "xml": {
+          "name": "UpdateAbilitiesDTO"
+        }
+      },
+      "DeleteAbilitiesDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "DeleteAbilitiesDTO"
         }
       }
     }

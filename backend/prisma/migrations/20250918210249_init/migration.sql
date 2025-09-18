@@ -138,7 +138,7 @@ CREATE TABLE `applied_effects` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `habilities` (
+CREATE TABLE `Abilities` (
     `id` CHAR(36) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `description` TEXT NULL,
@@ -155,13 +155,13 @@ CREATE TABLE `habilities` (
 -- CreateTable
 CREATE TABLE `ability_effects` (
     `id` CHAR(36) NOT NULL,
-    `habilityId` CHAR(36) NOT NULL,
+    `AbilityId` CHAR(36) NOT NULL,
     `effectId` CHAR(36) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `deletedAt` DATETIME(3) NULL,
 
-    UNIQUE INDEX `ability_effects_habilityId_effectId_key`(`habilityId`, `effectId`),
+    UNIQUE INDEX `ability_effects_AbilityId_effectId_key`(`AbilityId`, `effectId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -169,14 +169,14 @@ CREATE TABLE `ability_effects` (
 CREATE TABLE `skills` (
     `id` CHAR(36) NOT NULL,
     `characterId` CHAR(36) NOT NULL,
-    `habilityId` CHAR(36) NOT NULL,
+    `abilityId` CHAR(36) NOT NULL,
     `cooldown` INTEGER NOT NULL DEFAULT 0,
     `useType` ENUM('PASSIVE', 'ACTIVE') NOT NULL DEFAULT 'ACTIVE',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `deletedAt` DATETIME(3) NULL,
 
-    UNIQUE INDEX `skills_characterId_habilityId_key`(`characterId`, `habilityId`),
+    UNIQUE INDEX `skills_characterId_abilityId_key`(`characterId`, `abilityId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -232,14 +232,14 @@ CREATE TABLE `item_has_effects` (
 -- CreateTable
 CREATE TABLE `item_skills` (
     `id` CHAR(36) NOT NULL,
-    `habilityId` CHAR(36) NOT NULL,
+    `abilityId` CHAR(36) NOT NULL,
     `itemId` CHAR(36) NOT NULL,
     `cooldown` INTEGER NOT NULL DEFAULT 0,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `deletedAt` DATETIME(3) NULL,
 
-    UNIQUE INDEX `item_skills_itemId_habilityId_key`(`itemId`, `habilityId`),
+    UNIQUE INDEX `item_skills_itemId_abilityId_key`(`itemId`, `abilityId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -268,7 +268,7 @@ ALTER TABLE `applied_effects` ADD CONSTRAINT `applied_effects_characterId_fkey` 
 ALTER TABLE `applied_effects` ADD CONSTRAINT `applied_effects_effectId_fkey` FOREIGN KEY (`effectId`) REFERENCES `effects`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `ability_effects` ADD CONSTRAINT `ability_effects_habilityId_fkey` FOREIGN KEY (`habilityId`) REFERENCES `habilities`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `ability_effects` ADD CONSTRAINT `ability_effects_AbilityId_fkey` FOREIGN KEY (`AbilityId`) REFERENCES `Abilities`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `ability_effects` ADD CONSTRAINT `ability_effects_effectId_fkey` FOREIGN KEY (`effectId`) REFERENCES `effects`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -277,7 +277,7 @@ ALTER TABLE `ability_effects` ADD CONSTRAINT `ability_effects_effectId_fkey` FOR
 ALTER TABLE `skills` ADD CONSTRAINT `skills_characterId_fkey` FOREIGN KEY (`characterId`) REFERENCES `characters`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `skills` ADD CONSTRAINT `skills_habilityId_fkey` FOREIGN KEY (`habilityId`) REFERENCES `habilities`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `skills` ADD CONSTRAINT `skills_abilityId_fkey` FOREIGN KEY (`abilityId`) REFERENCES `Abilities`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `character_has_item` ADD CONSTRAINT `character_has_item_characterId_fkey` FOREIGN KEY (`characterId`) REFERENCES `characters`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -292,7 +292,7 @@ ALTER TABLE `item_has_effects` ADD CONSTRAINT `item_has_effects_itemId_fkey` FOR
 ALTER TABLE `item_has_effects` ADD CONSTRAINT `item_has_effects_effectsId_fkey` FOREIGN KEY (`effectsId`) REFERENCES `effects`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `item_skills` ADD CONSTRAINT `item_skills_habilityId_fkey` FOREIGN KEY (`habilityId`) REFERENCES `habilities`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `item_skills` ADD CONSTRAINT `item_skills_abilityId_fkey` FOREIGN KEY (`abilityId`) REFERENCES `Abilities`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `item_skills` ADD CONSTRAINT `item_skills_itemId_fkey` FOREIGN KEY (`itemId`) REFERENCES `items`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
