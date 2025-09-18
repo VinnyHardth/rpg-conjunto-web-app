@@ -40,6 +40,11 @@ enum EquipSlot {
   NONE 
 }
 
+enum AttributeKind {
+  ATTRIBUTE
+  EXPERTISE
+}
+
 // ------------- Catálogos -------------
 model User {
   id        String      @id @default(uuid()) @db.Char(36)
@@ -110,7 +115,7 @@ model Character {
 model Attributes {           // catálogo de tipos (FOR, DEX, etc.)
   id     String @id @default(uuid()) @db.Char(36)
   name   String @db.VarChar(191)
-  kind   String @db.VarChar(50) // "Attribute" | "Expertise" (livre, como no diagrama)
+  kind   AttributeKind @default(ATTRIBUTE) // 'ATTRIBUTE','EXPERTISE'
 
   values CharacterAttribute[]
 

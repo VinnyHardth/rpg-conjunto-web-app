@@ -1036,6 +1036,237 @@
           }
         }
       }
+    },
+    "/attributes/": {
+      "get": {
+        "tags": [
+          "Attributes"
+        ],
+        "summary": "Get all attributess",
+        "description": "Endpoint to retrieve all attributess.",
+        "responses": {
+          "200": {
+            "description": "Attributess retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/AttributesDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/AttributesDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Attributes"
+        ],
+        "summary": "Create a new attributes",
+        "description": "Endpoint to create a new attributes.",
+        "responses": {
+          "201": {
+            "description": "Attributes created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttributesDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttributesDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAttributesDTO"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/attributes/{id}": {
+      "get": {
+        "tags": [
+          "Attributes"
+        ],
+        "summary": "Get attributes by ID",
+        "description": "Endpoint to retrieve a attributes by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the attributes to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Attributes retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttributesDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttributesDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Attributes not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Attributes"
+        ],
+        "summary": "Update a attributes",
+        "description": "Endpoint to update an existing attributes.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the attributes to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Attributes updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttributesDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttributesDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Attributes not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAttributesDTO"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Attributes"
+        ],
+        "summary": "Delete a attributes",
+        "description": "Endpoint to delete a attributes.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the attributes to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Attributes deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttributesDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttributesDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Attributes not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1486,6 +1717,79 @@
         },
         "xml": {
           "name": "DeleteAbilitiesDTO"
+        }
+      },
+      "AttributesDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "Strength"
+          },
+          "kind": {
+            "type": "string",
+            "example": "ATTRIBUTE"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "deletedAt": {}
+        },
+        "xml": {
+          "name": "AttributesDTO"
+        }
+      },
+      "CreateAttributesDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Strength"
+          },
+          "kind": {
+            "type": "string",
+            "example": "ATTRIBUTE"
+          }
+        },
+        "xml": {
+          "name": "CreateAttributesDTO"
+        }
+      },
+      "UpdateAttributesDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Dexterity"
+          },
+          "kind": {
+            "type": "string",
+            "example": "EXPERTISE"
+          }
+        },
+        "xml": {
+          "name": "UpdateAttributesDTO"
+        }
+      },
+      "DeleteAttributesDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "DeleteAttributesDTO"
         }
       }
     }

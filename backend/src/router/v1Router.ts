@@ -4,6 +4,8 @@ import userRouter from "../resources/user/user.router";
 import characterRouter from "../resources/character/character.router";
 import archetypeRouter from "../resources/archetype/archetype.router";
 import abilitiesRouter from "../resources/abilities/abilities.router";
+import attributeRouter from "../resources/attributes/attributes.router";
+
 const router = Router();
 
 router.use(
@@ -26,5 +28,9 @@ router.use(
     // #swagger.tags = ['Abilities']
     abilitiesRouter);
 
+router.use(
+    "/attributes",
+    // #swagger.tags = ['Attributes']
+    attributeRouter);
 
 export default router;

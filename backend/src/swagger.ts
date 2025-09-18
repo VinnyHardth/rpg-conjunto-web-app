@@ -1,8 +1,7 @@
 import swaggerAutogen from 'swagger-autogen';
 import dotenv from 'dotenv';
 
-import { CostType } from '@prisma/client';
-import { object } from 'joi';
+import { CostType, AttributeKind } from '@prisma/client';
 
 dotenv.config();
 
@@ -147,6 +146,26 @@ const doc = {
       id: "uuid"
     },
 
+    // Attributes definitions
+    AttributesDTO: {
+      id: "uuid",
+      name: "Strength",
+      kind: Object.values(AttributeKind)[0],
+      createdAt: "2023-10-01T12:00:00Z",
+      updatedAt: "2023-10-01T12:00:00Z",
+      deletedAt: null
+    },
+    CreateAttributesDTO: {
+      name: "Strength",
+      kind: Object.values(AttributeKind)[0]
+    },
+    UpdateAttributesDTO: {
+      name: "Dexterity",
+      kind: Object.values(AttributeKind)[1]
+    },
+    DeleteAttributesDTO: {
+      id: "uuid"
+    },  
   },
 };
 
