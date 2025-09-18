@@ -1376,7 +1376,7 @@
           },
           "cost_type": {
             "type": "string",
-            "example": "Mana"
+            "example": "MP"
           },
           "mp_cost": {
             "type": "number",
@@ -1421,7 +1421,7 @@
           },
           "cost_type": {
             "type": "string",
-            "example": "Mana"
+            "example": "MP"
           },
           "mp_cost": {
             "type": "number",
@@ -1445,11 +1445,31 @@
         "properties": {
           "name": {
             "type": "string",
-            "example": "Ice Blast"
+            "example": "Devastating Blow"
           },
           "description": {
             "type": "string",
-            "example": "A chilling ice attack."
+            "example": "An even more powerful attack."
+          },
+          "imageURL": {
+            "type": "string",
+            "example": "http://example.com/images/devastating_blow.png"
+          },
+          "cost_type": {
+            "type": "string",
+            "example": "TP"
+          },
+          "mp_cost": {
+            "type": "number",
+            "example": 0
+          },
+          "tp_cost": {
+            "type": "number",
+            "example": 10
+          },
+          "cooldown_value": {
+            "type": "number",
+            "example": 3
           }
         },
         "xml": {

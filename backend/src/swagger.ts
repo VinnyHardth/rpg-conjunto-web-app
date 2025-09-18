@@ -1,6 +1,9 @@
 import swaggerAutogen from 'swagger-autogen';
 import dotenv from 'dotenv';
 
+import { CostType } from '@prisma/client';
+import { object } from 'joi';
+
 dotenv.config();
 
 const doc = {
@@ -114,7 +117,7 @@ const doc = {
       name: "Fireball",
       description: "A powerful fire attack.",
       imageURL: "http://example.com/images/fireball.png",
-      cost_type: "Mana",
+      cost_type: Object.values(CostType)[0],
       mp_cost: 20,
       tp_cost: 0,
       cooldown_value: 5,
@@ -126,14 +129,19 @@ const doc = {
       name: "Fireball",
       description: "A powerful fire attack.",
       imageURL: "http://example.com/images/fireball.png",
-      cost_type: "Mana",
+      cost_type: Object.values(CostType)[0],
       mp_cost: 20,
       tp_cost: 0,
       cooldown_value: 5
     },
     UpdateAbilitiesDTO: {
-      name: "Ice Blast",
-      description: "A chilling ice attack."
+      name: "Devastating Blow",
+      description: "An even more powerful attack.",
+      imageURL: "http://example.com/images/devastating_blow.png",
+      cost_type: Object.values(CostType)[1],
+      mp_cost: 0,
+      tp_cost: 10,
+      cooldown_value: 3
     },
     DeleteAbilitiesDTO: {
       id: "uuid"

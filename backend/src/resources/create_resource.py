@@ -332,7 +332,7 @@ def gerar_arquivo_controllers(model_name: str, fields: List[Tuple[str, str, bool
 
 def gerar_arquivo_routes(model_name: str, folder: str):
     """Gera o arquivo de rotas."""
-    with open(f"{folder}/{folder}.routes.ts", "w", encoding="utf-8") as f:
+    with open(f"{folder}/{folder}.router.ts", "w", encoding="utf-8") as f:
         f.write("import { Router } from 'express';\n")
         f.write("import validateRequestBody from '../../middlewares/validateRequestBody';\n")
         f.write(f"import {model_name.lower()}Controller from './{folder}.controllers';\n")
@@ -353,14 +353,14 @@ def gerar_arquivo_routes(model_name: str, folder: str):
         
         f.write("export default router;\n")
 
-def gerar_arquivo_index(folder: str, model_name: str):
-    """Gera arquivo index.ts para exportações."""
-    with open(f"{folder}/index.ts", "w", encoding="utf-8") as f:
-        f.write(f"export * from './{folder}.types';\n")
-        f.write(f"export * from './{folder}.schemas';\n")
-        f.write(f"export * from './{folder}.services';\n")
-        f.write(f"export * from './{folder}.controllers';\n")
-        f.write(f"export * from './{folder}.routes';\n")
+#def gerar_arquivo_index(folder: str, model_name: str):
+#    """Gera arquivo index.ts para exportações."""
+#    with open(f"{folder}/index.ts", "w", encoding="utf-8") as f:
+#        f.write(f"export * from './{folder}.types';\n")
+#        f.write(f"export * from './{folder}.schemas';\n")
+#        f.write(f"export * from './{folder}.services';\n")
+#        f.write(f"export * from './{folder}.controllers';\n")
+#        f.write(f"export * from './{folder}.routes';\n")
 
 def gerar_arquivos(model_name: str, fields: List[Tuple[str, str, bool]]):
     """Gera todos os arquivos para um modelo."""
@@ -372,7 +372,7 @@ def gerar_arquivos(model_name: str, fields: List[Tuple[str, str, bool]]):
     gerar_arquivo_services(model_name, fields, folder)
     gerar_arquivo_controllers(model_name, fields, folder)
     gerar_arquivo_routes(model_name, folder)
-    gerar_arquivo_index(folder, model_name)
+    # gerar_arquivo_index(folder, model_name)
     
     print(f"✓ Arquivos gerados para o model {model_name}!")
 
