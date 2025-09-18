@@ -5,6 +5,9 @@ CREATE TABLE `users` (
     `email` VARCHAR(191) NOT NULL,
     `password` VARCHAR(191) NOT NULL,
     `imageUrl` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
     UNIQUE INDEX `users_email_key`(`email`),
     PRIMARY KEY (`id`)
@@ -14,17 +17,12 @@ CREATE TABLE `users` (
 CREATE TABLE `archetypes` (
     `id` CHAR(36) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `character_archetype` (
-    `id` CHAR(36) NOT NULL,
-    `name` VARCHAR(191) NOT NULL,
     `tp` DOUBLE NOT NULL,
     `hp` DOUBLE NOT NULL,
     `mp` DOUBLE NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -40,11 +38,11 @@ CREATE TABLE `characters` (
     `imageUrl` VARCHAR(191) NULL,
     `userId` CHAR(36) NOT NULL,
     `archetypeId` CHAR(36) NULL,
-    `characterArchetypeId` CHAR(36) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
     INDEX `characters_userId_idx`(`userId`),
-    INDEX `characters_archetypeId_idx`(`archetypeId`),
-    INDEX `characters_characterArchetypeId_idx`(`characterArchetypeId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -65,6 +63,9 @@ CREATE TABLE `character_attributes` (
     `valueBase` INTEGER NOT NULL DEFAULT 0,
     `valueInv` INTEGER NOT NULL DEFAULT 0,
     `valueExtra` INTEGER NOT NULL DEFAULT 0,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
     INDEX `character_attributes_characterId_idx`(`characterId`),
     UNIQUE INDEX `character_attributes_characterId_attributeId_key`(`characterId`, `attributeId`),
@@ -79,6 +80,9 @@ CREATE TABLE `status` (
     `valueMax` DOUBLE NOT NULL DEFAULT 0,
     `valueBonus` DOUBLE NOT NULL DEFAULT 0,
     `valueActual` DOUBLE NOT NULL DEFAULT 0,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
     INDEX `status_characterId_idx`(`characterId`),
     UNIQUE INDEX `status_characterId_name_key`(`characterId`, `name`),
@@ -90,6 +94,9 @@ CREATE TABLE `effects` (
     `id` CHAR(36) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `imgUrl` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -98,9 +105,12 @@ CREATE TABLE `effects` (
 CREATE TABLE `effect_target` (
     `id` CHAR(36) NOT NULL,
     `effectId` CHAR(36) NOT NULL,
-    `targetType` ENUM('STATUS', 'ATTRIBUTE') NOT NULL,
+    `targetType` ENUM('STATUS', 'ATTRIBUTE', 'EXPERTISE') NOT NULL,
     `targetCode` VARCHAR(50) NOT NULL,
     `value` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
     INDEX `effect_target_effectId_targetType_targetCode_idx`(`effectId`, `targetType`, `targetCode`),
     PRIMARY KEY (`id`)
@@ -117,6 +127,9 @@ CREATE TABLE `applied_effects` (
     `startedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `expiresAt` DATETIME(3) NULL,
     `stacks` INTEGER NOT NULL DEFAULT 1,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
     INDEX `applied_effects_characterId_idx`(`characterId`),
     INDEX `applied_effects_effectId_idx`(`effectId`),
@@ -132,6 +145,9 @@ CREATE TABLE `habilities` (
     `imageURL` VARCHAR(191) NULL,
     `cost_type` ENUM('MP', 'TP', 'BOTH', 'NONE') NOT NULL DEFAULT 'NONE',
     `cooldown_value` INTEGER NOT NULL DEFAULT 0,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -141,6 +157,9 @@ CREATE TABLE `ability_effects` (
     `id` CHAR(36) NOT NULL,
     `habilityId` CHAR(36) NOT NULL,
     `effectId` CHAR(36) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
     UNIQUE INDEX `ability_effects_habilityId_effectId_key`(`habilityId`, `effectId`),
     PRIMARY KEY (`id`)
@@ -153,6 +172,9 @@ CREATE TABLE `skills` (
     `habilityId` CHAR(36) NOT NULL,
     `cooldown` INTEGER NOT NULL DEFAULT 0,
     `useType` ENUM('PASSIVE', 'ACTIVE') NOT NULL DEFAULT 'ACTIVE',
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
     UNIQUE INDEX `skills_characterId_habilityId_key`(`characterId`, `habilityId`),
     PRIMARY KEY (`id`)
@@ -167,6 +189,9 @@ CREATE TABLE `items` (
     `value` INTEGER NOT NULL DEFAULT 0,
     `is_consumable` BOOLEAN NOT NULL DEFAULT false,
     `is_equippable` BOOLEAN NOT NULL DEFAULT false,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -180,7 +205,10 @@ CREATE TABLE `character_has_item` (
     `affects` VARCHAR(191) NULL,
     `value` INTEGER NULL,
     `is_equipped` BOOLEAN NOT NULL DEFAULT false,
-    `equipped_slot` ENUM('HEAD', 'CHEST', 'LEGS', 'HAND', 'OFFHAND', 'RING1', 'RING2', 'NECK', 'NONE') NOT NULL DEFAULT 'NONE',
+    `equipped_slot` ENUM('HEAD', 'CHEST', 'LEGS', 'HAND', 'OFFHAND', 'RING1', 'RING2', 'NONE') NOT NULL DEFAULT 'NONE',
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
     INDEX `character_has_item_characterId_idx`(`characterId`),
     INDEX `character_has_item_itemId_idx`(`itemId`),
@@ -193,6 +221,9 @@ CREATE TABLE `item_has_effects` (
     `id` CHAR(36) NOT NULL,
     `itemId` CHAR(36) NOT NULL,
     `effectsId` CHAR(36) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
     UNIQUE INDEX `item_has_effects_itemId_effectsId_key`(`itemId`, `effectsId`),
     PRIMARY KEY (`id`)
@@ -204,6 +235,9 @@ CREATE TABLE `item_skills` (
     `habilityId` CHAR(36) NOT NULL,
     `itemId` CHAR(36) NOT NULL,
     `cooldown` INTEGER NOT NULL DEFAULT 0,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
     UNIQUE INDEX `item_skills_itemId_habilityId_key`(`itemId`, `habilityId`),
     PRIMARY KEY (`id`)
@@ -214,9 +248,6 @@ ALTER TABLE `characters` ADD CONSTRAINT `characters_userId_fkey` FOREIGN KEY (`u
 
 -- AddForeignKey
 ALTER TABLE `characters` ADD CONSTRAINT `characters_archetypeId_fkey` FOREIGN KEY (`archetypeId`) REFERENCES `archetypes`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `characters` ADD CONSTRAINT `characters_characterArchetypeId_fkey` FOREIGN KEY (`characterArchetypeId`) REFERENCES `character_archetype`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `character_attributes` ADD CONSTRAINT `character_attributes_characterId_fkey` FOREIGN KEY (`characterId`) REFERENCES `characters`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

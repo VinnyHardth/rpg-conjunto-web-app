@@ -61,16 +61,6 @@ model Archetype {
   id   String @id @default(uuid()) @db.Char(36)
   name String @db.VarChar(191)
 
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  deletedAt DateTime?
-  
-  @@map("archetypes")
-}
-
-model CharacterArchetype {
-  id   String @id @default(uuid()) @db.Char(36)
-  name String @db.VarChar(191)
   tp   Float
   hp   Float
   mp   Float
@@ -78,11 +68,12 @@ model CharacterArchetype {
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   deletedAt DateTime?
-
+  
   character Character[]
 
-  @@map("character_archetype")
+  @@map("archetypes")
 }
+
 
 // ------------- Núcleo do jogador -------------
 model Character {
@@ -95,14 +86,14 @@ model Character {
   imageUrl     String?  @db.VarChar(191)
 
   userId       String   @db.Char(36)
-  characterArchetypeId String? @db.Char(36)
+  archetypeId  String?  @db.Char(36)
 
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   deletedAt DateTime?
 
   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  characterArchetype CharacterArchetype? @relation(fields: [characterArchetypeId], references: [id], onDelete: SetNull)
+  archetype  Archetype? @relation(fields: [archetypeId], references: [id], onDelete: SetNull)
   
   attributes  CharacterAttribute[]
   statuses    Status[]
@@ -111,7 +102,7 @@ model Character {
   appliedEffects AppliedEffect[]
 
   @@index([userId])
-  @@index([characterArchetypeId])
+
   @@map("characters")
 }
 

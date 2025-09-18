@@ -54,7 +54,7 @@ const doc = {
       imageUrl: "http://example.com/images/leena.png",
 
       userId: "uuid",
-      characterArchetypeId: "uuid",
+      archetypeId: "uuid",
 
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
@@ -69,7 +69,7 @@ const doc = {
       imageUrl: "http://example.com/images/leena.png",
 
       userId: "uuid",
-      characterArchetypeId: "uuid"
+      archetypeId: "uuid"
     },
     UpdateCharacterDTO: {
       name: "Updated Name",
@@ -82,6 +82,31 @@ const doc = {
     DeleteCharacterDTO: {
       id: "uuid"
     },
+
+    // Archetype definitions
+    ArchetypeDTO: {
+      id: "uuid",
+      name: "Warrior",
+      hp: 100,
+      mp: 50,
+      tp: 20,
+      createdAt: "2023-10-01T12:00:00Z",
+      updatedAt: "2023-10-01T12:00:00Z",
+      deletedAt: null
+    },
+    CreateArchetypeDTO: {
+      name: "Warrior",
+      hp: 100,
+      mp: 50,
+      tp: 20
+    },
+    UpdateArchetypeDTO: {
+      name: "Mage"
+    },
+    DeleteArchetypeDTO: {
+      id: "uuid"
+    },
+
   },
 };
 

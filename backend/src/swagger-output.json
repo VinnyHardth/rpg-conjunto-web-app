@@ -586,6 +586,225 @@
           }
         }
       }
+    },
+    "/archetypes/{id}": {
+      "get": {
+        "tags": [
+          "Archetypes"
+        ],
+        "summary": "Get archetype by ID",
+        "description": "Endpoint to retrieve an archetype by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the archetype to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Archetype retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchetypeDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchetypeDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Archetype not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Archetypes"
+        ],
+        "summary": "Update an archetype",
+        "description": "Endpoint to update an existing archetype.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the archetype to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Archetype updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchetypeDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchetypeDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Archetype not found"
+          },
+          "422": {
+            "description": "Unprocessable Entity (validation failed)"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateArchetypeDTO"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Archetypes"
+        ],
+        "summary": "Delete an archetype",
+        "description": "Endpoint to delete an existing archetype.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the archetype to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Archetype deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchetypeDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchetypeDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Archetype not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/archetypes/": {
+      "get": {
+        "tags": [
+          "Archetypes"
+        ],
+        "summary": "Get all archetypes",
+        "description": "Endpoint to retrieve all archetypes.",
+        "responses": {
+          "200": {
+            "description": "Archetypes retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchetypeDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchetypeDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Archetypes"
+        ],
+        "summary": "Create a new archetype",
+        "description": "Endpoint to create a new archetype.",
+        "responses": {
+          "201": {
+            "description": "Archetype created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchetypeDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchetypeDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity (validation failed)"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateArchetypeDTO"
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -818,6 +1037,91 @@
         },
         "xml": {
           "name": "DeleteCharacterDTO"
+        }
+      },
+      "ArchetypeDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "Warrior"
+          },
+          "hp": {
+            "type": "number",
+            "example": 100
+          },
+          "mp": {
+            "type": "number",
+            "example": 50
+          },
+          "tp": {
+            "type": "number",
+            "example": 20
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "deletedAt": {}
+        },
+        "xml": {
+          "name": "ArchetypeDTO"
+        }
+      },
+      "CreateArchetypeDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Warrior"
+          },
+          "hp": {
+            "type": "number",
+            "example": 100
+          },
+          "mp": {
+            "type": "number",
+            "example": 50
+          },
+          "tp": {
+            "type": "number",
+            "example": 20
+          }
+        },
+        "xml": {
+          "name": "CreateArchetypeDTO"
+        }
+      },
+      "UpdateArchetypeDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Mage"
+          }
+        },
+        "xml": {
+          "name": "UpdateArchetypeDTO"
+        }
+      },
+      "DeleteArchetypeDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "DeleteArchetypeDTO"
         }
       }
     }
