@@ -7,6 +7,7 @@ import abilitiesRouter from "../resources/abilities/abilities.router";
 import attributeRouter from "../resources/attributes/attributes.router";
 import effectRouter from "../resources/effect/effect.router";
 import itemsRouter from "../resources/items/items.router";
+import skillRouter from "../resources/skill/skill.router";
 
 
 const router = Router();
@@ -45,5 +46,10 @@ router.use(
     "/items",
     // #swagger.tags = ['Items']
     itemsRouter);
+
+router.use(
+    "/skills",
+    // #swagger.tags = ['Skills']
+    skillRouter);
 
 export default router;

@@ -1729,6 +1729,237 @@
           }
         }
       }
+    },
+    "/skills/": {
+      "get": {
+        "tags": [
+          "Skills"
+        ],
+        "summary": "Get all skills",
+        "description": "Endpoint to retrieve all skills.",
+        "responses": {
+          "200": {
+            "description": "Skills retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/SkillDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/SkillDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Skills"
+        ],
+        "summary": "Create a new skill",
+        "description": "Endpoint to create a new skill.",
+        "responses": {
+          "201": {
+            "description": "Skill created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSkillDTO"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/skills/{id}": {
+      "get": {
+        "tags": [
+          "Skills"
+        ],
+        "summary": "Get skill by ID",
+        "description": "Endpoint to retrieve a skill by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the skill to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Skill retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Skill not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Skills"
+        ],
+        "summary": "Update a skill",
+        "description": "Endpoint to update an existing skill.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the skill to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Skill updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Skill not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSkillDTO"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Skills"
+        ],
+        "summary": "Delete a skill",
+        "description": "Endpoint to delete a skill.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the skill to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Skill deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Skill not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2421,6 +2652,103 @@
         },
         "xml": {
           "name": "DeleteEffectDTO"
+        }
+      },
+      "SkillDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "characterId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "abilityId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "cooldown": {
+            "type": "number",
+            "example": 5
+          },
+          "useType": {
+            "type": "string",
+            "example": "PASSIVE"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "deletedAt": {}
+        },
+        "xml": {
+          "name": "SkillDTO"
+        }
+      },
+      "CreateSkillDTO": {
+        "type": "object",
+        "properties": {
+          "characterId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "abilityId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "cooldown": {
+            "type": "number",
+            "example": 5
+          },
+          "useType": {
+            "type": "string",
+            "example": "PASSIVE"
+          }
+        },
+        "xml": {
+          "name": "CreateSkillDTO"
+        }
+      },
+      "UpdateSkillDTO": {
+        "type": "object",
+        "properties": {
+          "characterId": {
+            "type": "string",
+            "example": "new-uuid"
+          },
+          "abilityId": {
+            "type": "string",
+            "example": "new-uuid"
+          },
+          "cooldown": {
+            "type": "number",
+            "example": 3
+          },
+          "useType": {
+            "type": "string",
+            "example": "ACTIVE"
+          }
+        },
+        "xml": {
+          "name": "UpdateSkillDTO"
+        }
+      },
+      "DeleteSkillDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "DeleteSkillDTO"
         }
       }
     }
