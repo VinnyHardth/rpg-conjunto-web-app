@@ -1499,6 +1499,237 @@
         }
       }
     },
+    "/effecttargets/": {
+      "get": {
+        "tags": [
+          "EffectTargets"
+        ],
+        "summary": "Get all effecttargets",
+        "description": "Endpoint to retrieve all effecttargets.",
+        "responses": {
+          "200": {
+            "description": "EffectTargets retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/EffectTargetDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/EffectTargetDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "EffectTargets"
+        ],
+        "summary": "Create a new effecttarget",
+        "description": "Endpoint to create a new effecttarget.",
+        "responses": {
+          "201": {
+            "description": "EffectTarget created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EffectTargetDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/EffectTargetDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEffectTargetDTO"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/effecttargets/{id}": {
+      "get": {
+        "tags": [
+          "EffectTargets"
+        ],
+        "summary": "Get effecttarget by ID",
+        "description": "Endpoint to retrieve a effecttarget by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the effecttarget to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "EffectTarget retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EffectTargetDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/EffectTargetDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "EffectTarget not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "EffectTargets"
+        ],
+        "summary": "Update a effecttarget",
+        "description": "Endpoint to update an existing effecttarget.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the effecttarget to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "EffectTarget updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EffectTargetDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/EffectTargetDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "EffectTarget not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEffectTargetDTO"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "EffectTargets"
+        ],
+        "summary": "Delete a effecttarget",
+        "description": "Endpoint to delete a effecttarget.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the effecttarget to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "EffectTarget deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EffectTargetDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/EffectTargetDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "EffectTarget not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/items/": {
       "get": {
         "tags": [
@@ -2749,6 +2980,103 @@
         },
         "xml": {
           "name": "DeleteSkillDTO"
+        }
+      },
+      "EffectTargetDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "effectId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "targetCode": {
+            "type": "string",
+            "example": "STATUS"
+          },
+          "targetType": {
+            "type": "string",
+            "example": "Strength"
+          },
+          "value": {
+            "type": "number",
+            "example": 10
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "deletedAt": {}
+        },
+        "xml": {
+          "name": "EffectTargetDTO"
+        }
+      },
+      "CreateEffectTargetDTO": {
+        "type": "object",
+        "properties": {
+          "effectId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "targetCode": {
+            "type": "string",
+            "example": "STATUS"
+          },
+          "targetType": {
+            "type": "string",
+            "example": "Strength"
+          },
+          "value": {
+            "type": "number",
+            "example": 10
+          }
+        },
+        "xml": {
+          "name": "CreateEffectTargetDTO"
+        }
+      },
+      "UpdateEffectTargetDTO": {
+        "type": "object",
+        "properties": {
+          "effectId": {
+            "type": "string",
+            "example": "new-uuid"
+          },
+          "targetCode": {
+            "type": "string",
+            "example": "ATTRIBUTE"
+          },
+          "targetType": {
+            "type": "string",
+            "example": "Dexterity"
+          },
+          "value": {
+            "type": "number",
+            "example": 15
+          }
+        },
+        "xml": {
+          "name": "UpdateEffectTargetDTO"
+        }
+      },
+      "DeleteEffectTargetDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "DeleteEffectTargetDTO"
         }
       }
     }

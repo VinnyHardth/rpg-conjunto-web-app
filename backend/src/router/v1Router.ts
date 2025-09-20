@@ -6,9 +6,9 @@ import archetypeRouter from "../resources/archetype/archetype.router";
 import abilitiesRouter from "../resources/abilities/abilities.router";
 import attributeRouter from "../resources/attributes/attributes.router";
 import effectRouter from "../resources/effect/effect.router";
+import effecttargetRouter from "../resources/effectTarget/effectTarget.router";
 import itemsRouter from "../resources/items/items.router";
 import skillRouter from "../resources/skill/skill.router";
-
 
 const router = Router();
 
@@ -41,6 +41,11 @@ router.use(
     "/effects",
     // #swagger.tags = ['Effects']
     effectRouter);
+
+router.use(
+    "/effecttargets",
+    // #swagger.tags = ['EffectTargets']
+    effecttargetRouter);
 
 router.use(
     "/items",

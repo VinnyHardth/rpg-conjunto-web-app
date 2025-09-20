@@ -1,7 +1,7 @@
 import swaggerAutogen from 'swagger-autogen';
 import dotenv from 'dotenv';
 
-import { CostType, AttributeKind, itemType, SkillUseType } from '@prisma/client';
+import { CostType, AttributeKind, itemType, SkillUseType, TargetType } from '@prisma/client';
 
 dotenv.config();
 
@@ -238,6 +238,33 @@ const doc = {
       useType: Object.values(SkillUseType)[1],
     },
     DeleteSkillDTO: {
+      id: "uuid"
+    },
+
+    // EffectTarget definitions
+    EffectTargetDTO: {
+      id: "uuid",
+      effectId: "uuid",
+      targetCode: Object.values(TargetType)[0],
+      targetType: "Strength",
+      value: 10,
+      createdAt: "2023-10-01T12:00:00Z",
+      updatedAt: "2023-10-01T12:00:00Z",
+      deletedAt: null
+    },
+    CreateEffectTargetDTO: {
+      effectId: "uuid",
+      targetCode: Object.values(TargetType)[0],
+      targetType: "Strength",
+      value: 10,
+    },
+    UpdateEffectTargetDTO: {
+      effectId: "new-uuid",
+      targetCode: Object.values(TargetType)[1],
+      targetType: "Dexterity",
+      value: 15,
+    },
+    DeleteEffectTargetDTO: {
       id: "uuid"
     },
   },
