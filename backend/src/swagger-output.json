@@ -587,6 +587,237 @@
         }
       }
     },
+    "/characterattributes/": {
+      "get": {
+        "tags": [
+          "CharacterAttributes"
+        ],
+        "summary": "Get all characterattributes",
+        "description": "Endpoint to retrieve all characterattributes.",
+        "responses": {
+          "200": {
+            "description": "CharacterAttributes retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/CharacterAttributeDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/CharacterAttributeDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "CharacterAttributes"
+        ],
+        "summary": "Create a new characterattribute",
+        "description": "Endpoint to create a new characterattribute.",
+        "responses": {
+          "201": {
+            "description": "CharacterAttribute created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterAttributeDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterAttributeDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCharacterAttributeDTO"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/characterattributes/{id}": {
+      "get": {
+        "tags": [
+          "CharacterAttributes"
+        ],
+        "summary": "Get characterattribute by ID",
+        "description": "Endpoint to retrieve a characterattribute by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the characterattribute to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CharacterAttribute retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterAttributeDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterAttributeDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "CharacterAttribute not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "CharacterAttributes"
+        ],
+        "summary": "Update a characterattribute",
+        "description": "Endpoint to update an existing characterattribute.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the characterattribute to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CharacterAttribute updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterAttributeDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterAttributeDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "CharacterAttribute not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCharacterAttributeDTO"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "CharacterAttributes"
+        ],
+        "summary": "Delete a characterattribute",
+        "description": "Endpoint to delete a characterattribute.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the characterattribute to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CharacterAttribute deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterAttributeDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterAttributeDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "CharacterAttribute not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/archetypes/{id}": {
       "get": {
         "tags": [
@@ -3077,6 +3308,115 @@
         },
         "xml": {
           "name": "DeleteEffectTargetDTO"
+        }
+      },
+      "CharacterAttributeDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "characterId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "attributeId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "valueBase": {
+            "type": "number",
+            "example": 10
+          },
+          "valueInv": {
+            "type": "number",
+            "example": 5
+          },
+          "valueExtra": {
+            "type": "number",
+            "example": 0
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "deletedAt": {}
+        },
+        "xml": {
+          "name": "CharacterAttributeDTO"
+        }
+      },
+      "CreateCharacterAttributeDTO": {
+        "type": "object",
+        "properties": {
+          "characterId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "attributeId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "valueBase": {
+            "type": "number",
+            "example": 10
+          },
+          "valueInv": {
+            "type": "number",
+            "example": 5
+          },
+          "valueExtra": {
+            "type": "number",
+            "example": 0
+          }
+        },
+        "xml": {
+          "name": "CreateCharacterAttributeDTO"
+        }
+      },
+      "UpdateCharacterAttributeDTO": {
+        "type": "object",
+        "properties": {
+          "characterId": {
+            "type": "string",
+            "example": "new-uuid"
+          },
+          "attributeId": {
+            "type": "string",
+            "example": "new-uuid"
+          },
+          "valueBase": {
+            "type": "number",
+            "example": 15
+          },
+          "valueInv": {
+            "type": "number",
+            "example": 7
+          },
+          "valueExtra": {
+            "type": "number",
+            "example": 2
+          }
+        },
+        "xml": {
+          "name": "UpdateCharacterAttributeDTO"
+        }
+      },
+      "DeleteCharacterAttributeDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "DeleteCharacterAttributeDTO"
         }
       }
     }

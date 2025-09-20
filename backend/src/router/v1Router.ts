@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import userRouter from "../resources/user/user.router";
 import characterRouter from "../resources/character/character.router";
+import characterattributeRouter from "../resources/characterAttribute/characterAttribute.router";
 import archetypeRouter from "../resources/archetype/archetype.router";
 import abilitiesRouter from "../resources/abilities/abilities.router";
 import attributeRouter from "../resources/attributes/attributes.router";
@@ -21,6 +22,11 @@ router.use(
     "/characters",
     // #swagger.tags = ['Characters']
     characterRouter);
+
+router.use(
+    "/characterattributes",
+    // #swagger.tags = ['CharacterAttributes']
+    characterattributeRouter);
 
 router.use(
     "/archetypes",
@@ -56,5 +62,6 @@ router.use(
     "/skills",
     // #swagger.tags = ['Skills']
     skillRouter);
+
 
 export default router;

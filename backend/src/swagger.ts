@@ -267,6 +267,36 @@ const doc = {
     DeleteEffectTargetDTO: {
       id: "uuid"
     },
+
+    // CharacterAttribute definitions
+    CharacterAttributeDTO: {
+      id: "uuid",
+      characterId: "uuid",
+      attributeId: "uuid",
+      valueBase: 10,
+      valueInv: 5,
+      valueExtra: 0,
+      createdAt: "2023-10-01T12:00:00Z",
+      updatedAt: "2023-10-01T12:00:00Z",
+      deletedAt: null
+    },
+    CreateCharacterAttributeDTO: {
+      characterId: "uuid",
+      attributeId: "uuid",
+      valueBase: 10,
+      valueInv: 5,
+      valueExtra: 0,
+    },
+    UpdateCharacterAttributeDTO: {
+      characterId: "new-uuid",
+      attributeId: "new-uuid",
+      valueBase: 15,
+      valueInv: 7,
+      valueExtra: 2,
+    },
+    DeleteCharacterAttributeDTO: {
+      id: "uuid"
+    },
   },
 };
 
