@@ -312,7 +312,6 @@ model CharacterHasItem {
   characterId   String    @db.Char(36)
   itemId        String    @db.Char(36)
   quantity      Int       @default(1)
-  affects       String?   @db.VarChar(191)
   value         Int?
   is_equipped   Boolean   @default(false)
   equipped_slot EquipSlot @default(NONE)
