@@ -1,7 +1,7 @@
 import swaggerAutogen from 'swagger-autogen';
 import dotenv from 'dotenv';
 
-import { CostType, AttributeKind, itemType, SkillUseType, TargetType } from '@prisma/client';
+import { CostType, AttributeKind, itemType, SkillUseType, TargetType, EquipSlot } from '@prisma/client';
 
 dotenv.config();
 
@@ -84,6 +84,40 @@ const doc = {
     DeleteCharacterDTO: {
       id: "uuid"
     },
+
+    // characterHasItem definitions
+    CharacterHasItemDTO: {
+      id: "uuid",
+      characterId: "uuid",
+      itemId: "uuid",
+      quantity: 1,
+      value: 100,
+      is_equipped: false,
+      equipped_slot: Object.values(EquipSlot)[7],
+      createdAt: "2023-10-01T12:00:00Z",
+      updatedAt: "2023-10-01T12:00:00Z",
+      deletedAt: null
+    },
+    CreateCharacterHasItemDTO: {
+      characterId: "uuid",
+      itemId: "uuid",
+      quantity: 1,
+      value: 100,
+      is_equipped: false,
+      equipped_slot: Object.values(EquipSlot)[7],
+    },
+    UpdateCharacterHasItemDTO: {
+      characterId: "uuid",
+      itemId: "uuid",
+      quantity: 2,
+      value: 200,
+      is_equipped: true,
+      equipped_slot: Object.values(EquipSlot)[0],
+    },
+    DeleteCharacterHasItemDTO: {
+      id: "uuid"
+    },
+
 
     // Archetype definitions
     ArchetypeDTO: {

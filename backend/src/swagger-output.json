@@ -818,6 +818,237 @@
         }
       }
     },
+    "/characterhasitems/": {
+      "get": {
+        "tags": [
+          "CharacterHasItems"
+        ],
+        "summary": "Get all characterhasitems",
+        "description": "Endpoint to retrieve all characterhasitems.",
+        "responses": {
+          "200": {
+            "description": "CharacterHasItems retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/CharacterHasItemDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/CharacterHasItemDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "CharacterHasItems"
+        ],
+        "summary": "Create a new characterhasitem",
+        "description": "Endpoint to create a new characterhasitem.",
+        "responses": {
+          "201": {
+            "description": "CharacterHasItem created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterHasItemDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterHasItemDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCharacterHasItemDTO"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/characterhasitems/{id}": {
+      "get": {
+        "tags": [
+          "CharacterHasItems"
+        ],
+        "summary": "Get characterhasitem by ID",
+        "description": "Endpoint to retrieve a characterhasitem by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the characterhasitem to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CharacterHasItem retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterHasItemDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterHasItemDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "CharacterHasItem not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "CharacterHasItems"
+        ],
+        "summary": "Update a characterhasitem",
+        "description": "Endpoint to update an existing characterhasitem.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the characterhasitem to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CharacterHasItem updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterHasItemDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterHasItemDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "CharacterHasItem not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCharacterHasItemDTO"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "CharacterHasItems"
+        ],
+        "summary": "Delete a characterhasitem",
+        "description": "Endpoint to delete a characterhasitem.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the characterhasitem to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CharacterHasItem deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterHasItemDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterHasItemDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "CharacterHasItem not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/archetypes/{id}": {
       "get": {
         "tags": [
@@ -3347,6 +3578,127 @@
         },
         "xml": {
           "name": "DeleteCharacterDTO"
+        }
+      },
+      "CharacterHasItemDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "characterId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "itemId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 1
+          },
+          "value": {
+            "type": "number",
+            "example": 100
+          },
+          "is_equipped": {
+            "type": "boolean",
+            "example": false
+          },
+          "equipped_slot": {
+            "type": "string",
+            "example": "NONE"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "deletedAt": {}
+        },
+        "xml": {
+          "name": "CharacterHasItemDTO"
+        }
+      },
+      "CreateCharacterHasItemDTO": {
+        "type": "object",
+        "properties": {
+          "characterId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "itemId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 1
+          },
+          "value": {
+            "type": "number",
+            "example": 100
+          },
+          "is_equipped": {
+            "type": "boolean",
+            "example": false
+          },
+          "equipped_slot": {
+            "type": "string",
+            "example": "NONE"
+          }
+        },
+        "xml": {
+          "name": "CreateCharacterHasItemDTO"
+        }
+      },
+      "UpdateCharacterHasItemDTO": {
+        "type": "object",
+        "properties": {
+          "characterId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "itemId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "quantity": {
+            "type": "number",
+            "example": 2
+          },
+          "value": {
+            "type": "number",
+            "example": 200
+          },
+          "is_equipped": {
+            "type": "boolean",
+            "example": true
+          },
+          "equipped_slot": {
+            "type": "string",
+            "example": "HEAD"
+          }
+        },
+        "xml": {
+          "name": "UpdateCharacterHasItemDTO"
+        }
+      },
+      "DeleteCharacterHasItemDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "DeleteCharacterHasItemDTO"
         }
       },
       "ArchetypeDTO": {
