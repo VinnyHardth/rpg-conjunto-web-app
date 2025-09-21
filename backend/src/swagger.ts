@@ -297,6 +297,36 @@ const doc = {
     DeleteCharacterAttributeDTO: {
       id: "uuid"
     },
+
+    // Status definitions
+    StatusDTO: {
+      id: "uuid",
+      characterId: "uuid",
+      name: "Health",
+      valueMax: 100,
+      valueBonus: 0,
+      valueActual: 100,
+      createdAt: "2023-10-01T12:00:00Z",
+      updatedAt: "2023-10-01T12:00:00Z",
+      deletedAt: null
+    },
+    CreateStatusDTO: {
+      characterId: "uuid",
+      name: "Health",
+      valueMax: 100,
+      valueBonus: 0,
+      valueActual: 100,
+    },
+    UpdateStatusDTO: {
+      characterId: "new-uuid",
+      name: "Mana",
+      valueMax: 50,
+      valueBonus: 0,
+      valueActual: 50,
+    },
+    DeleteStatusDTO: {
+      id: "uuid"
+    },  
   },
 };
 

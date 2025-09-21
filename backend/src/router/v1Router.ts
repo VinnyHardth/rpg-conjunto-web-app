@@ -10,6 +10,7 @@ import effectRouter from "../resources/effect/effect.router";
 import effecttargetRouter from "../resources/effectTarget/effectTarget.router";
 import itemsRouter from "../resources/items/items.router";
 import skillRouter from "../resources/skill/skill.router";
+import statusRouter from "../resources/status/status.router";
 
 const router = Router();
 
@@ -62,6 +63,11 @@ router.use(
     "/skills",
     // #swagger.tags = ['Skills']
     skillRouter);
+
+router.use(
+    "/status",
+    // #swagger.tags = ['Status']
+    statusRouter);
 
 
 export default router;

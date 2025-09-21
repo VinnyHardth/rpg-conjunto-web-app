@@ -2422,6 +2422,237 @@
           }
         }
       }
+    },
+    "/status/": {
+      "get": {
+        "tags": [
+          "Status"
+        ],
+        "summary": "Get all statuss",
+        "description": "Endpoint to retrieve all statuss.",
+        "responses": {
+          "200": {
+            "description": "Statuss retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/StatusDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/StatusDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Status"
+        ],
+        "summary": "Create a new status",
+        "description": "Endpoint to create a new status.",
+        "responses": {
+          "201": {
+            "description": "Status created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStatusDTO"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/status/{id}": {
+      "get": {
+        "tags": [
+          "Status"
+        ],
+        "summary": "Get status by ID",
+        "description": "Endpoint to retrieve a status by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the status to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Status not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Status"
+        ],
+        "summary": "Update a status",
+        "description": "Endpoint to update an existing status.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the status to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Status not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStatusDTO"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Status"
+        ],
+        "summary": "Delete a status",
+        "description": "Endpoint to delete a status.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the status to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Status not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3417,6 +3648,115 @@
         },
         "xml": {
           "name": "DeleteCharacterAttributeDTO"
+        }
+      },
+      "StatusDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "characterId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "Health"
+          },
+          "valueMax": {
+            "type": "number",
+            "example": 100
+          },
+          "valueBonus": {
+            "type": "number",
+            "example": 0
+          },
+          "valueActual": {
+            "type": "number",
+            "example": 100
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "deletedAt": {}
+        },
+        "xml": {
+          "name": "StatusDTO"
+        }
+      },
+      "CreateStatusDTO": {
+        "type": "object",
+        "properties": {
+          "characterId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "Health"
+          },
+          "valueMax": {
+            "type": "number",
+            "example": 100
+          },
+          "valueBonus": {
+            "type": "number",
+            "example": 0
+          },
+          "valueActual": {
+            "type": "number",
+            "example": 100
+          }
+        },
+        "xml": {
+          "name": "CreateStatusDTO"
+        }
+      },
+      "UpdateStatusDTO": {
+        "type": "object",
+        "properties": {
+          "characterId": {
+            "type": "string",
+            "example": "new-uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "Mana"
+          },
+          "valueMax": {
+            "type": "number",
+            "example": 50
+          },
+          "valueBonus": {
+            "type": "number",
+            "example": 0
+          },
+          "valueActual": {
+            "type": "number",
+            "example": 50
+          }
+        },
+        "xml": {
+          "name": "UpdateStatusDTO"
+        }
+      },
+      "DeleteStatusDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "DeleteStatusDTO"
         }
       }
     }
