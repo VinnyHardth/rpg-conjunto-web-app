@@ -50,7 +50,7 @@ CREATE TABLE `characters` (
 CREATE TABLE `attributes` (
     `id` CHAR(36) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
-    `kind` VARCHAR(50) NOT NULL,
+    `kind` ENUM('ATTRIBUTE', 'EXPERTISE') NOT NULL DEFAULT 'ATTRIBUTE',
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -122,10 +122,9 @@ CREATE TABLE `applied_effects` (
     `characterId` CHAR(36) NOT NULL,
     `effectId` CHAR(36) NOT NULL,
     `sourceType` ENUM('ITEM', 'SKILL', 'OTHER') NOT NULL,
-    `sourceId` CHAR(36) NULL,
     `duration` INTEGER NOT NULL,
-    `startedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `expiresAt` DATETIME(3) NULL,
+    `startedAt` INTEGER NOT NULL,
+    `expiresAt` INTEGER NOT NULL,
     `stacks` INTEGER NOT NULL DEFAULT 1,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -144,6 +143,8 @@ CREATE TABLE `Abilities` (
     `description` TEXT NULL,
     `imageURL` VARCHAR(191) NULL,
     `cost_type` ENUM('MP', 'TP', 'BOTH', 'NONE') NOT NULL DEFAULT 'NONE',
+    `mp_cost` INTEGER NOT NULL DEFAULT 0,
+    `tp_cost` INTEGER NOT NULL DEFAULT 0,
     `cooldown_value` INTEGER NOT NULL DEFAULT 0,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -155,13 +156,13 @@ CREATE TABLE `Abilities` (
 -- CreateTable
 CREATE TABLE `ability_effects` (
     `id` CHAR(36) NOT NULL,
-    `AbilityId` CHAR(36) NOT NULL,
+    `abilityId` CHAR(36) NOT NULL,
     `effectId` CHAR(36) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `deletedAt` DATETIME(3) NULL,
 
-    UNIQUE INDEX `ability_effects_AbilityId_effectId_key`(`AbilityId`, `effectId`),
+    UNIQUE INDEX `ability_effects_abilityId_effectId_key`(`abilityId`, `effectId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -185,10 +186,9 @@ CREATE TABLE `items` (
     `id` CHAR(36) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `description` TEXT NULL,
-    `imgUrl` VARCHAR(191) NULL,
+    `imageURL` VARCHAR(191) NULL,
     `value` INTEGER NOT NULL DEFAULT 0,
-    `is_consumable` BOOLEAN NOT NULL DEFAULT false,
-    `is_equippable` BOOLEAN NOT NULL DEFAULT false,
+    `itemType` ENUM('CONSUMABLE', 'EQUIPPABLE', 'MATERIAL', 'QUEST', 'MISC') NOT NULL DEFAULT 'MISC',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `deletedAt` DATETIME(3) NULL,
@@ -202,7 +202,6 @@ CREATE TABLE `character_has_item` (
     `characterId` CHAR(36) NOT NULL,
     `itemId` CHAR(36) NOT NULL,
     `quantity` INTEGER NOT NULL DEFAULT 1,
-    `affects` VARCHAR(191) NULL,
     `value` INTEGER NULL,
     `is_equipped` BOOLEAN NOT NULL DEFAULT false,
     `equipped_slot` ENUM('HEAD', 'CHEST', 'LEGS', 'HAND', 'OFFHAND', 'RING1', 'RING2', 'NONE') NOT NULL DEFAULT 'NONE',
@@ -268,7 +267,7 @@ ALTER TABLE `applied_effects` ADD CONSTRAINT `applied_effects_characterId_fkey` 
 ALTER TABLE `applied_effects` ADD CONSTRAINT `applied_effects_effectId_fkey` FOREIGN KEY (`effectId`) REFERENCES `effects`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `ability_effects` ADD CONSTRAINT `ability_effects_AbilityId_fkey` FOREIGN KEY (`AbilityId`) REFERENCES `Abilities`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `ability_effects` ADD CONSTRAINT `ability_effects_abilityId_fkey` FOREIGN KEY (`abilityId`) REFERENCES `Abilities`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `ability_effects` ADD CONSTRAINT `ability_effects_effectId_fkey` FOREIGN KEY (`effectId`) REFERENCES `effects`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -289,6 +289,225 @@
         }
       }
     },
+    "/archetypes/{id}": {
+      "get": {
+        "tags": [
+          "Archetypes"
+        ],
+        "summary": "Get archetype by ID",
+        "description": "Endpoint to retrieve an archetype by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the archetype to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Archetype retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchetypeDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchetypeDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Archetype not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Archetypes"
+        ],
+        "summary": "Update an archetype",
+        "description": "Endpoint to update an existing archetype.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the archetype to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Archetype updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchetypeDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchetypeDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Archetype not found"
+          },
+          "422": {
+            "description": "Unprocessable Entity (validation failed)"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateArchetypeDTO"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Archetypes"
+        ],
+        "summary": "Delete an archetype",
+        "description": "Endpoint to delete an existing archetype.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the archetype to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Archetype deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchetypeDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchetypeDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Archetype not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/archetypes/": {
+      "get": {
+        "tags": [
+          "Archetypes"
+        ],
+        "summary": "Get all archetypes",
+        "description": "Endpoint to retrieve all archetypes.",
+        "responses": {
+          "200": {
+            "description": "Archetypes retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchetypeDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchetypeDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Archetypes"
+        ],
+        "summary": "Create a new archetype",
+        "description": "Endpoint to create a new archetype.",
+        "responses": {
+          "201": {
+            "description": "Archetype created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchetypeDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArchetypeDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity (validation failed)"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateArchetypeDTO"
+              }
+            }
+          }
+        }
+      }
+    },
     "/characters/": {
       "get": {
         "tags": [
@@ -1049,225 +1268,6 @@
         }
       }
     },
-    "/archetypes/{id}": {
-      "get": {
-        "tags": [
-          "Archetypes"
-        ],
-        "summary": "Get archetype by ID",
-        "description": "Endpoint to retrieve an archetype by its ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the archetype to retrieve"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Archetype retrieved successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ArchetypeDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/ArchetypeDTO"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Archetype not found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "Archetypes"
-        ],
-        "summary": "Update an archetype",
-        "description": "Endpoint to update an existing archetype.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the archetype to update"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Archetype updated successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ArchetypeDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/ArchetypeDTO"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Archetype not found"
-          },
-          "422": {
-            "description": "Unprocessable Entity (validation failed)"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateArchetypeDTO"
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Archetypes"
-        ],
-        "summary": "Delete an archetype",
-        "description": "Endpoint to delete an existing archetype.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID of the archetype to delete"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Archetype deleted successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ArchetypeDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/ArchetypeDTO"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Archetype not found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/archetypes/": {
-      "get": {
-        "tags": [
-          "Archetypes"
-        ],
-        "summary": "Get all archetypes",
-        "description": "Endpoint to retrieve all archetypes.",
-        "responses": {
-          "200": {
-            "description": "Archetypes retrieved successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ArchetypeDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/ArchetypeDTO"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "Archetypes"
-        ],
-        "summary": "Create a new archetype",
-        "description": "Endpoint to create a new archetype.",
-        "responses": {
-          "201": {
-            "description": "Archetype created successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ArchetypeDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/ArchetypeDTO"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "422": {
-            "description": "Unprocessable Entity (validation failed)"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateArchetypeDTO"
-              }
-            }
-          }
-        }
-      }
-    },
     "/abilities/": {
       "get": {
         "tags": [
@@ -1492,6 +1492,237 @@
           },
           "404": {
             "description": "Abilities not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/abilityeffects/": {
+      "get": {
+        "tags": [
+          "AbilityEffects"
+        ],
+        "summary": "Get all abilityeffects",
+        "description": "Endpoint to retrieve all abilityeffects.",
+        "responses": {
+          "200": {
+            "description": "AbilityEffects retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/AbilityEffectDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/AbilityEffectDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "AbilityEffects"
+        ],
+        "summary": "Create a new abilityeffect",
+        "description": "Endpoint to create a new abilityeffect.",
+        "responses": {
+          "201": {
+            "description": "AbilityEffect created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbilityEffectDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbilityEffectDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAbilityEffectDTO"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/abilityeffects/{id}": {
+      "get": {
+        "tags": [
+          "AbilityEffects"
+        ],
+        "summary": "Get abilityeffect by ID",
+        "description": "Endpoint to retrieve a abilityeffect by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the abilityeffect to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "AbilityEffect retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbilityEffectDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbilityEffectDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "AbilityEffect not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "AbilityEffects"
+        ],
+        "summary": "Update a abilityeffect",
+        "description": "Endpoint to update an existing abilityeffect.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the abilityeffect to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "AbilityEffect updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbilityEffectDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbilityEffectDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "AbilityEffect not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAbilityEffectDTO"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "AbilityEffects"
+        ],
+        "summary": "Delete a abilityeffect",
+        "description": "Endpoint to delete a abilityeffect.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the abilityeffect to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "AbilityEffect deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbilityEffectDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbilityEffectDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "AbilityEffect not found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -2185,6 +2416,237 @@
           },
           "404": {
             "description": "EffectTarget not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/appliedeffects/": {
+      "get": {
+        "tags": [
+          "AppliedEffects"
+        ],
+        "summary": "Get all appliedeffects",
+        "description": "Endpoint to retrieve all appliedeffects.",
+        "responses": {
+          "200": {
+            "description": "AppliedEffects retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/AppliedEffectDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/AppliedEffectDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "AppliedEffects"
+        ],
+        "summary": "Create a new appliedeffect",
+        "description": "Endpoint to create a new appliedeffect.",
+        "responses": {
+          "201": {
+            "description": "AppliedEffect created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppliedEffectDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppliedEffectDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAppliedEffectDTO"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/appliedeffects/{id}": {
+      "get": {
+        "tags": [
+          "AppliedEffects"
+        ],
+        "summary": "Get appliedeffect by ID",
+        "description": "Endpoint to retrieve a appliedeffect by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the appliedeffect to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "AppliedEffect retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppliedEffectDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppliedEffectDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "AppliedEffect not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "AppliedEffects"
+        ],
+        "summary": "Update a appliedeffect",
+        "description": "Endpoint to update an existing appliedeffect.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the appliedeffect to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "AppliedEffect updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppliedEffectDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppliedEffectDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "AppliedEffect not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAppliedEffectDTO"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "AppliedEffects"
+        ],
+        "summary": "Delete a appliedeffect",
+        "description": "Endpoint to delete a appliedeffect.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the appliedeffect to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "AppliedEffect deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppliedEffectDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppliedEffectDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "AppliedEffect not found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -3919,6 +4381,79 @@
           "name": "DeleteAbilitiesDTO"
         }
       },
+      "AbilityEffectDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "abilityId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "effectId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "deletedAt": {}
+        },
+        "xml": {
+          "name": "AbilityEffectDTO"
+        }
+      },
+      "CreateAbilityEffectDTO": {
+        "type": "object",
+        "properties": {
+          "abilityId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "effectId": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "CreateAbilityEffectDTO"
+        }
+      },
+      "UpdateAbilityEffectDTO": {
+        "type": "object",
+        "properties": {
+          "abilityId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "effectId": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "UpdateAbilityEffectDTO"
+        }
+      },
+      "DeleteAbilityEffectDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "DeleteAbilityEffectDTO"
+        }
+      },
       "AttributesDTO": {
         "type": "object",
         "properties": {
@@ -4616,6 +5151,139 @@
         },
         "xml": {
           "name": "DeleteCharacterAttributeDTO"
+        }
+      },
+      "AppliedEffectDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "characterId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "effectId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "sourceType": {
+            "type": "string",
+            "example": "ITEM"
+          },
+          "duration": {
+            "type": "number",
+            "example": 10
+          },
+          "startedAt": {
+            "type": "number",
+            "example": 5
+          },
+          "expiresAt": {
+            "type": "number",
+            "example": 0
+          },
+          "stacks": {
+            "type": "number",
+            "example": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "deletedAt": {}
+        },
+        "xml": {
+          "name": "AppliedEffectDTO"
+        }
+      },
+      "CreateAppliedEffectDTO": {
+        "type": "object",
+        "properties": {
+          "characterId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "effectId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "sourceType": {
+            "type": "string",
+            "example": "ITEM"
+          },
+          "duration": {
+            "type": "number",
+            "example": 10
+          },
+          "startedAt": {
+            "type": "number",
+            "example": 5
+          },
+          "expiresAt": {
+            "type": "number",
+            "example": 0
+          },
+          "stacks": {
+            "type": "number",
+            "example": 1
+          }
+        },
+        "xml": {
+          "name": "CreateAppliedEffectDTO"
+        }
+      },
+      "UpdateAppliedEffectDTO": {
+        "type": "object",
+        "properties": {
+          "characterId": {
+            "type": "string",
+            "example": "new-uuid"
+          },
+          "effectId": {
+            "type": "string",
+            "example": "new-uuid"
+          },
+          "sourceType": {
+            "type": "string",
+            "example": "SKILL"
+          },
+          "duration": {
+            "type": "number",
+            "example": 15
+          },
+          "startedAt": {
+            "type": "number",
+            "example": 7
+          },
+          "expiresAt": {
+            "type": "number",
+            "example": 0
+          },
+          "stacks": {
+            "type": "number",
+            "example": 2
+          }
+        },
+        "xml": {
+          "name": "UpdateAppliedEffectDTO"
+        }
+      },
+      "DeleteAppliedEffectDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "DeleteAppliedEffectDTO"
         }
       },
       "StatusDTO": {

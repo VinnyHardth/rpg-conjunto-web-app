@@ -1,7 +1,7 @@
 import swaggerAutogen from 'swagger-autogen';
 import dotenv from 'dotenv';
 
-import { CostType, AttributeKind, itemType, SkillUseType, TargetType, EquipSlot } from '@prisma/client';
+import { CostType, AttributeKind, itemType, SkillUseType, TargetType, EquipSlot, SourceType } from '@prisma/client';
 
 dotenv.config();
 
@@ -177,6 +177,27 @@ const doc = {
       cooldown_value: 3
     },
     DeleteAbilitiesDTO: {
+      id: "uuid"
+    },
+    
+    // AbilityEffect  definitions
+    AbilityEffectDTO: {
+      id: "uuid",
+      abilityId: "uuid",
+      effectId: "uuid",
+      createdAt: "2023-10-01T12:00:00Z",
+      updatedAt: "2023-10-01T12:00:00Z",
+      deletedAt: null
+    },
+    CreateAbilityEffectDTO: {
+      abilityId: "uuid",
+      effectId: "uuid"
+    },
+    UpdateAbilityEffectDTO: {
+      abilityId: "uuid",
+      effectId: "uuid"
+    },
+    DeleteAbilityEffectDTO: {
       id: "uuid"
     },
 
@@ -373,6 +394,43 @@ const doc = {
       valueExtra: 2,
     },
     DeleteCharacterAttributeDTO: {
+      id: "uuid"
+    },
+
+    // AppliedEffect definitions
+    AppliedEffectDTO: {
+      id: "uuid",
+      characterId: "uuid",
+      effectId: "uuid",
+      sourceType: Object.values(SourceType)[0],
+      duration: 10,
+      startedAt: 5,
+      expiresAt: 0,
+      stacks: 1,
+      createdAt: "2023-10-01T12:00:00Z",
+      updatedAt: "2023-10-01T12:00:00Z",
+      deletedAt: null
+    },
+
+    CreateAppliedEffectDTO: {
+      characterId: "uuid",
+      effectId: "uuid",
+      sourceType: Object.values(SourceType)[0],
+      duration: 10,
+      startedAt: 5,
+      expiresAt: 0,
+      stacks: 1,
+    },
+    UpdateAppliedEffectDTO: {
+      characterId: "new-uuid",
+      effectId: "new-uuid",
+      sourceType: Object.values(SourceType)[1],
+      duration: 15,
+      startedAt: 7,
+      expiresAt: 0,
+      stacks: 2,
+    },
+    DeleteAppliedEffectDTO: {
       id: "uuid"
     },
 

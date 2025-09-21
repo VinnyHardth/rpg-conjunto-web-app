@@ -209,10 +209,10 @@ model AppliedEffect {              // runtime
   characterId String     @db.Char(36)
   effectId    String     @db.Char(36)
   sourceType  SourceType
-  sourceId    String?    @db.Char(36)
+  
   duration    Int
-  startedAt   DateTime   @default(now())
-  expiresAt   DateTime?
+  startedAt   Int
+  expiresAt   Int
   stacks      Int        @default(1)
 
   createdAt DateTime    @default(now())
@@ -254,17 +254,17 @@ model Abilities {                 // catálogo
 
 model AbilityEffect {              // Abilities ↔ Effects (catálogo)
   id         String @id @default(uuid()) @db.Char(36)
-  AbilityId String @db.Char(36)
+  abilityId  String @db.Char(36)
   effectId   String @db.Char(36)
   
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   deletedAt DateTime?
 
-  ability  Abilities  @relation(fields: [AbilityId], references: [id], onDelete: Cascade)
+  ability  Abilities  @relation(fields: [abilityId], references: [id], onDelete: Cascade)
   effect   Effect     @relation(fields: [effectId], references: [id], onDelete: Restrict)
 
-  @@unique([AbilityId, effectId])
+  @@unique([abilityId, effectId])
   @@map("ability_effects")
 }
 

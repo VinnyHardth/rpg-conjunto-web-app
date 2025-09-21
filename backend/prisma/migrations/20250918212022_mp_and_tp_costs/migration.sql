@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE `Abilities` ADD COLUMN `mp_cost` INTEGER NOT NULL DEFAULT 0,
-    ADD COLUMN `tp_cost` INTEGER NOT NULL DEFAULT 0;
