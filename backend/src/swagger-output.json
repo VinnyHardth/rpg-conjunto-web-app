@@ -2423,6 +2423,237 @@
         }
       }
     },
+    "/itemhaseffects/": {
+      "get": {
+        "tags": [
+          "ItemHasEffects"
+        ],
+        "summary": "Get all itemhaseffects",
+        "description": "Endpoint to retrieve all itemhaseffects.",
+        "responses": {
+          "200": {
+            "description": "ItemHasEffects retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/ItemHasEffectDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/ItemHasEffectDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "ItemHasEffects"
+        ],
+        "summary": "Create a new itemhaseffect",
+        "description": "Endpoint to create a new itemhaseffect.",
+        "responses": {
+          "201": {
+            "description": "ItemHasEffect created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemHasEffectDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemHasEffectDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateItemHasEffectDTO"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/itemhaseffects/{id}": {
+      "get": {
+        "tags": [
+          "ItemHasEffects"
+        ],
+        "summary": "Get itemhaseffect by ID",
+        "description": "Endpoint to retrieve a itemhaseffect by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the itemhaseffect to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ItemHasEffect retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemHasEffectDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemHasEffectDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ItemHasEffect not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "ItemHasEffects"
+        ],
+        "summary": "Update a itemhaseffect",
+        "description": "Endpoint to update an existing itemhaseffect.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the itemhaseffect to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ItemHasEffect updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemHasEffectDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemHasEffectDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ItemHasEffect not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateItemHasEffectDTO"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ItemHasEffects"
+        ],
+        "summary": "Delete a itemhaseffect",
+        "description": "Endpoint to delete a itemhaseffect.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the itemhaseffect to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ItemHasEffect deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemHasEffectDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemHasEffectDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ItemHasEffect not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/skills/": {
       "get": {
         "tags": [
@@ -3557,6 +3788,10 @@
           "skillId": {
             "type": "string",
             "example": "uuid"
+          },
+          "cooldown": {
+            "type": "number",
+            "example": 0
           }
         },
         "xml": {
@@ -3573,6 +3808,10 @@
           "skillId": {
             "type": "string",
             "example": "new-uuid"
+          },
+          "cooldown": {
+            "type": "number",
+            "example": 5
           }
         },
         "xml": {
@@ -3589,6 +3828,79 @@
         },
         "xml": {
           "name": "DeleteItemSkillsDTO"
+        }
+      },
+      "ItemHasEffectDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "itemId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "effectsId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "deletedAt": {}
+        },
+        "xml": {
+          "name": "ItemHasEffectDTO"
+        }
+      },
+      "CreateItemHasEffectDTO": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "effectsId": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "CreateItemHasEffectDTO"
+        }
+      },
+      "UpdateItemHasEffectDTO": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "example": "new-uuid"
+          },
+          "effectId": {
+            "type": "string",
+            "example": "new-uuid"
+          }
+        },
+        "xml": {
+          "name": "UpdateItemHasEffectDTO"
+        }
+      },
+      "DeleteItemHasEffectDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "DeleteItemHasEffectDTO"
         }
       },
       "EffectDTO": {

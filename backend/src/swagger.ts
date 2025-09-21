@@ -220,6 +220,27 @@ const doc = {
       id: "uuid"
     },
 
+    // Item Effects definitions
+    ItemHasEffectDTO: {
+      id: "uuid",
+      itemId: "uuid",
+      effectsId: "uuid",
+      createdAt: "2023-10-01T12:00:00Z",
+      updatedAt: "2023-10-01T12:00:00Z",
+      deletedAt: null
+    },
+    CreateItemHasEffectDTO: {
+      itemId: "uuid",
+      effectsId: "uuid"
+    },
+    UpdateItemHasEffectDTO: {
+      itemId: "new-uuid",
+      effectId: "new-uuid"
+    },
+    DeleteItemHasEffectDTO: {
+      id: "uuid"
+    },
+
     // Effect definitions
     EffectDTO: {
       id: "uuid",
