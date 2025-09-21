@@ -9,6 +9,7 @@ import attributeRouter from "../resources/attributes/attributes.router";
 import effectRouter from "../resources/effect/effect.router";
 import effecttargetRouter from "../resources/effectTarget/effectTarget.router";
 import itemsRouter from "../resources/items/items.router";
+import itemSkillsRouter from "../resources/itemSkills/itemSkills.router";
 import skillRouter from "../resources/skill/skill.router";
 import statusRouter from "../resources/status/status.router";
 
@@ -58,6 +59,11 @@ router.use(
     "/items",
     // #swagger.tags = ['Items']
     itemsRouter);
+
+router.use(
+    "/itemskills",
+    // #swagger.tags = ['ItemSkills']
+    itemSkillsRouter);
 
 router.use(
     "/skills",

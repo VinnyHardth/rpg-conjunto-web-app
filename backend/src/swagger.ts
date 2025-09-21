@@ -197,6 +197,29 @@ const doc = {
       id: "uuid"
     },
 
+    // ItemSkill definitions
+    ItemSkillsDTO: {
+      id: "uuid",
+      itemId: "uuid",
+      skillId: "uuid",
+      createdAt: "2023-10-01T12:00:00Z",
+      updatedAt: "2023-10-01T12:00:00Z",
+      deletedAt: null
+    },
+    CreateItemSkillsDTO: {
+      itemId: "uuid",
+      skillId: "uuid",
+      cooldown: 0
+    },
+    UpdateItemSkillsDTO: {
+      itemId: "new-uuid",
+      skillId: "new-uuid",
+      cooldown: 5
+    },
+    DeleteItemSkillsDTO: {
+      id: "uuid"
+    },
+
     // Effect definitions
     EffectDTO: {
       id: "uuid",
@@ -327,6 +350,8 @@ const doc = {
     DeleteStatusDTO: {
       id: "uuid"
     },  
+
+   
   },
 };
 

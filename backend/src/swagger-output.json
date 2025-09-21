@@ -2192,6 +2192,237 @@
         }
       }
     },
+    "/itemskills/": {
+      "get": {
+        "tags": [
+          "ItemSkills"
+        ],
+        "summary": "Get all itemskillss",
+        "description": "Endpoint to retrieve all itemskillss.",
+        "responses": {
+          "200": {
+            "description": "ItemSkillss retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/ItemSkillsDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/ItemSkillsDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "ItemSkills"
+        ],
+        "summary": "Create a new itemskills",
+        "description": "Endpoint to create a new itemskills.",
+        "responses": {
+          "201": {
+            "description": "ItemSkills created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemSkillsDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemSkillsDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateItemSkillsDTO"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/itemskills/{id}": {
+      "get": {
+        "tags": [
+          "ItemSkills"
+        ],
+        "summary": "Get itemskills by ID",
+        "description": "Endpoint to retrieve a itemskills by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the itemskills to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ItemSkills retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemSkillsDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemSkillsDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ItemSkills not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "ItemSkills"
+        ],
+        "summary": "Update a itemskills",
+        "description": "Endpoint to update an existing itemskills.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the itemskills to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ItemSkills updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemSkillsDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemSkillsDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ItemSkills not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateItemSkillsDTO"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ItemSkills"
+        ],
+        "summary": "Delete a itemskills",
+        "description": "Endpoint to delete a itemskills.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the itemskills to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ItemSkills deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemSkillsDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemSkillsDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "ItemSkills not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/skills/": {
       "get": {
         "tags": [
@@ -3285,6 +3516,79 @@
         },
         "xml": {
           "name": "DeleteItemsDTO"
+        }
+      },
+      "ItemSkillsDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "itemId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "skillId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "deletedAt": {}
+        },
+        "xml": {
+          "name": "ItemSkillsDTO"
+        }
+      },
+      "CreateItemSkillsDTO": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "skillId": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "CreateItemSkillsDTO"
+        }
+      },
+      "UpdateItemSkillsDTO": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "example": "new-uuid"
+          },
+          "skillId": {
+            "type": "string",
+            "example": "new-uuid"
+          }
+        },
+        "xml": {
+          "name": "UpdateItemSkillsDTO"
+        }
+      },
+      "DeleteItemSkillsDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "DeleteItemSkillsDTO"
         }
       },
       "EffectDTO": {
