@@ -19,6 +19,10 @@ const doc = {
   definitions: {
 
     // User definitions
+    LoginUserDTO: {
+      email: "user@example.com",
+      password: "securePassword123"
+    },
     UserDTO: {
       id: "uuid",
       email: "user@example.com",

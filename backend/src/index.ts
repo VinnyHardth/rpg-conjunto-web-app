@@ -9,11 +9,18 @@ import { Server, Socket } from 'socket.io';
 
 import v1Router from "./router/v1Router";
 import swaggerFile from './swagger-output.json';
+import session from 'express-session';
 
 // Extende o tipo Request para incluir 'io'
 declare module 'express-serve-static-core' {
   interface Request {
     io?: Server;
+  }
+}
+
+declare module 'express-session' {
+  interface SessionData {
+    userId: string;
   }
 }
 
@@ -35,6 +42,16 @@ app.use("/api", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 app.use("/test", (req: Request, res: Response) => {
   res.json({ message: "API is working!", uuidv1: v1(), uuidv4: uuidv4() });
 });
+
+// Configuração da sessão
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "secret",
+    resave: true,
+    saveUninitialized: true,
+
+  })
+)
 
 // Cria o servidor HTTP e instancia o Socket.io
 const server = http.createServer(app);

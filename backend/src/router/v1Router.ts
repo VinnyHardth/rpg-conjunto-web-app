@@ -1,5 +1,6 @@
 import { Router } from "express";
 
+import authRouter from "../resources/auth/auth.router";
 import userRouter from "../resources/user/user.router";
 
 import archetypeRouter from "../resources/archetype/archetype.router";
@@ -24,6 +25,11 @@ import itemSkillsRouter from "../resources/itemSkills/itemSkills.router";
 import itemHasEffectRouter from "../resources/itemHasEffect/itemHasEffect.router";
 
 const router = Router();
+
+router.use(
+    "/auth",
+    // #swagger.tags = ['Auth']
+    authRouter);
 
 router.use(
     "/users",
