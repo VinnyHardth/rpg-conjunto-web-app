@@ -8,6 +8,7 @@ const router = Router();
 // read methods ---------------------------------------------------------------
 router.get('/', attributesController.getAll);
 router.get('/:id', attributesController.getById);
+router.get('/kind/:kind', attributesController.getByKind);
 
 // write methods --------------------------------------------------------------
 router.post('/', validateRequestBody(attributesSchemas.createAttributesSchema), attributesController.create);

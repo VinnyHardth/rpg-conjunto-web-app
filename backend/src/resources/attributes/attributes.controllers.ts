@@ -1,6 +1,14 @@
 import { Request, Response } from 'express';
+import { AttributeKind } from '@prisma/client';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
-import { createAttributes, getAttributesById, getAttributess, updateAttributes, deleteAttributes } from './attributes.services';
+
+
+import { createAttributes, 
+         getAttributesById, 
+         getAttributes,
+         getAttributesByKind,
+         updateAttributes, 
+         deleteAttributes } from './attributes.services';
 
 const handleError = (res: Response, err: any, context: string): void => {
   console.error(`${context}:`, err);
@@ -72,6 +80,38 @@ const getById = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+const getByKind = async (req: Request, res: Response): Promise<void> => {
+  /*
+    #swagger.summary = 'Get attributes by kind'
+    #swagger.description = 'Endpoint to retrieve a attributes by kind.'
+    #swagger.parameters['kind'] = {
+      in: 'path',
+      description: 'Kind of the attributes to retrieve',
+      required: true,
+      type: 'string'
+    }
+    #swagger.responses[200] = {
+      description: 'Attributes retrieved successfully.',
+      schema: { type: 'array', items: { $ref: '#/definitions/AttributesDTO' } }
+    }
+    #swagger.responses[404] = { description: 'Attributes not found' }
+    #swagger.responses[500] = { description: 'Internal Server Error' }
+  */
+
+  const { kind } = req.params;
+
+  try {
+    const attributes = await getAttributesByKind( kind as AttributeKind);
+    if (!attributes) {
+      res.status(StatusCodes.NOT_FOUND).json({ message: 'Attributes not found' });
+      return;
+    }
+    res.status(StatusCodes.OK).json(attributes);
+  } catch (err) {
+    handleError(res, err, 'Error retrieving attributes');
+  }
+};
+
 const getAll = async (req: Request, res: Response): Promise<void> => {
   /*
     #swagger.summary = 'Get all attributess'
@@ -84,7 +124,7 @@ const getAll = async (req: Request, res: Response): Promise<void> => {
   */
 
   try {
-    const attributess = await getAttributess();
+    const attributess = await getAttributes();
     res.status(StatusCodes.OK).json(attributess);
   } catch (err) {
     handleError(res, err, 'Error retrieving attributess');
@@ -156,4 +196,4 @@ const remove = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export default { create, getById, getAll, update, remove };
+export default { create, getById, getByKind ,getAll, update, remove };

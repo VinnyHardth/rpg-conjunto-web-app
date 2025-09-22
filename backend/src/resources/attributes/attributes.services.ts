@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { AttributeKind } from '@prisma/client';
 import { CreateAttributesDTO, UpdateAttributesDTO, AttributesDTO } from './attributes.types';
 
 const prisma = new PrismaClient();
@@ -11,8 +12,12 @@ export const getAttributesById = async (id: string): Promise<AttributesDTO | nul
   return prisma.attributes.findUnique({ where: { id } });
 };
 
-export const getAttributess = async (): Promise<AttributesDTO[]> => {
+export const getAttributes = async (): Promise<AttributesDTO[]> => {
   return prisma.attributes.findMany();
+};
+
+export const getAttributesByKind = async (kind: AttributeKind): Promise<AttributesDTO[]> => {
+  return prisma.attributes.findMany({ where: { kind } });
 };
 
 export const updateAttributes = async (id: string, data: UpdateAttributesDTO): Promise<AttributesDTO> => {
