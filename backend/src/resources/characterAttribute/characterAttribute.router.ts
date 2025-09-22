@@ -8,6 +8,7 @@ const router = Router();
 // read methods ---------------------------------------------------------------
 router.get('/', characterattributeController.getAll);
 router.get('/:id', characterattributeController.getById);
+router.get('/character/:characterId', characterattributeController.getByCharacterId);
 
 // write methods --------------------------------------------------------------
 router.post('/', validateRequestBody(characterattributeSchemas.createCharacterAttributeSchema), characterattributeController.create);

@@ -11,6 +11,10 @@ export const getCharacterAttributeById = async (id: string): Promise<CharacterAt
   return prisma.characterAttribute.findUnique({ where: { id } });
 };
 
+export const getCharacterAttributesByCharacterId = async (characterId: string): Promise<CharacterAttributeDTO[]> => {
+  return prisma.characterAttribute.findMany({ where: { characterId } });
+};
+
 export const getCharacterAttributes = async (): Promise<CharacterAttributeDTO[]> => {
   return prisma.characterAttribute.findMany();
 };
