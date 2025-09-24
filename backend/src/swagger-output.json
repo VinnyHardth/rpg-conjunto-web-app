@@ -71,7 +71,7 @@
             "description": "Bad Request"
           },
           "422": {
-            "description": "Unprocessable Entity"
+            "description": "Unprocessable Entity|User already exists"
           },
           "500": {
             "description": "Internal Server Error"
@@ -1188,6 +1188,73 @@
         }
       }
     },
+    "/characterattributes/character/{characterId}": {
+      "get": {
+        "tags": [
+          "CharacterAttributes"
+        ],
+        "summary": "Get characterattributes by character ID",
+        "description": "Endpoint to retrieve characterattributes by character ID.",
+        "parameters": [
+          {
+            "name": "characterId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the character to retrieve characterattributes for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CharacterAttributes retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/CharacterAttributeDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/CharacterAttributeDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Character not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/characterhasitems/": {
       "get": {
         "tags": [
@@ -2099,6 +2166,73 @@
               "application/xml": {
                 "schema": {
                   "$ref": "#/components/schemas/AttributesDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Attributes not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/attributes/kind/{kind}": {
+      "get": {
+        "tags": [
+          "Attributes"
+        ],
+        "summary": "Get attributes by kind",
+        "description": "Endpoint to retrieve a attributes by kind.",
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Kind of the attributes to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Attributes retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/AttributesDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/AttributesDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
                 }
               }
             }
@@ -4103,6 +4237,14 @@
             "type": "string",
             "example": "http://example.com/images/leena.png"
           },
+          "generation": {
+            "type": "number",
+            "example": 1
+          },
+          "type": {
+            "type": "string",
+            "example": "NPC"
+          },
           "userId": {
             "type": "string",
             "example": "uuid"
@@ -4152,6 +4294,14 @@
             "type": "string",
             "example": "http://example.com/images/leena.png"
           },
+          "generation": {
+            "type": "number",
+            "example": 1
+          },
+          "type": {
+            "type": "string",
+            "example": "NPC"
+          },
           "userId": {
             "type": "string",
             "example": "uuid"
@@ -4187,6 +4337,14 @@
           "money": {
             "type": "number",
             "example": 1500
+          },
+          "generation": {
+            "type": "number",
+            "example": 2
+          },
+          "type": {
+            "type": "string",
+            "example": "PC"
           },
           "imageUrl": {
             "type": "string",

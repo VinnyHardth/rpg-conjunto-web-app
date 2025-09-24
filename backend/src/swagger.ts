@@ -1,7 +1,7 @@
 import swaggerAutogen from 'swagger-autogen';
 import dotenv from 'dotenv';
 
-import { CostType, AttributeKind, itemType, SkillUseType, TargetType, EquipSlot, SourceType } from '@prisma/client';
+import { CostType, AttributeKind, itemType, SkillUseType, TargetType, EquipSlot, SourceType, charaterType } from '@prisma/client';
 
 dotenv.config();
 
@@ -59,6 +59,9 @@ const doc = {
       money: 1000,
       imageUrl: "http://example.com/images/leena.png",
 
+      generation: 1,
+      type: Object.values(charaterType)[0],
+
       userId: "uuid",
       archetypeId: "uuid",
 
@@ -74,6 +77,9 @@ const doc = {
       money: 1000,
       imageUrl: "http://example.com/images/leena.png",
 
+      generation: 1,
+      type: Object.values(charaterType)[0],
+
       userId: "uuid",
       archetypeId: "uuid"
     },
@@ -83,6 +89,10 @@ const doc = {
       age: 30,
       height: 175,
       money: 1500,
+
+      generation: 2,
+      type: Object.values(charaterType)[1],
+
       imageUrl: "http://example.com/images/updated_leena.png"
     },
     DeleteCharacterDTO: {

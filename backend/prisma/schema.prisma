@@ -14,15 +14,18 @@ enum CostType {
   BOTH
   NONE 
 }
+
 enum SkillUseType { 
   PASSIVE 
   ACTIVE 
 }
+
 enum SourceType { 
   ITEM 
   SKILL 
   OTHER 
 }
+
 enum TargetType { 
   STATUS 
   ATTRIBUTE
@@ -51,6 +54,13 @@ enum itemType {
   MATERIAL
   QUEST
   MISC
+}
+
+enum charaterType {
+ NPC
+ PC
+ DEAD
+ RETIRE
 }
 
 // ------------- Catálogos -------------
@@ -96,6 +106,10 @@ model Character {
   age          Int?
   height       Float?
   money        Decimal  @default(0) @db.Decimal(12, 2)
+
+  generation   Int      @default(2)
+  type         charaterType @default(PC)
+
   imageUrl     String?  @db.VarChar(191)
 
   userId       String   @db.Char(36)

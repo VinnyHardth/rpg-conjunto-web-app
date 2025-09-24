@@ -1,4 +1,6 @@
 import Joi from "joi";
+
+import { charaterType } from "@prisma/client";
 import { CreateCharacterDTO, UpdateCharacterDTO } from "./character.types.js";
 
 // Schema para criação de personagem
@@ -9,6 +11,8 @@ const createCharacterSchema = Joi.object<CreateCharacterDTO>({
   height: Joi.number().min(0).required(),
   money: Joi.number().min(0).required(),
   imageUrl: Joi.string().uri().optional(),
+  type: Joi.string().valid(...Object.values(charaterType)).required(),
+  generation: Joi.number().integer().min(0).required(),
   userId: Joi.string().uuid().required(),
   archetypeId: Joi.string().uuid().required(),
 });
@@ -20,6 +24,8 @@ const updateCharacterSchema = Joi.object<UpdateCharacterDTO>({
   age: Joi.number().integer().min(0),
   height: Joi.number().min(0),
   money: Joi.number().min(0),
+  type: Joi.string().valid(...Object.values(charaterType)),
+  generation: Joi.number().integer().min(0),
   imageUrl: Joi.string().uri(),
   archetypeId: Joi.string().uuid(),
 }).min(1); // Pelo menos um campo deve ser fornecido para atualização
