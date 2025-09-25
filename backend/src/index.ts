@@ -30,7 +30,10 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:4000", // frontend que está fazendo a requisição
+  credentials: true // importante para cookies
+}));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -49,7 +52,6 @@ app.use(
     secret: process.env.SESSION_SECRET || "secret",
     resave: true,
     saveUninitialized: true,
-
   })
 )
 

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ReasonPhrases, StatusCodes } from "http-status-codes";
 
+import { CreateUserDTO, UserDTO } from "../user/user.types";
 import { createUser, getUserById, getUserByEmail } from "../user/user.services";
 import { verifyCredentials } from "./auth.services";
 
@@ -28,7 +29,7 @@ const register = async (req: Request, res: Response): Promise<void> => {
         #swagger.responses[500] = { description: 'Internal Server Error' }
     */
 
-    const userData = req.body;
+    const userData = req.body as CreateUserDTO;
 
     try {
         // Check if user already exists
