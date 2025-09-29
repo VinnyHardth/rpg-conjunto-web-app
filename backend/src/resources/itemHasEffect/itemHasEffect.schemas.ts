@@ -4,7 +4,7 @@ import { CreateItemHasEffectDTO, UpdateItemHasEffectDTO } from './itemHasEffect.
 export const createItemHasEffectSchema = Joi.object<CreateItemHasEffectDTO>({
     itemId: Joi.string().uuid().required(),
     effectsId: Joi.string().uuid().required(),
-    formula: Joi.string().default(null).required(),
+    formula: Joi.string().optional().default("")
 });
 
 export const updateItemHasEffectSchema = Joi.object<UpdateItemHasEffectDTO>({

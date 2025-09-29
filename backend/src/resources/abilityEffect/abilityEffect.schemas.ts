@@ -4,7 +4,7 @@ import { CreateAbilityEffectDTO, UpdateAbilityEffectDTO } from './abilityEffect.
 export const createAbilityEffectSchema = Joi.object<CreateAbilityEffectDTO>({
     abilityId: Joi.string().uuid().required(),
     effectId: Joi.string().uuid().required(),
-    formula: Joi.string().default(null).required(),
+    formula: Joi.string().optional().default("")
 });
 
 export const updateAbilityEffectSchema = Joi.object<UpdateAbilityEffectDTO>({

@@ -202,16 +202,19 @@ const doc = {
       id: "uuid",
       abilityId: "uuid",
       effectId: "uuid",
+      formula: "2d6+WPN",
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
       deletedAt: null
     },
     CreateAbilityEffectDTO: {
       abilityId: "uuid",
+      formula: "2d6+WPN",
       effectId: "uuid"
     },
     UpdateAbilityEffectDTO: {
       abilityId: "uuid",
+      formula: "2d6+WPN",
       effectId: "uuid"
     },
     DeleteAbilityEffectDTO: {
@@ -297,17 +300,20 @@ const doc = {
       id: "uuid",
       itemId: "uuid",
       effectsId: "uuid",
+      formula: "2d6",
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
       deletedAt: null
     },
     CreateItemHasEffectDTO: {
       itemId: "uuid",
-      effectsId: "uuid"
+      effectsId: "uuid",
+      formula: "2d6"
     },
     UpdateItemHasEffectDTO: {
       itemId: "new-uuid",
-      effectId: "new-uuid"
+      effectId: "new-uuid",
+      formula: "2d6"
     },
     DeleteItemHasEffectDTO: {
       id: "uuid"
