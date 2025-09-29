@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import validateRequestBody from '../../middlewares/validateRequestBody';
-import effecttargetController from './effectTarget.controllers';
-import * as effecttargetSchemas from './effectTarget.schemas';
+import effecttargetController from './effectModifier.controllers';
+import * as effecttargetSchemas from './effectModifier.schemas';
 
 const router = Router();
 

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
-import { createEffectTarget, getEffectTargetById, getEffectTargets, updateEffectTarget, deleteEffectTarget } from './effectTarget.services';
+import { createEffectModifier, getEffectModifierById, getEffectModifiers, updateEffectModifier, deleteEffectModifier } from './effectModifier.services';
 
 const handleError = (res: Response, err: any, context: string): void => {
   console.error(`${context}:`, err);
@@ -33,7 +33,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
   const effecttargetData = req.body;
 
   try {
-    const newEffectTarget = await createEffectTarget(effecttargetData);
+    const newEffectTarget = await createEffectModifier(effecttargetData);
     res.status(StatusCodes.CREATED).json(newEffectTarget);
   } catch (err) {
     handleError(res, err, 'Error creating effecttarget');
@@ -61,7 +61,7 @@ const getById = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
 
   try {
-    const effecttarget = await getEffectTargetById(id);
+    const effecttarget = await getEffectModifierById(id);
     if (!effecttarget) {
       res.status(StatusCodes.NOT_FOUND).json({ message: 'EffectTarget not found' });
       return;
@@ -84,7 +84,7 @@ const getAll = async (req: Request, res: Response): Promise<void> => {
   */
 
   try {
-    const effecttargets = await getEffectTargets();
+    const effecttargets = await getEffectModifiers();
     res.status(StatusCodes.OK).json(effecttargets);
   } catch (err) {
     handleError(res, err, 'Error retrieving effecttargets');
@@ -121,7 +121,7 @@ const update = async (req: Request, res: Response): Promise<void> => {
   const updateData = req.body;
 
   try {
-    const updatedEffectTarget = await updateEffectTarget(id, updateData);
+    const updatedEffectTarget = await updateEffectModifier(id, updateData);
     res.status(StatusCodes.OK).json(updatedEffectTarget);
   } catch (err) {
     handleError(res, err, 'Error updating effecttarget');
@@ -149,7 +149,7 @@ const remove = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
 
   try {
-    const deletedEffectTarget = await deleteEffectTarget(id);
+    const deletedEffectTarget = await deleteEffectModifier(id);
     res.status(StatusCodes.OK).json(deletedEffectTarget);
   } catch (err) {
     handleError(res, err, 'Error deleting effecttarget');

@@ -10,8 +10,9 @@ datasource db {
 // ------------- Enums -------------
 enum CostType { 
   MP 
-  TP 
-  BOTH
+  TP
+  HP
+  COMBINATION
   NONE 
 }
 
@@ -26,10 +27,18 @@ enum SourceType {
   OTHER 
 }
 
-enum TargetType { 
-  STATUS 
-  ATTRIBUTE
-  EXPERTISE
+enum DamageType {
+  TRUE
+  PHISICAL
+  MAGIC
+  NONE
+}
+
+enum StackingPolicy {
+  REFRESH
+  REPLACE
+  STACK
+  NONE
 }
 
 enum EquipSlot { 
@@ -57,10 +66,27 @@ enum itemType {
 }
 
 enum charaterType {
- NPC
- PC
- DEAD
- RETIRE
+  NPC
+  PC
+  DEAD
+  RETIRE
+}
+
+enum ComponentType {
+  STATUS
+  ATTRIBUTE
+  SLOT
+  TAG
+  NONE
+}
+
+enum OperationType {
+  ADD
+  MULT
+  SET
+  TOGGLE
+  OVERRIDE
+  DICE
 }
 
 // ------------- Catálogos -------------
@@ -106,6 +132,8 @@ model Character {
   age          Int?
   height       Float?
   money        Decimal  @default(0) @db.Decimal(12, 2)
+
+  annotations  String?  @db.LongText()
 
   generation   Int      @default(2)
   type         charaterType @default(PC)
@@ -188,12 +216,17 @@ model Effect {
   id      String @id @default(uuid()) @db.Char(36)
   name    String @db.VarChar(191)
   imgUrl  String? @db.VarChar(191)
+  description String? @db.VarChar(400)
+  removableBy String? @db.VarChar(191)
+
+  damageType DamageType
+  stackingPolicy StackingPolicy
 
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   deletedAt DateTime?
 
-  targets        EffectTarget[]
+  targets        EffectModifier[]
   appliedEffects AppliedEffect[]
   itemLinks      ItemHasEffect[]
   abilityLinks   AbilityEffect[]
@@ -201,12 +234,13 @@ model Effect {
   @@map("effects")
 }
 
-model EffectTarget {               // o que o efeito altera
+model EffectModifier {               // o que o efeito altera
   id         String     @id @default(uuid()) @db.Char(36)
   effectId   String     @db.Char(36)
-  targetType TargetType
-  targetCode String     @db.VarChar(50) // 'HP','MP','FOR','DEX',...
-  value      Int
+
+  componentName String
+  componentType ComponentType
+  operationType OperationType
 
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
@@ -214,7 +248,7 @@ model EffectTarget {               // o que o efeito altera
 
   effect Effect @relation(fields: [effectId], references: [id], onDelete: Cascade)
 
-  @@index([effectId, targetType, targetCode])
+  @@index([effectId])
   @@map("effect_target")
 }
 
@@ -224,10 +258,11 @@ model AppliedEffect {              // runtime
   effectId    String     @db.Char(36)
   sourceType  SourceType
   
-  duration    Int
-  startedAt   Int
-  expiresAt   Int
-  stacks      Int        @default(1)
+  duration    Int        @default(0) 
+  startedAt   Int        @default(0) 
+  expiresAt   Int        @default(0)
+  stacks      Int        @default(0)
+  value       Int        @default(0)
 
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
@@ -252,6 +287,7 @@ model Abilities {                 // catálogo
   cost_type      CostType  @default(NONE)
   mp_cost        Int       @default(0)
   tp_cost        Int       @default(0)
+  hp_cost        Int       @default(0)
 
   cooldown_value Int       @default(0)
 
@@ -271,6 +307,8 @@ model AbilityEffect {              // Abilities ↔ Effects (catálogo)
   abilityId  String @db.Char(36)
   effectId   String @db.Char(36)
   
+  formula String? @db.VarChar(191)
+
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   deletedAt DateTime?
@@ -285,7 +323,7 @@ model AbilityEffect {              // Abilities ↔ Effects (catálogo)
 model Skill {                      // instância por personagem
   id           String       @id @default(uuid()) @db.Char(36)
   characterId  String       @db.Char(36)
-  abilityId   String       @db.Char(36)
+  abilityId    String       @db.Char(36)
   cooldown     Int          @default(0)
   useType      SkillUseType @default(ACTIVE)
 
@@ -305,11 +343,11 @@ model Items {
   id            String   @id @default(uuid()) @db.Char(36)
   name          String   @db.VarChar(191)
   description   String?  @db.Text
-  imageURL        String?  @db.VarChar(191)
+  imageURL      String?  @db.VarChar(191)
   value         Int      @default(0)
 
   itemType      itemType @default(MISC)
-  
+
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
   deletedAt DateTime?
@@ -348,6 +386,8 @@ model ItemHasEffect {              // Items ↔ Effects (catálogo N:N)
   itemId    String @db.Char(36)
   effectsId String @db.Char(36)
 
+  formula  String @db.VarChar(191)
+
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   deletedAt DateTime?
@@ -364,6 +404,8 @@ model ItemSkills {                 // Items ↔ Abilities (catálogo N:N)
   abilityId String @db.Char(36)
   itemId     String @db.Char(36)
   cooldown   Int    @default(0)
+
+  formula   String? @db.VarChar(191)
 
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
