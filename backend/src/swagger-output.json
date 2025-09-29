@@ -2477,16 +2477,16 @@
         }
       }
     },
-    "/effecttargets/": {
+    "/effectmodifiers/": {
       "get": {
         "tags": [
-          "EffectTargets"
+          "effectmodifiers"
         ],
-        "summary": "Get all effecttargets",
-        "description": "Endpoint to retrieve all effecttargets.",
+        "summary": "Get all EffectModifiers",
+        "description": "Endpoint to retrieve all EffectModifiers.",
         "responses": {
           "200": {
-            "description": "EffectTargets retrieved successfully.",
+            "description": "EffectModifiers retrieved successfully.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2497,7 +2497,7 @@
                       "example": "array"
                     },
                     "items": {
-                      "$ref": "#/components/schemas/EffectTargetDTO"
+                      "$ref": "#/components/schemas/EffectModifierDTO"
                     }
                   },
                   "xml": {
@@ -2514,7 +2514,7 @@
                       "example": "array"
                     },
                     "items": {
-                      "$ref": "#/components/schemas/EffectTargetDTO"
+                      "$ref": "#/components/schemas/EffectModifierDTO"
                     }
                   },
                   "xml": {
@@ -2531,22 +2531,22 @@
       },
       "post": {
         "tags": [
-          "EffectTargets"
+          "effectmodifiers"
         ],
-        "summary": "Create a new effecttarget",
-        "description": "Endpoint to create a new effecttarget.",
+        "summary": "Create a new EffectModifier",
+        "description": "Endpoint to create a new EffectModifier.",
         "responses": {
           "201": {
-            "description": "EffectTarget created successfully.",
+            "description": "EffectModifier created successfully.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/EffectTargetDTO"
+                  "$ref": "#/components/schemas/EffectModifierDTO"
                 }
               },
               "application/xml": {
                 "schema": {
-                  "$ref": "#/components/schemas/EffectTargetDTO"
+                  "$ref": "#/components/schemas/EffectModifierDTO"
                 }
               }
             }
@@ -2566,20 +2566,20 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateEffectTargetDTO"
+                "$ref": "#/components/schemas/CreateEffectModifierDTO"
               }
             }
           }
         }
       }
     },
-    "/effecttargets/{id}": {
+    "/effectmodifiers/{id}": {
       "get": {
         "tags": [
-          "EffectTargets"
+          "effectmodifiers"
         ],
-        "summary": "Get effecttarget by ID",
-        "description": "Endpoint to retrieve a effecttarget by ID.",
+        "summary": "Get EffectModifier by ID",
+        "description": "Endpoint to retrieve a EffectModifier by ID.",
         "parameters": [
           {
             "name": "id",
@@ -2588,27 +2588,27 @@
             "schema": {
               "type": "string"
             },
-            "description": "ID of the effecttarget to retrieve"
+            "description": "ID of the EffectModifier to retrieve"
           }
         ],
         "responses": {
           "200": {
-            "description": "EffectTarget retrieved successfully.",
+            "description": "EffectModifier retrieved successfully.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/EffectTargetDTO"
+                  "$ref": "#/components/schemas/EffectModifierDTO"
                 }
               },
               "application/xml": {
                 "schema": {
-                  "$ref": "#/components/schemas/EffectTargetDTO"
+                  "$ref": "#/components/schemas/EffectModifierDTO"
                 }
               }
             }
           },
           "404": {
-            "description": "EffectTarget not found"
+            "description": "EffectModifier not found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -2617,10 +2617,10 @@
       },
       "put": {
         "tags": [
-          "EffectTargets"
+          "effectmodifiers"
         ],
-        "summary": "Update a effecttarget",
-        "description": "Endpoint to update an existing effecttarget.",
+        "summary": "Update a EffectModifier",
+        "description": "Endpoint to update an existing EffectModifier.",
         "parameters": [
           {
             "name": "id",
@@ -2629,27 +2629,27 @@
             "schema": {
               "type": "string"
             },
-            "description": "ID of the effecttarget to update"
+            "description": "ID of the EffectModifier to update"
           }
         ],
         "responses": {
           "200": {
-            "description": "EffectTarget updated successfully.",
+            "description": "EffectModifier updated successfully.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/EffectTargetDTO"
+                  "$ref": "#/components/schemas/EffectModifierDTO"
                 }
               },
               "application/xml": {
                 "schema": {
-                  "$ref": "#/components/schemas/EffectTargetDTO"
+                  "$ref": "#/components/schemas/EffectModifierDTO"
                 }
               }
             }
           },
           "404": {
-            "description": "EffectTarget not found"
+            "description": "EffectModifier not found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -2660,7 +2660,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateEffectTargetDTO"
+                "$ref": "#/components/schemas/UpdateEffectModifierDTO"
               }
             }
           }
@@ -2668,10 +2668,10 @@
       },
       "delete": {
         "tags": [
-          "EffectTargets"
+          "effectmodifiers"
         ],
-        "summary": "Delete a effecttarget",
-        "description": "Endpoint to delete a effecttarget.",
+        "summary": "Delete a EffectModifier",
+        "description": "Endpoint to delete a EffectModifier.",
         "parameters": [
           {
             "name": "id",
@@ -2680,27 +2680,27 @@
             "schema": {
               "type": "string"
             },
-            "description": "ID of the effecttarget to delete"
+            "description": "ID of the EffectModifier to delete"
           }
         ],
         "responses": {
           "200": {
-            "description": "EffectTarget deleted successfully.",
+            "description": "EffectModifier deleted successfully.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/EffectTargetDTO"
+                  "$ref": "#/components/schemas/EffectModifierDTO"
                 }
               },
               "application/xml": {
                 "schema": {
-                  "$ref": "#/components/schemas/EffectTargetDTO"
+                  "$ref": "#/components/schemas/EffectModifierDTO"
                 }
               }
             }
           },
           "404": {
-            "description": "EffectTarget not found"
+            "description": "EffectModifier not found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -5125,7 +5125,36 @@
           "name": {
             "type": "string",
             "example": "Poison"
-          }
+          },
+          "description": {
+            "type": "string",
+            "example": "Causes damage to the target."
+          },
+          "imgUrl": {
+            "type": "string",
+            "example": "http://example.com/images/poison.png"
+          },
+          "removableBy": {
+            "type": "string",
+            "example": "Item"
+          },
+          "damageType": {
+            "type": "string",
+            "example": "TRUE"
+          },
+          "stackingPolicy": {
+            "type": "string",
+            "example": "REFRESH"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "deletedAt": {}
         },
         "xml": {
           "name": "EffectDTO"
@@ -5138,9 +5167,25 @@
             "type": "string",
             "example": "Poison"
           },
+          "description": {
+            "type": "string",
+            "example": "Causes damage to the target."
+          },
           "imgUrl": {
             "type": "string",
             "example": "http://example.com/images/poison.png"
+          },
+          "removableBy": {
+            "type": "string",
+            "example": "Item"
+          },
+          "damageType": {
+            "type": "string",
+            "example": "TRUE"
+          },
+          "stackingPolicy": {
+            "type": "string",
+            "example": "REFRESH"
           }
         },
         "xml": {
@@ -5152,11 +5197,27 @@
         "properties": {
           "name": {
             "type": "string",
-            "example": "Burn"
+            "example": "Bleeding"
+          },
+          "description": {
+            "type": "string",
+            "example": "Causes damage to the target."
           },
           "imgUrl": {
             "type": "string",
-            "example": "http://example.com/images/burn.png"
+            "example": "http://example.com/images/bleeding.png"
+          },
+          "removableBy": {
+            "type": "string",
+            "example": "Item"
+          },
+          "damageType": {
+            "type": "string",
+            "example": "PHISICAL"
+          },
+          "stackingPolicy": {
+            "type": "string",
+            "example": "REPLACE"
           }
         },
         "xml": {
@@ -5272,7 +5333,7 @@
           "name": "DeleteSkillDTO"
         }
       },
-      "EffectTargetDTO": {
+      "EffectModifierDTO": {
         "type": "object",
         "properties": {
           "id": {
@@ -5283,17 +5344,17 @@
             "type": "string",
             "example": "uuid"
           },
-          "targetCode": {
-            "type": "string",
-            "example": "STATUS"
-          },
-          "targetType": {
+          "componentName": {
             "type": "string",
             "example": "Strength"
           },
-          "value": {
-            "type": "number",
-            "example": 10
+          "componentType": {
+            "type": "string",
+            "example": "STATUS"
+          },
+          "operationType": {
+            "type": "string",
+            "example": "ADD"
           },
           "createdAt": {
             "type": "string",
@@ -5306,58 +5367,58 @@
           "deletedAt": {}
         },
         "xml": {
-          "name": "EffectTargetDTO"
+          "name": "EffectModifierDTO"
         }
       },
-      "CreateEffectTargetDTO": {
+      "CreateEffectModifierDTO": {
         "type": "object",
         "properties": {
           "effectId": {
             "type": "string",
             "example": "uuid"
           },
-          "targetCode": {
-            "type": "string",
-            "example": "STATUS"
-          },
-          "targetType": {
+          "componentName": {
             "type": "string",
             "example": "Strength"
           },
-          "value": {
-            "type": "number",
-            "example": 10
+          "componentType": {
+            "type": "string",
+            "example": "STATUS"
+          },
+          "operationType": {
+            "type": "string",
+            "example": "ADD"
           }
         },
         "xml": {
-          "name": "CreateEffectTargetDTO"
+          "name": "CreateEffectModifierDTO"
         }
       },
-      "UpdateEffectTargetDTO": {
+      "UpdateEffectModifierDTO": {
         "type": "object",
         "properties": {
           "effectId": {
             "type": "string",
             "example": "new-uuid"
           },
-          "targetCode": {
+          "componentName": {
+            "type": "string",
+            "example": "Agility"
+          },
+          "componentType": {
             "type": "string",
             "example": "ATTRIBUTE"
           },
-          "targetType": {
+          "operationType": {
             "type": "string",
-            "example": "Dexterity"
-          },
-          "value": {
-            "type": "number",
-            "example": 15
+            "example": "MULT"
           }
         },
         "xml": {
-          "name": "UpdateEffectTargetDTO"
+          "name": "UpdateEffectModifierDTO"
         }
       },
-      "DeleteEffectTargetDTO": {
+      "DeleteEffectModifierDTO": {
         "type": "object",
         "properties": {
           "id": {
@@ -5366,7 +5427,7 @@
           }
         },
         "xml": {
-          "name": "DeleteEffectTargetDTO"
+          "name": "DeleteEffectModifierDTO"
         }
       },
       "CharacterAttributeDTO": {

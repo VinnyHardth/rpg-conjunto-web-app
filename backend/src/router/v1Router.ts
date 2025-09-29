@@ -87,8 +87,8 @@ router.use(
 );
 
 router.use(
-  "/effecttargets",
-  // #swagger.tags = ['EffectTargets']
+  "/effectmodifiers",
+  // #swagger.tags = ['effectmodifiers']
   effectModifierRouter
 );
 

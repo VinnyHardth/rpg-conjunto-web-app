@@ -11,93 +11,93 @@ const handleError = (res: Response, err: any, context: string): void => {
 
 const create = async (req: Request, res: Response): Promise<void> => {
   /*
-    #swagger.summary = 'Create a new effecttarget'
-    #swagger.description = 'Endpoint to create a new effecttarget.'
+    #swagger.summary = 'Create a new EffectModifier'
+    #swagger.description = 'Endpoint to create a new EffectModifier.'
     #swagger.requestBody = {
       required: true,
       content: {
         'application/json': {
-          schema: { $ref: '#/definitions/CreateEffectTargetDTO' }
+          schema: { $ref: '#/definitions/CreateEffectModifierDTO' }
         }
       }
     }
     #swagger.responses[201] = {
-      description: 'EffectTarget created successfully.',
-      schema: { $ref: '#/definitions/EffectTargetDTO' }
+      description: 'EffectModifier created successfully.',
+      schema: { $ref: '#/definitions/EffectModifierDTO' }
     }
     #swagger.responses[400] = { description: 'Bad Request' }
     #swagger.responses[422] = { description: 'Unprocessable Entity' }
     #swagger.responses[500] = { description: 'Internal Server Error' }
   */
 
-  const effecttargetData = req.body;
+  const EffectModifierData = req.body;
 
   try {
-    const newEffectTarget = await createEffectModifier(effecttargetData);
-    res.status(StatusCodes.CREATED).json(newEffectTarget);
+    const newEffectModifier = await createEffectModifier(EffectModifierData);
+    res.status(StatusCodes.CREATED).json(newEffectModifier);
   } catch (err) {
-    handleError(res, err, 'Error creating effecttarget');
+    handleError(res, err, 'Error creating EffectModifier');
   }
 };
 
 const getById = async (req: Request, res: Response): Promise<void> => {
   /*
-    #swagger.summary = 'Get effecttarget by ID'
-    #swagger.description = 'Endpoint to retrieve a effecttarget by ID.'
+    #swagger.summary = 'Get EffectModifier by ID'
+    #swagger.description = 'Endpoint to retrieve a EffectModifier by ID.'
     #swagger.parameters['id'] = {
       in: 'path',
-      description: 'ID of the effecttarget to retrieve',
+      description: 'ID of the EffectModifier to retrieve',
       required: true,
       type: 'string'
     }
     #swagger.responses[200] = {
-      description: 'EffectTarget retrieved successfully.',
-      schema: { $ref: '#/definitions/EffectTargetDTO' }
+      description: 'EffectModifier retrieved successfully.',
+      schema: { $ref: '#/definitions/EffectModifierDTO' }
     }
-    #swagger.responses[404] = { description: 'EffectTarget not found' }
+    #swagger.responses[404] = { description: 'EffectModifier not found' }
     #swagger.responses[500] = { description: 'Internal Server Error' }
   */
 
   const { id } = req.params;
 
   try {
-    const effecttarget = await getEffectModifierById(id);
-    if (!effecttarget) {
-      res.status(StatusCodes.NOT_FOUND).json({ message: 'EffectTarget not found' });
+    const EffectModifier = await getEffectModifierById(id);
+    if (!EffectModifier) {
+      res.status(StatusCodes.NOT_FOUND).json({ message: 'EffectModifier not found' });
       return;
     }
-    res.status(StatusCodes.OK).json(effecttarget);
+    res.status(StatusCodes.OK).json(EffectModifier);
   } catch (err) {
-    handleError(res, err, 'Error retrieving effecttarget');
+    handleError(res, err, 'Error retrieving EffectModifier');
   }
 };
 
 const getAll = async (req: Request, res: Response): Promise<void> => {
   /*
-    #swagger.summary = 'Get all effecttargets'
-    #swagger.description = 'Endpoint to retrieve all effecttargets.'
+    #swagger.summary = 'Get all EffectModifiers'
+    #swagger.description = 'Endpoint to retrieve all EffectModifiers.'
     #swagger.responses[200] = {
-      description: 'EffectTargets retrieved successfully.',
-      schema: { type: 'array', items: { $ref: '#/definitions/EffectTargetDTO' } }
+      description: 'EffectModifiers retrieved successfully.',
+      schema: { type: 'array', items: { $ref: '#/definitions/EffectModifierDTO' } }
     }
     #swagger.responses[500] = { description: 'Internal Server Error' }
   */
 
   try {
-    const effecttargets = await getEffectModifiers();
-    res.status(StatusCodes.OK).json(effecttargets);
+    const EffectModifiers = await getEffectModifiers();
+    res.status(StatusCodes.OK).json(EffectModifiers);
   } catch (err) {
-    handleError(res, err, 'Error retrieving effecttargets');
+    handleError(res, err, 'Error retrieving EffectModifiers');
   }
 };
 
 const update = async (req: Request, res: Response): Promise<void> => {
   /*
-    #swagger.summary = 'Update a effecttarget'
-    #swagger.description = 'Endpoint to update an existing effecttarget.'
+    #swagger.summary = 'Update a EffectModifier'
+    #swagger.description = 'Endpoint to update an existing EffectModifier.'
     #swagger.parameters['id'] = {
       in: 'path',
-      description: 'ID of the effecttarget to update',
+      description: 'ID of the EffectModifier to update',
       required: true,
       type: 'string'
     }
@@ -105,15 +105,15 @@ const update = async (req: Request, res: Response): Promise<void> => {
       required: true,
       content: {
         'application/json': {
-          schema: { $ref: '#/definitions/UpdateEffectTargetDTO' }
+          schema: { $ref: '#/definitions/UpdateEffectModifierDTO' }
         }
       }
     }
     #swagger.responses[200] = {
-      description: 'EffectTarget updated successfully.',
-      schema: { $ref: '#/definitions/EffectTargetDTO' }
+      description: 'EffectModifier updated successfully.',
+      schema: { $ref: '#/definitions/EffectModifierDTO' }
     }
-    #swagger.responses[404] = { description: 'EffectTarget not found' }
+    #swagger.responses[404] = { description: 'EffectModifier not found' }
     #swagger.responses[500] = { description: 'Internal Server Error' }
   */
 
@@ -121,38 +121,38 @@ const update = async (req: Request, res: Response): Promise<void> => {
   const updateData = req.body;
 
   try {
-    const updatedEffectTarget = await updateEffectModifier(id, updateData);
-    res.status(StatusCodes.OK).json(updatedEffectTarget);
+    const updatedEffectModifier = await updateEffectModifier(id, updateData);
+    res.status(StatusCodes.OK).json(updatedEffectModifier);
   } catch (err) {
-    handleError(res, err, 'Error updating effecttarget');
+    handleError(res, err, 'Error updating EffectModifier');
   }
 };
 
 const remove = async (req: Request, res: Response): Promise<void> => {
   /*
-    #swagger.summary = 'Delete a effecttarget'
-    #swagger.description = 'Endpoint to delete a effecttarget.'
+    #swagger.summary = 'Delete a EffectModifier'
+    #swagger.description = 'Endpoint to delete a EffectModifier.'
     #swagger.parameters['id'] = {
       in: 'path',
-      description: 'ID of the effecttarget to delete',
+      description: 'ID of the EffectModifier to delete',
       required: true,
       type: 'string'
     }
     #swagger.responses[200] = {
-      description: 'EffectTarget deleted successfully.',
-      schema: { $ref: '#/definitions/EffectTargetDTO' }
+      description: 'EffectModifier deleted successfully.',
+      schema: { $ref: '#/definitions/EffectModifierDTO' }
     }
-    #swagger.responses[404] = { description: 'EffectTarget not found' }
+    #swagger.responses[404] = { description: 'EffectModifier not found' }
     #swagger.responses[500] = { description: 'Internal Server Error' }
   */
 
   const { id } = req.params;
 
   try {
-    const deletedEffectTarget = await deleteEffectModifier(id);
-    res.status(StatusCodes.OK).json(deletedEffectTarget);
+    const deletedEffectModifier = await deleteEffectModifier(id);
+    res.status(StatusCodes.OK).json(deletedEffectModifier);
   } catch (err) {
-    handleError(res, err, 'Error deleting effecttarget');
+    handleError(res, err, 'Error deleting EffectModifier');
   }
 };
 

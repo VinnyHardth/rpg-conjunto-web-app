@@ -1,7 +1,7 @@
 import swaggerAutogen from 'swagger-autogen';
 import dotenv from 'dotenv';
 
-import { CostType, AttributeKind, itemType, SkillUseType, TargetType, EquipSlot, SourceType, charaterType } from '@prisma/client';
+import { CostType, AttributeKind, itemType, SkillUseType, EquipSlot, SourceType, charaterType, ComponentType, OperationType, DamageType, StackingPolicy } from '@prisma/client';
 
 dotenv.config();
 
@@ -314,14 +314,32 @@ const doc = {
     EffectDTO: {
       id: "uuid",
       name: "Poison",
+      description: "Causes damage to the target.",
+      imgUrl: "http://example.com/images/poison.png",
+      removableBy: "Item",
+
+      damageType: Object.values(DamageType)[0],
+      stackingPolicy: Object.values(StackingPolicy)[0],
+
+      createdAt: "2023-10-01T12:00:00Z",
+      updatedAt: "2023-10-01T12:00:00Z",
+      deletedAt: null
   },
     CreateEffectDTO: {
       name: "Poison",
+      description: "Causes damage to the target.",
       imgUrl: "http://example.com/images/poison.png",
+      removableBy: "Item",
+      damageType: Object.values(DamageType)[0],
+      stackingPolicy: Object.values(StackingPolicy)[0]
     },
     UpdateEffectDTO: {
-      name: "Burn",
-      imgUrl: "http://example.com/images/burn.png",
+      name: "Bleeding",
+      description: "Causes damage to the target.",
+      imgUrl: "http://example.com/images/bleeding.png",
+      removableBy: "Item",
+      damageType: Object.values(DamageType)[1],
+      stackingPolicy: Object.values(StackingPolicy)[1]
     },
     DeleteEffectDTO: {
       id: "uuid"
@@ -354,30 +372,30 @@ const doc = {
       id: "uuid"
     },
 
-    // EffectTarget definitions
-    EffectTargetDTO: {
+    // EffectModifier definitions
+    EffectModifierDTO: {
       id: "uuid",
       effectId: "uuid",
-      targetCode: Object.values(TargetType)[0],
-      targetType: "Strength",
-      value: 10,
+      componentName: "Strength",
+      componentType: Object.values(ComponentType)[0],
+      operationType: Object.values(OperationType)[0],
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
       deletedAt: null
     },
-    CreateEffectTargetDTO: {
+    CreateEffectModifierDTO: {
       effectId: "uuid",
-      targetCode: Object.values(TargetType)[0],
-      targetType: "Strength",
-      value: 10,
+      componentName: "Strength",
+      componentType: Object.values(ComponentType)[0],
+      operationType: Object.values(OperationType)[0],
     },
-    UpdateEffectTargetDTO: {
+    UpdateEffectModifierDTO: {
       effectId: "new-uuid",
-      targetCode: Object.values(TargetType)[1],
-      targetType: "Dexterity",
-      value: 15,
+      componentName: "Agility",
+      componentType: Object.values(ComponentType)[1],
+      operationType: Object.values(OperationType)[1],
     },
-    DeleteEffectTargetDTO: {
+    DeleteEffectModifierDTO: {
       id: "uuid"
     },
 
