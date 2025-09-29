@@ -405,8 +405,6 @@ model ItemSkills {                 // Items ↔ Abilities (catálogo N:N)
   itemId     String @db.Char(36)
   cooldown   Int    @default(0)
 
-  formula   String? @db.VarChar(191)
-
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   deletedAt DateTime?
