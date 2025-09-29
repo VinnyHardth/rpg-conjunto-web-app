@@ -1,3 +1,4 @@
+import { getArchetypeById } from "../resources/archetype/archetype.services";
 import { getAttributesByKind } from "../resources/attributes/attributes.services";
 import { getCharacterAttributesByCharacterId } from "../resources/characterAttribute/characterAttribute.services";
 
@@ -13,7 +14,7 @@ type Expertises = {
   reflexes: number;
 };
 
-type CharacterStats = {
+type CharacterAttributes = {
   strength: number;
   dexterity: number;
   intelligence: number;
@@ -23,7 +24,19 @@ type CharacterStats = {
   destiny: number;
 };
 
-const expertiseFormulas: Record<keyof Expertises, (s: CharacterStats) => number> = {
+type CharacterStatus = {
+  hp: number;
+  mp: number;
+  tp: number;
+}
+
+type ArchetypeMod = {
+  hp_mod: number;
+  mp_mod: number;
+  tp_mod: number;
+}
+
+const expertiseFormulas: Record<keyof Expertises, (s: CharacterAttributes) => number> = {
   magicRes: (s) => Math.floor((s.intelligence + s.constitution) / 2),
   fisicalRes: (s) => Math.floor((s.strength + s.constitution) / 2),
   perception: (s) => Math.floor((s.dexterity + s.wisdom) / 2),
@@ -42,7 +55,7 @@ export const computeExpertises = async (characterId: string): Promise<Expertises
   const attributes = await getAttributesByKind("ATTRIBUTE");
 
   // combina stats base com bônus de itens/extras
-  const stats: CharacterStats = {
+  const stats: CharacterAttributes = {
     strength: characterAttributes.find((ca) => ca.attributeId === attributes.find((a) => a.name === "Strength")?.id)?.valueBase || 0,
     dexterity: characterAttributes.find((ca) => ca.attributeId === attributes.find((a) => a.name === "Dexterity")?.id)?.valueBase || 0,
     intelligence: characterAttributes.find((ca) => ca.attributeId === attributes.find((a) => a.name === "Intelligence")?.id)?.valueBase || 0,
@@ -64,97 +77,46 @@ export const computeExpertises = async (characterId: string): Promise<Expertises
 };
 
 
+const statusFormulas: Record<keyof CharacterStatus, (s: CharacterAttributes, a: ArchetypeMod) => number> = {
+  // hp = Math.ceil(10 + ((con) + 0.25 * str + 0.25 * int) * multiplier);
+  hp: (s, a) => Math.ceil(10 + ((s.constitution + 0.25 * s.strength + 0.25 * s.intelligence) * a.hp_mod)),
+  // mp = 10 + Math.ceil(((int + wis) / 2)) * multiplier;
+  mp: (s, a) => 10 + Math.ceil(((s.intelligence + s.wisdom) / 2)) * a.mp_mod,
+  // tp = 10 + Math.ceil(((dex + str) / 2)) * multiplier; 
+  tp: (s, a) => 10 + Math.ceil(((s.dexterity + s.strength) / 2)) * a.tp_mod
+}
 
-// export const calculateMaxHP = (stats: StatsDTO, bonuses?: Partial<Record<keyof StatsDTO, number>>, archetype: string = "None") => {
-//     const growthTable: Record<string, number> = {
-//         "Melee": 4,
-//         "Ranged": 2,
-//         "Magic": 2,
-//         "Healer": 3,
-//         "Tank": 8,
-//         "Tank-Healer": 7,
-//         "Melee-Magic": 3,
-//         "Ranged-Magic": 2,
-//         "Magic-Healer": 1,
-//         "Tank-Melee": 6,
-//         "Tank-Ranged": 6,
-//         "Tank-Magic": 6,
-//         "None": 5
-//     };
+export const computeStatus = async (characterId: string, archetypeId: string): Promise<CharacterStatus> => {
+  // busca atributos do personagem
+  const characterAttributes = await getCharacterAttributesByCharacterId(characterId);
+  const attributes = await getAttributesByKind("ATTRIBUTE");
 
-//     // Combina stats base com bônus de itens/extras
-//     const s = { ...stats, ...bonuses };
+  // combina stats base com bônus de itens/extras
+  const stats: CharacterAttributes = {
+    strength: characterAttributes.find((ca) => ca.attributeId === attributes.find((a) => a.name === "Strength")?.id)?.valueBase || 0,
+    dexterity: characterAttributes.find((ca) => ca.attributeId === attributes.find((a) => a.name === "Dexterity")?.id)?.valueBase || 0,
+    intelligence: characterAttributes.find((ca) => ca.attributeId === attributes.find((a) => a.name === "Intelligence")?.id)?.valueBase || 0,
+    constitution: characterAttributes.find((ca) => ca.attributeId === attributes.find((a) => a.name === "Constitution")?.id)?.valueBase || 0,
+    wisdom: characterAttributes.find((ca) => ca.attributeId === attributes.find((a) => a.name === "Wisdom")?.id)?.valueBase || 0,
+    charisma: characterAttributes.find((ca) => ca.attributeId === attributes.find((a) => a.name === "Charisma")?.id)?.valueBase || 0,
+    destiny: characterAttributes.find((ca) => ca.attributeId === attributes.find((a) => a.name === "Destiny")?.id)?.valueBase || 0,
+  };
 
-//     const con = s.constitution || 0;
-//     const str = s.strength || 0;
-//     const int = s.intelligence || 0;
+  const archetype = await getArchetypeById(archetypeId);
 
-//     const multiplier = growthTable[archetype] || 5;
+  const archetypeMod: ArchetypeMod = archetype
+    ? {
+        hp_mod: archetype.hp ?? 0,
+        mp_mod: archetype.mp ?? 0,
+        tp_mod: archetype.tp ?? 0,
+      }
+    : { hp_mod: 0, mp_mod: 0, tp_mod: 0 };
 
-//     // Fórmula baseada na planilha:
-//     // 10 + ((CON + 0,25*FOR + 0,25*INT) * multiplier)
-//     const hp = 10 + ((con) + 0.25 * str + 0.25 * int) * multiplier;
+  // aplica todas as fórmulas
+  const result = Object.fromEntries(
+    Object.entries(statusFormulas).map(([key, formula]) => [key, formula(stats, archetypeMod)])
+  ) as CharacterStatus;
 
-//     return Math.ceil(hp); // ARREDONDAR.PARA.CIMA
-// }
+  return result;
+};
 
-
-// export const calculateMaxMP = (stats: StatsDTO, bonuses?: Partial<Record<keyof StatsDTO, number>>, archetype: string = "None") => {
-//     const growthTable: Record<string, number> = {
-//         "Melee": 4,
-//         "Ranged": 4,
-//         "Magic": 11,
-//         "Healer": 9,
-//         "Tank": 2,
-//         "Tank-Healer": 5,
-//         "Melee-Magic": 6,
-//         "Ranged-Magic": 5,
-//         "Magic-Healer": 12,
-//         "Tank-Melee": 3,
-//         "Tank-Ranged": 2,
-//         "Tank-Magic": 7,
-//         "None": 5
-//     };
-//     // Combina stats base com bônus de itens/extras
-//     const s = { ...stats, ...bonuses }; 
-//     const int = s.intelligence || 0;
-//     const wis = s.wisdom || 0;
-
-//     console.log("Calculating MP with stats:", s, "and archetype:", archetype);
-
-//     const multiplier = growthTable[archetype] || 5;
-
-//     // Fórmula baseada na planilha:
-//     // 10 + ((INT + SAB) * multiplier)
-//     const mp = 10 + Math.ceil(((int + wis) / 2)) * multiplier;
-//     return mp; // ARREDONDAR.PARA.CIMA
-// }
-
-// export const calculateMaxTP = (stats: StatsDTO, bonuses?: Partial<Record<keyof StatsDTO, number>>, archetype: string = "None") => {
-//     const growthTable: Record<string, number> = {
-//         "Melee": 7,
-//         "Ranged": 9,
-//         "Magic": 2,
-//         "Healer": 3,
-//         "Tank": 5,
-//         "Tank-Healer": 3,
-//         "Melee-Magic": 6,
-//         "Ranged-Magic": 8,
-//         "Magic-Healer": 2,
-//         "Tank-Melee": 6,
-//         "Tank-Ranged": 7,
-//         "Tank-Magic": 2,
-//         "None": 5
-//     };
-//     // Combina stats base com bônus de itens/extras
-//     const s = { ...stats, ...bonuses }; 
-//     const dex = s.dexterity || 0;
-//     const str = s.strength || 0;
-
-//     const multiplier = growthTable[archetype] || 5;
-
-//     // Fórmula baseada na planilha:
-//     // 10 + ((INT + SAB) * multiplier)
-//     const tp = 10 + Math.ceil(((dex + str) / 2)) * multiplier;
-//     return tp; // ARREDONDAR.PARA.CIMA
-// }
