@@ -4604,6 +4604,10 @@
             "type": "number",
             "example": 0
           },
+          "hp_cost": {
+            "type": "number",
+            "example": 0
+          },
           "cooldown_value": {
             "type": "number",
             "example": 5
@@ -4649,6 +4653,10 @@
             "type": "number",
             "example": 0
           },
+          "hp_cost": {
+            "type": "number",
+            "example": 0
+          },
           "cooldown_value": {
             "type": "number",
             "example": 5
@@ -4675,11 +4683,15 @@
           },
           "cost_type": {
             "type": "string",
-            "example": "TP"
+            "example": "COMBINATION"
           },
           "mp_cost": {
             "type": "number",
             "example": 0
+          },
+          "hp_cost": {
+            "type": "number",
+            "example": 10
           },
           "tp_cost": {
             "type": "number",

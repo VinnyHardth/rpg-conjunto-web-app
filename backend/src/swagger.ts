@@ -167,6 +167,7 @@ const doc = {
       cost_type: Object.values(CostType)[0],
       mp_cost: 20,
       tp_cost: 0,
+      hp_cost: 0,
       cooldown_value: 5,
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
@@ -179,14 +180,16 @@ const doc = {
       cost_type: Object.values(CostType)[0],
       mp_cost: 20,
       tp_cost: 0,
+      hp_cost: 0,
       cooldown_value: 5
     },
     UpdateAbilitiesDTO: {
       name: "Devastating Blow",
       description: "An even more powerful attack.",
       imageURL: "http://example.com/images/devastating_blow.png",
-      cost_type: Object.values(CostType)[1],
+      cost_type: Object.values(CostType)[3],
       mp_cost: 0,
+      hp_cost: 10,
       tp_cost: 10,
       cooldown_value: 3
     },
@@ -391,7 +394,7 @@ const doc = {
     },
     UpdateEffectModifierDTO: {
       effectId: "new-uuid",
-      componentName: "Agility",
+      componentName: "Agility" ,
       componentType: Object.values(ComponentType)[1],
       operationType: Object.values(OperationType)[1],
     },
