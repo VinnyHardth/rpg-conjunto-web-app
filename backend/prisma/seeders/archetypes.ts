@@ -4,6 +4,7 @@ const prisma = new PrismaClient();
 
 const archetypeData: Prisma.ArchetypeCreateInput[] = [
     {
+        id: "1",
         name: "Melee",
         hp: 4,
         mp: 4,
