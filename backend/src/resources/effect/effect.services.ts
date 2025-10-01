@@ -22,3 +22,5 @@ export const updateEffect = async (id: string, data: UpdateEffectDTO): Promise<E
 export const deleteEffect = async (id: string): Promise<EffectDTO> => {
   return prisma.effect.update({ where: { id }, data: { deletedAt: new Date() } });
 };
+
+

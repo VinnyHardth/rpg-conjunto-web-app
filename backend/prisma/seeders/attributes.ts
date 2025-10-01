@@ -40,7 +40,10 @@ const attributesData: Prisma.AttributesCreateInput[] = [
 ];
 
 export const attributesSeeder = async () => {
-    for (const attribute of attributesData) {
-        await prisma.attributes.create({ data: attribute });
+    const attributes = await prisma.attributes.findMany();
+    if (attributes.length === 0) {
+        for (const attribute of attributesData) {
+           await prisma.attributes.create({ data: attribute });
+        }
     }
 }
