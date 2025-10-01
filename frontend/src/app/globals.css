@@ -24,3 +24,165 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* player-status-card.css ou styles.module.css */
+
+.player-status-card {
+    /* Fundo escuro e layout principal */
+    background-color: #2a2c37;
+    padding: 10px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    font-family: sans-serif;
+    border-radius: 5px;
+}
+
+/* Avatar */
+.avatar-container {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    overflow: hidden;
+    /* Borda azul clara do círculo */
+    border: 5px solid #007bff; 
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+    margin-bottom: 10px;
+}
+
+.player-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Barras de Status */
+.status-bars-group {
+    width: 100%;
+    padding: 0 5px;
+}
+
+/* HP Row */
+.hp-bar-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 14px;
+    border: #E0E0E0;
+    position: relative;
+    height: 30px; /* Altura total da linha HP */
+}
+
+.hp-bar-row .label {
+    /* Label 'HP' no canto esquerdo */
+    font-weight: bold;
+    color: #E63946;
+    background-color: #E0E0E0;
+    border: white;
+    border-style: solid;
+    border-width: 5px;
+    padding: 5px 5px;
+    font-size: 1.2em;
+    margin-right: -5px;
+}
+
+.hp-bar-background {
+    flex-grow: 1; /* Ocupa o espaço restante */
+    background-color: #555;
+    border-radius: 3px;
+    border: #ffffff;
+    border-style: solid;
+    border-width: 5px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: -12px;
+}
+
+.hp-bar-background.large {
+    height: 35px; /* Mais alto para o HP */
+}
+
+.hp-bar-background.small {
+    height: 12px; /* Mais fino para MP/TP */
+}
+
+.bar-background {
+    flex-grow: 1; /* Ocupa o espaço restante */
+    background-color: #555;    
+    overflow: hidden;
+    position: relative;
+}
+
+.bar-background.large {
+    height: 35px; /* Mais alto para o HP */
+}
+
+.bar-background.small {
+    height: 12px; /* Mais fino para MP/TP */
+}
+
+.hp-fill {
+    height: 100%;
+    background-color: #E63946; /* Vermelho para HP */
+    transition: width 0.3s ease-out;
+}
+
+/* losango principal */
+.diamond {
+  width: 45px;
+  height: 45px;
+  background: #E0E0E0;
+  border: 5px solid #fff;
+  transform: rotate(45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  margin-left: -15px; /* encaixar no trapezoide */
+  z-index: 2;
+}
+.diamond-value {
+  transform: rotate(-45deg);
+  font-weight: bold;
+  color: #e63946;
+  font-size: 1.0rem;
+}
+/* MP/TP Rows */
+/* Container geral */
+.secondary-bars {
+  display: flex;
+  flex-direction: column;
+  width: 85%;
+}
+
+/* Cada barra */
+.bar-row {
+  position: relative;
+  height: 20px; /* altura igual pra todas */
+  display: flex;
+  align-items: center;
+  overflow: hidden; /* segura o corte diagonal */
+}
+
+/* Preenchimento da barra */
+.bar-fill {
+  height: 100%;
+  flex: 1;
+  clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%);
+}
+
+/* Cores específicas */
+.bar-fill.mp { background-color: #007bff;  } /* azul */
+.bar-fill.tp { background-color: #ffc107; } /* amarelo */
+
+/* Labels dentro das barras */
+.bar-label {
+  position: absolute;
+  right: 10px;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.bar-label.mp { color: white; }
+.bar-label.tp { color: white; }
