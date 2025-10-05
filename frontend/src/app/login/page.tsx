@@ -21,8 +21,8 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.post("/auth/login", form);
-      router.push("/dashboard");
+      await api.put("/auth/login", form);
+      router.push("/home");
     } catch (error) {
       const err = error as AxiosError<{ message?: string }>;
       setError(err.response?.data?.message || "Email ou senha inválidos");
@@ -39,7 +39,7 @@ export default function LoginPage() {
       </form>
       <p className="mt-4 text-center text-sm text-gray-600">
         Não tem conta?{" "}
-        <a href="/register" className="text-indigo-600 hover:underline">
+        <a href="/signup" className="text-indigo-600 hover:underline">
           Registre-se
         </a>
       </p>

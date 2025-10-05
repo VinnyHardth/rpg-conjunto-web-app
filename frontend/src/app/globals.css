@@ -38,6 +38,10 @@ body {
     color: white;
     font-family: sans-serif;
     border-radius: 5px;
+    flex: 1 1 250px; /* 👈 permite encolher até 250px */
+    max-width: 300px; /* 👈 e não passar disso */
+    min-width: 220px; /* 👈 largura mínima */
+    height: 100%;
 }
 
 /* Avatar */
@@ -96,7 +100,7 @@ body {
     border-width: 5px;
     overflow: hidden;
     position: relative;
-    margin-bottom: -12px;
+    margin-bottom: -13px;
 }
 
 .hp-bar-background.large {
@@ -138,7 +142,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 10px;
+  margin-top: 12px;
   margin-left: -15px; /* encaixar no trapezoide */
   z-index: 2;
 }
@@ -152,8 +156,18 @@ body {
 /* Container geral */
 .secondary-bars {
   display: flex;
+  margin-top: -5px;
   flex-direction: column;
   width: 85%;
+}
+
+.tp-bar-row {
+  position: relative;
+  height: 20px; /* altura igual pra todas */
+  width: 95%;
+  display: flex;
+  align-items: center;
+  overflow: hidden; /* segura o corte diagonal */
 }
 
 /* Cada barra */
@@ -165,11 +179,23 @@ body {
   overflow: hidden; /* segura o corte diagonal */
 }
 
+.bar-background {
+  position: relative;
+  background-color: #555;
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%);
+  overflow: hidden;
+}
+
 /* Preenchimento da barra */
 .bar-fill {
+  position: absolute;
   height: 100%;
-  flex: 1;
+  top: 0;
+  left: 0;
   clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%);
+  transition: width 0.3s ease-out;
 }
 
 /* Cores específicas */
@@ -182,6 +208,7 @@ body {
   right: 10px;
   font-size: 0.85rem;
   font-weight: bold;
+  z-index: 2;
 }
 
 .bar-label.mp { color: white; }
