@@ -39,15 +39,14 @@ body {
     font-family: sans-serif;
     border-radius: 5px;
     flex: 1 1 250px; /* 👈 permite encolher até 250px */
-    max-width: 300px; /* 👈 e não passar disso */
+    max-width: 280px; /* 👈 e não passar disso */
     min-width: 220px; /* 👈 largura mínima */
-    height: 100%;
 }
 
 /* Avatar */
 .avatar-container {
-    width: 250px;
-    height: 250px;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     overflow: hidden;
     /* Borda azul clara do círculo */

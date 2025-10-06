@@ -5,9 +5,9 @@ import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 
 import api from "@/lib/axios";
-import AuthLayout from "@/components/forms/AuthLayout";
-import InputField from "@/components/forms/InputField";
-import Button from "@/components/forms/Button";
+import AuthLayout from "@/components/LoginForms/AuthLayout";
+import InputField from "@/components/LoginForms/InputField";
+import Button from "@/components/LoginForms/Button";
 
 export default function SignupPage() {
     const router = useRouter();

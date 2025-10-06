@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
-import { createStatus, getStatusById, getStatuss, updateStatus, deleteStatus } from './status.services';
+import { createStatus, getStatusById, getStatusByCharacterId, getStatus, updateStatus, deleteStatus } from './status.services';
 
 const handleError = (res: Response, err: any, context: string): void => {
   console.error(`${context}:`, err);
@@ -72,6 +72,38 @@ const getById = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+const getByCharacterId = async (req: Request, res: Response): Promise<void> => {
+  /*
+    #swagger.summary = 'Get status by character ID'
+    #swagger.description = 'Endpoint to retrieve a status by character ID.'
+    #swagger.parameters['characterId'] = {
+      in: 'path',
+      description: 'ID of the character to retrieve status for',
+      required: true,
+      type: 'string'
+    }
+    #swagger.responses[200] = {
+      description: 'Status retrieved successfully.',
+      schema: { $ref: '#/definitions/StatusDTO' }
+    }
+    #swagger.responses[404] = { description: 'Status not found' }
+    #swagger.responses[500] = { description: 'Internal Server Error' }
+  */
+
+  const { characterId } = req.params;
+
+  try {
+    const status = await getStatusByCharacterId(characterId);
+    if (!status) {
+      res.status(StatusCodes.NOT_FOUND).json({ message: 'Status not found' });
+      return;
+    }
+    res.status(StatusCodes.OK).json(status);
+  } catch (err) {
+    handleError(res, err, 'Error retrieving status');
+  }
+};
+
 const getAll = async (req: Request, res: Response): Promise<void> => {
   /*
     #swagger.summary = 'Get all statuss'
@@ -84,7 +116,7 @@ const getAll = async (req: Request, res: Response): Promise<void> => {
   */
 
   try {
-    const statuss = await getStatuss();
+    const statuss = await getStatus();
     res.status(StatusCodes.OK).json(statuss);
   } catch (err) {
     handleError(res, err, 'Error retrieving statuss');
@@ -156,4 +188,4 @@ const remove = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export default { create, getById, getAll, update, remove };
+export default { create, getById, getByCharacterId, getAll, update, remove };

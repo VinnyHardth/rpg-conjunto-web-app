@@ -8,6 +8,7 @@ const router = Router();
 // read methods ---------------------------------------------------------------
 router.get('/', statusController.getAll);
 router.get('/:id', statusController.getById);
+router.get('/character/:characterId', statusController.getByCharacterId);
 
 // write methods --------------------------------------------------------------
 router.post('/', validateRequestBody(statusSchemas.createStatusSchema), statusController.create);

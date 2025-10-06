@@ -11,8 +11,12 @@ export const getStatusById = async (id: string): Promise<StatusDTO | null> => {
   return prisma.status.findUnique({ where: { id } });
 };
 
-export const getStatuss = async (): Promise<StatusDTO[]> => {
+export const getStatus = async (): Promise<StatusDTO[]> => {
   return prisma.status.findMany();
+};
+
+export const getStatusByCharacterId = async (characterId: string): Promise<StatusDTO[]> => {
+  return prisma.status.findMany({ where: { characterId } });
 };
 
 export const updateStatus = async (id: string, data: UpdateStatusDTO): Promise<StatusDTO> => {
