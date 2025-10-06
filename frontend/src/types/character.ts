@@ -40,6 +40,6 @@ export type DerivedStats = {
   hp: number;
   mp: number;
   tp: number;
-  movimento: number;
+  mov: number;
   pericias: Record<string, number>;
 };

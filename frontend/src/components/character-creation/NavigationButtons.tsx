@@ -26,7 +26,7 @@ export default function NavigationButtons({
           }
         `}
       >
-        ⬅️ Anterior
+        Anterior
       </button>
 
       {currentStep < totalSteps - 1 ? (
@@ -34,14 +34,14 @@ export default function NavigationButtons({
           onClick={onNext}
           className="bg-blue-600 text-white px-8 py-2 rounded-lg font-semibold hover:bg-blue-700 shadow-md transition-colors"
         >
-          Próximo Passo ➡️
+          Próximo Passo
         </button>
       ) : (
         <button
           onClick={onFinish}
           className="bg-green-600 text-white px-8 py-2 rounded-lg font-bold hover:bg-green-700 shadow-xl transition-colors transform hover:scale-[1.02]"
         >
-          ✨ Finalizar Criação
+        Finalizar Criação
         </button>
       )}
     </div>

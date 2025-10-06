@@ -32,7 +32,7 @@ export const calculateDerivedStats = (
     reflexes: Math.floor((dex + con) / 2),
   };
 
-  const movimento = Math.ceil((dex + con + pericias.magicRes + pericias.fisicalRes + pericias.determination) / 2);
+  const mov = Math.ceil((dex + con + pericias.magicRes + pericias.fisicalRes + pericias.determination) / 2);
 
-  return { hp, mp, tp, movimento, pericias };
+  return { hp, mp, tp, mov, pericias };
 };

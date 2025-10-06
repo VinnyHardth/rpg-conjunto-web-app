@@ -23,8 +23,8 @@ export default function StepThree({ characterData, derivedStats }: StepThreeProp
           <div><span className="font-semibold">Raça:</span> {characterData.raca || "—"}</div>
           <div><span className="font-semibold text-red-600">HP Máximo:</span> <span className="font-bold">{derivedStats.hp}</span></div>
           <div><span className="font-semibold text-blue-600">MP Máximo:</span> <span className="font-bold">{derivedStats.mp}</span></div>
-          <div><span className="font-semibold text-green-600">Movimento:</span> <span className="font-bold">{derivedStats.movimento}m</span></div>
-          <div><span className="font-semibold text-purple-600">Percepção:</span> <span className="font-bold">{derivedStats.pericias.perception}</span></div>
+          <div><span className="font-semibold text-yellow-600">TP Máximo:</span> <span className="font-bold">{derivedStats.tp}</span></div>
+          <div><span className="font-semibold text-green-600">Movimento:</span> <span className="font-bold">{derivedStats.mov}m</span></div>
         </div>
       </div>
       <p className="text-sm text-gray-500 mt-6">
