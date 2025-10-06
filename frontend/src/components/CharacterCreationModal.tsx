@@ -6,9 +6,9 @@ import {
   AttributeKey, 
   ATTRIBUTE_KEYS, 
   STEP_NAMES,
-  DerivedStats,
-  Archetype
+  DerivedStats 
 } from "@/types/character";
+import { Archetype } from "@/types/character";
 import StepIndicator from "./character-creation/StepIndicator";
 import NavigationButtons from "./character-creation/NavigationButtons";
 import StepOne from "./character-creation/steps/StepOne";
@@ -20,6 +20,7 @@ interface CharacterCreationModalProps {
   onClose: () => void;
 }
 
+// Mova a initialCharacterData para fora do componente para ser reutilizável
 const initialCharacterData: CharacterData = {
   nome: "",
   raca: "",
@@ -43,6 +44,12 @@ export default function CharacterCreationModal({ isOpen, onClose }: CharacterCre
   const [currentStep, setCurrentStep] = useState(0);
   const [characterData, setCharacterData] = useState<CharacterData>(initialCharacterData);
 
+  // Função para resetar completamente o formulário
+  const resetForm = () => {
+    setCharacterData(initialCharacterData);
+    setCurrentStep(0);
+  };
+
   const attributesAsNumbers = useMemo(() => {
     return ATTRIBUTE_KEYS.reduce((acc, key) => ({
       ...acc,
@@ -58,6 +65,13 @@ export default function CharacterCreationModal({ isOpen, onClose }: CharacterCre
       characterData.archetype.tp
     );
   }, [attributesAsNumbers, characterData.archetype.hp, characterData.archetype.mp, characterData.archetype.tp]);
+
+  // Resetar o formulário quando o modal abrir
+  React.useEffect(() => {
+    if (isOpen) {
+      resetForm();
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -99,6 +113,21 @@ export default function CharacterCreationModal({ isOpen, onClose }: CharacterCre
 
   const handleFinish = () => {
     console.log("Personagem Criado:", characterData, derivedStats);
+    
+    // Aqui você pode adicionar a lógica para salvar no banco de dados
+    // Por exemplo:
+    // await saveCharacter(characterData);
+    
+    // Resetar o formulário após criar o personagem
+    resetForm();
+    
+    // Fechar o modal
+    onClose();
+  };
+
+  const handleClose = () => {
+    // Resetar o formulário ao fechar também (opcional)
+    resetForm();
     onClose();
   };
 
@@ -126,7 +155,7 @@ export default function CharacterCreationModal({ isOpen, onClose }: CharacterCre
     <div className="fixed inset-0 bg-gray-800/75 flex justify-center items-center z-50 p-4">
       <div className="bg-white p-6 rounded-xl w-full max-w-4xl relative shadow-2xl transform transition-all duration-300 scale-100">
         <button
-          onClick={onClose}
+          onClick={handleClose} // Usar handleClose em vez de onClose direto
           className="absolute top-4 right-4 text-gray-400 hover:text-red-600 transition-colors text-2xl"
           aria-label="Fechar Modal"
         >
