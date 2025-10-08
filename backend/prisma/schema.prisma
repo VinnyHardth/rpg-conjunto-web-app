@@ -131,6 +131,7 @@ model Character {
   race         String?  @db.VarChar(191)
   age          Int?
   height       Float?
+  gender       String   @db.VarChar(191)
   money        Decimal  @default(0) @db.Decimal(12, 2)
 
   annotations  String?  @db.LongText()

@@ -10,9 +10,12 @@ const characterData: Prisma.CharacterCreateInput[] = [
     age: 28,
     height: 1.82,
     money: 150,
+    type: "PC",
+    generation: 1,
+    gender: "Masculo",
     annotations: "Um guerreiro novato que busca glória.",
     user: { connect: { id: "1" } },         // relaciona com User
-    archetype: { connect: { id: "1" } },    // relaciona com Archetype
+    archetype: { connect: { id: "10000000-0000-0000-0000-000000000000" } },    // relaciona com Archetype
   },
 ];
 

@@ -11,6 +11,7 @@ const createCharacterSchema = Joi.object<CreateCharacterDTO>({
   height: Joi.number().min(0).required(),
   money: Joi.number().min(0).required(),
   imageUrl: Joi.string().uri().optional(),
+  gender: Joi.string().required(),
   type: Joi.string().valid(...Object.values(charaterType)).required(),
   generation: Joi.number().integer().min(0).required(),
   userId: Joi.string().uuid().required(),
@@ -28,6 +29,7 @@ const updateCharacterSchema = Joi.object<UpdateCharacterDTO>({
   type: Joi.string().valid(...Object.values(charaterType)),
   generation: Joi.number().integer().min(0),
   imageUrl: Joi.string().uri(),
+  gender: Joi.string(),
   archetypeId: Joi.string().uuid(),
   annotations: Joi.string().min(0).max(1000),
 }).min(1); // Pelo menos um campo deve ser fornecido para atualização

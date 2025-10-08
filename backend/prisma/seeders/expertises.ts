@@ -50,7 +50,13 @@ const expertisesData: Prisma.AttributesCreateInput[] = [
 ];
 
 export const expertisesSeeder = async () => {
-    const expertises = await prisma.attributes.findMany();
+    const expertises = await prisma.attributes.findMany(
+        {
+            where: {
+                kind: "EXPERTISE"
+            }
+        }
+    );
     if (expertises.length === 0) {
         for (const expertises of expertisesData) {
            await prisma.attributes.create({ data: expertises });

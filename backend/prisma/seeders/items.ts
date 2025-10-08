@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 const itemData: Prisma.ItemsCreateInput[] = [
   {
-    id: "1",
+    id: "10000000-0000-0000-0000-000000000000",
     name: "Espada Longa",
     description: "Uma espada de aço comum, usada por guerreiros novatos.",
     itemType: "EQUIPPABLE",

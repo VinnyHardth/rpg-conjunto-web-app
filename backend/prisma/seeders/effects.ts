@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 const effectData: Prisma.EffectCreateInput[] = [
   {
-    id: "1",
+    id: "10000000-0000-0000-0000-000000000000",
     name: "Dano",
     description: "Causa dano verdadeiro",
     damageType: "TRUE",
