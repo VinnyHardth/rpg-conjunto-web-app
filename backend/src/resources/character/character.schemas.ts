@@ -28,7 +28,7 @@ const updateCharacterSchema = Joi.object<UpdateCharacterDTO>({
   money: Joi.number().min(0),
   type: Joi.string().valid(...Object.values(charaterType)),
   generation: Joi.number().integer().min(0),
-  imageUrl: Joi.string().uri(),
+  imageUrl: Joi.string().uri(), 
   gender: Joi.string(),
   archetypeId: Joi.string().uuid(),
   annotations: Joi.string().min(0).max(1000),

@@ -1,7 +1,10 @@
-import { DerivedStats } from "@/types/character";
-
 interface ResourceDisplayProps {
-  derivedStats: DerivedStats;
+  derivedStats: {
+    hp: number;
+    mp: number;
+    tp: number;
+    movimento: number;
+  };
 }
 
 export default function ResourceDisplay({ derivedStats }: ResourceDisplayProps) {
@@ -9,7 +12,7 @@ export default function ResourceDisplay({ derivedStats }: ResourceDisplayProps) 
     { label: "HP", value: derivedStats.hp, color: "red", icon: "❤️" },
     { label: "MP", value: derivedStats.mp, color: "blue", icon: "✨" },
     { label: "TP", value: derivedStats.tp, color: "orange", icon: "⚡" },
-    { label: "Movimento", value: derivedStats.mov, unit: "m", color: "green", icon: "👟" },
+    { label: "Movimento", value: derivedStats.movimento, unit: "m", color: "green", icon: "👟" },
   ];
 
   return (

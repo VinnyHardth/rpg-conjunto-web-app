@@ -1,9 +1,9 @@
 import AvatarUpload from "../AvatarUpload";
 import BasicInfoForm from "../BasicInfoForm";
-import { CharacterData } from "@/types/character";
+import { CreateFullCharacter } from "@/types/models";
 
 interface StepOneProps {
-  characterData: CharacterData;
+  characterData: CreateFullCharacter;
   onDataChange: (section: "base", key: string, value: string | number) => void;
 }
 
