@@ -3,7 +3,11 @@
 import React, { useState } from "react";
 import CharacterCreationModal from "./CharacterCreationModal";
 
-export default function CreateIcon() {
+type Props = {
+  userId: string ;
+};
+
+export default function CreateIcon({userId}: Props) {
   const [isModalOpen, setModalOpen] = useState(false);
 
   return (
@@ -31,6 +35,7 @@ export default function CreateIcon() {
       <CharacterCreationModal
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
+        userId={userId}
       />
     </>
   );
