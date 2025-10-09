@@ -1,5 +1,5 @@
-import Joi from 'joi';
-import { CreateArchetypeDTO, UpdateArchetypeDTO } from './archetype.types';
+import Joi from "joi";
+import { CreateArchetypeDTO, UpdateArchetypeDTO } from "./archetype.types";
 
 export const createArchetypeSchema = Joi.object<CreateArchetypeDTO>({
   name: Joi.string().required(),

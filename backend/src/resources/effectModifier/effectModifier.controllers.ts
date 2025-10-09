@@ -1,6 +1,12 @@
-import { Request, Response } from 'express';
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
-import { createEffectModifier, getEffectModifierById, getEffectModifiers, updateEffectModifier, deleteEffectModifier } from './effectModifier.services';
+import { Request, Response } from "express";
+import { ReasonPhrases, StatusCodes } from "http-status-codes";
+import {
+  createEffectModifier,
+  getEffectModifierById,
+  getEffectModifiers,
+  updateEffectModifier,
+  deleteEffectModifier,
+} from "./effectModifier.services";
 
 const handleError = (res: Response, err: any, context: string): void => {
   console.error(`${context}:`, err);
@@ -36,7 +42,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
     const newEffectModifier = await createEffectModifier(EffectModifierData);
     res.status(StatusCodes.CREATED).json(newEffectModifier);
   } catch (err) {
-    handleError(res, err, 'Error creating EffectModifier');
+    handleError(res, err, "Error creating EffectModifier");
   }
 };
 
@@ -63,12 +69,14 @@ const getById = async (req: Request, res: Response): Promise<void> => {
   try {
     const EffectModifier = await getEffectModifierById(id);
     if (!EffectModifier) {
-      res.status(StatusCodes.NOT_FOUND).json({ message: 'EffectModifier not found' });
+      res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "EffectModifier not found" });
       return;
     }
     res.status(StatusCodes.OK).json(EffectModifier);
   } catch (err) {
-    handleError(res, err, 'Error retrieving EffectModifier');
+    handleError(res, err, "Error retrieving EffectModifier");
   }
 };
 
@@ -87,7 +95,7 @@ const getAll = async (req: Request, res: Response): Promise<void> => {
     const EffectModifiers = await getEffectModifiers();
     res.status(StatusCodes.OK).json(EffectModifiers);
   } catch (err) {
-    handleError(res, err, 'Error retrieving EffectModifiers');
+    handleError(res, err, "Error retrieving EffectModifiers");
   }
 };
 
@@ -124,7 +132,7 @@ const update = async (req: Request, res: Response): Promise<void> => {
     const updatedEffectModifier = await updateEffectModifier(id, updateData);
     res.status(StatusCodes.OK).json(updatedEffectModifier);
   } catch (err) {
-    handleError(res, err, 'Error updating EffectModifier');
+    handleError(res, err, "Error updating EffectModifier");
   }
 };
 
@@ -152,7 +160,7 @@ const remove = async (req: Request, res: Response): Promise<void> => {
     const deletedEffectModifier = await deleteEffectModifier(id);
     res.status(StatusCodes.OK).json(deletedEffectModifier);
   } catch (err) {
-    handleError(res, err, 'Error deleting EffectModifier');
+    handleError(res, err, "Error deleting EffectModifier");
   }
 };
 

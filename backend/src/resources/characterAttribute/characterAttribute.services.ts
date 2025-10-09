@@ -1,28 +1,48 @@
-import { PrismaClient } from '@prisma/client';
-import { CreateCharacterAttributeDTO, UpdateCharacterAttributeDTO, CharacterAttributeDTO } from './characterAttribute.types';
+import { PrismaClient } from "@prisma/client";
+import {
+  CreateCharacterAttributeDTO,
+  UpdateCharacterAttributeDTO,
+  CharacterAttributeDTO,
+} from "./characterAttribute.types";
 
 const prisma = new PrismaClient();
 
-export const createCharacterAttribute = async (data: CreateCharacterAttributeDTO): Promise<CharacterAttributeDTO> => {
+export const createCharacterAttribute = async (
+  data: CreateCharacterAttributeDTO,
+): Promise<CharacterAttributeDTO> => {
   return prisma.characterAttribute.create({ data });
 };
 
-export const getCharacterAttributeById = async (id: string): Promise<CharacterAttributeDTO | null> => {
+export const getCharacterAttributeById = async (
+  id: string,
+): Promise<CharacterAttributeDTO | null> => {
   return prisma.characterAttribute.findUnique({ where: { id } });
 };
 
-export const getCharacterAttributesByCharacterId = async (characterId: string): Promise<CharacterAttributeDTO[]> => {
+export const getCharacterAttributesByCharacterId = async (
+  characterId: string,
+): Promise<CharacterAttributeDTO[]> => {
   return prisma.characterAttribute.findMany({ where: { characterId } });
 };
 
-export const getCharacterAttributes = async (): Promise<CharacterAttributeDTO[]> => {
+export const getCharacterAttributes = async (): Promise<
+  CharacterAttributeDTO[]
+> => {
   return prisma.characterAttribute.findMany();
 };
 
-export const updateCharacterAttribute = async (id: string, data: UpdateCharacterAttributeDTO): Promise<CharacterAttributeDTO> => {
+export const updateCharacterAttribute = async (
+  id: string,
+  data: UpdateCharacterAttributeDTO,
+): Promise<CharacterAttributeDTO> => {
   return prisma.characterAttribute.update({ where: { id }, data });
 };
 
-export const deleteCharacterAttribute = async (id: string): Promise<CharacterAttributeDTO> => {
-  return prisma.characterAttribute.update({ where: { id }, data: { deletedAt: new Date() } });
+export const deleteCharacterAttribute = async (
+  id: string,
+): Promise<CharacterAttributeDTO> => {
+  return prisma.characterAttribute.update({
+    where: { id },
+    data: { deletedAt: new Date() },
+  });
 };

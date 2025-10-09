@@ -13,7 +13,7 @@ const abilitiesData: Prisma.AbilitiesCreateInput[] = [
     tp_cost: 10,
     cooldown_value: 2,
   },
-]
+];
 
 export const abilitiesSeeder = async () => {
   const abilities = await prisma.abilities.findMany();

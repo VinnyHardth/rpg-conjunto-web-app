@@ -1,6 +1,12 @@
-import { Request, Response } from 'express';
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
-import { createEffect, getEffectById, getEffects, updateEffect, deleteEffect } from './effect.services';
+import { Request, Response } from "express";
+import { ReasonPhrases, StatusCodes } from "http-status-codes";
+import {
+  createEffect,
+  getEffectById,
+  getEffects,
+  updateEffect,
+  deleteEffect,
+} from "./effect.services";
 
 const handleError = (res: Response, err: any, context: string): void => {
   console.error(`${context}:`, err);
@@ -36,7 +42,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
     const newEffect = await createEffect(effectData);
     res.status(StatusCodes.CREATED).json(newEffect);
   } catch (err) {
-    handleError(res, err, 'Error creating effect');
+    handleError(res, err, "Error creating effect");
   }
 };
 
@@ -63,12 +69,12 @@ const getById = async (req: Request, res: Response): Promise<void> => {
   try {
     const effect = await getEffectById(id);
     if (!effect) {
-      res.status(StatusCodes.NOT_FOUND).json({ message: 'Effect not found' });
+      res.status(StatusCodes.NOT_FOUND).json({ message: "Effect not found" });
       return;
     }
     res.status(StatusCodes.OK).json(effect);
   } catch (err) {
-    handleError(res, err, 'Error retrieving effect');
+    handleError(res, err, "Error retrieving effect");
   }
 };
 
@@ -87,7 +93,7 @@ const getAll = async (req: Request, res: Response): Promise<void> => {
     const effects = await getEffects();
     res.status(StatusCodes.OK).json(effects);
   } catch (err) {
-    handleError(res, err, 'Error retrieving effects');
+    handleError(res, err, "Error retrieving effects");
   }
 };
 
@@ -124,7 +130,7 @@ const update = async (req: Request, res: Response): Promise<void> => {
     const updatedEffect = await updateEffect(id, updateData);
     res.status(StatusCodes.OK).json(updatedEffect);
   } catch (err) {
-    handleError(res, err, 'Error updating effect');
+    handleError(res, err, "Error updating effect");
   }
 };
 
@@ -152,7 +158,7 @@ const remove = async (req: Request, res: Response): Promise<void> => {
     const deletedEffect = await deleteEffect(id);
     res.status(StatusCodes.OK).json(deletedEffect);
   } catch (err) {
-    handleError(res, err, 'Error deleting effect');
+    handleError(res, err, "Error deleting effect");
   }
 };
 

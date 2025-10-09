@@ -1,24 +1,24 @@
-import { v4 as uuidv4, v1 } from 'uuid';
+import { v4 as uuidv4, v1 } from "uuid";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import express, { Request, Response, NextFunction } from "express";
-import swaggerUi from 'swagger-ui-express';
-import http from 'http';
-import { Server, Socket } from 'socket.io';
+import swaggerUi from "swagger-ui-express";
+import http from "http";
+import { Server, Socket } from "socket.io";
 
 import v1Router from "./router/v1Router";
-import swaggerFile from './swagger-output.json';
-import session from 'express-session';
+import swaggerFile from "./swagger-output.json";
+import session from "express-session";
 
 // Extende o tipo Request para incluir 'io'
-declare module 'express-serve-static-core' {
+declare module "express-serve-static-core" {
   interface Request {
     io?: Server;
   }
 }
 
-declare module 'express-session' {
+declare module "express-session" {
   interface SessionData {
     userId: string;
   }
@@ -30,10 +30,12 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middlewares
-app.use(cors({
-  origin: "http://localhost:4000", // frontend que está fazendo a requisição
-  credentials: true // importante para cookies
-}));
+app.use(
+  cors({
+    origin: "http://localhost:4000", // frontend que está fazendo a requisição
+    credentials: true, // importante para cookies
+  }),
+);
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -52,8 +54,8 @@ app.use(
     secret: process.env.SESSION_SECRET || "secret",
     resave: true,
     saveUninitialized: true,
-  })
-)
+  }),
+);
 
 // Cria o servidor HTTP e instancia o Socket.io
 const server = http.createServer(app);
@@ -69,15 +71,15 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use(v1Router);
 
 // Socket.io: conexão
-io.on('connection', (socket: Socket) => {
+io.on("connection", (socket: Socket) => {
   console.log(`Novo cliente conectado: ${socket.id}`);
 
-  socket.on('joinRoom', (room: string) => {
+  socket.on("joinRoom", (room: string) => {
     socket.join(room);
     console.log(`Socket ${socket.id} entrou na sala ${room}`);
   });
 
-  socket.on('disconnect', () => {
+  socket.on("disconnect", () => {
     console.log(`Cliente desconectado: ${socket.id}`);
   });
 });

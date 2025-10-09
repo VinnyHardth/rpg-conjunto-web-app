@@ -9,7 +9,7 @@ const effectData: Prisma.EffectCreateInput[] = [
     description: "Causa dano verdadeiro",
     damageType: "TRUE",
     stackingPolicy: "NONE",
-    removableBy: "NONE", 
+    removableBy: "NONE",
   },
 ];
 

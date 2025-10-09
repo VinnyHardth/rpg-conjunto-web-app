@@ -1,6 +1,12 @@
-import { Request, Response } from 'express';
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
-import { createCharacterHasItem, getCharacterHasItemById, getCharacterHasItems, updateCharacterHasItem, deleteCharacterHasItem } from './characterHasItem.services';
+import { Request, Response } from "express";
+import { ReasonPhrases, StatusCodes } from "http-status-codes";
+import {
+  createCharacterHasItem,
+  getCharacterHasItemById,
+  getCharacterHasItems,
+  updateCharacterHasItem,
+  deleteCharacterHasItem,
+} from "./characterHasItem.services";
 
 const handleError = (res: Response, err: any, context: string): void => {
   console.error(`${context}:`, err);
@@ -33,10 +39,11 @@ const create = async (req: Request, res: Response): Promise<void> => {
   const characterhasitemData = req.body;
 
   try {
-    const newCharacterHasItem = await createCharacterHasItem(characterhasitemData);
+    const newCharacterHasItem =
+      await createCharacterHasItem(characterhasitemData);
     res.status(StatusCodes.CREATED).json(newCharacterHasItem);
   } catch (err) {
-    handleError(res, err, 'Error creating characterhasitem');
+    handleError(res, err, "Error creating characterhasitem");
   }
 };
 
@@ -63,12 +70,14 @@ const getById = async (req: Request, res: Response): Promise<void> => {
   try {
     const characterhasitem = await getCharacterHasItemById(id);
     if (!characterhasitem) {
-      res.status(StatusCodes.NOT_FOUND).json({ message: 'CharacterHasItem not found' });
+      res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "CharacterHasItem not found" });
       return;
     }
     res.status(StatusCodes.OK).json(characterhasitem);
   } catch (err) {
-    handleError(res, err, 'Error retrieving characterhasitem');
+    handleError(res, err, "Error retrieving characterhasitem");
   }
 };
 
@@ -87,7 +96,7 @@ const getAll = async (req: Request, res: Response): Promise<void> => {
     const characterhasitems = await getCharacterHasItems();
     res.status(StatusCodes.OK).json(characterhasitems);
   } catch (err) {
-    handleError(res, err, 'Error retrieving characterhasitems');
+    handleError(res, err, "Error retrieving characterhasitems");
   }
 };
 
@@ -121,10 +130,13 @@ const update = async (req: Request, res: Response): Promise<void> => {
   const updateData = req.body;
 
   try {
-    const updatedCharacterHasItem = await updateCharacterHasItem(id, updateData);
+    const updatedCharacterHasItem = await updateCharacterHasItem(
+      id,
+      updateData,
+    );
     res.status(StatusCodes.OK).json(updatedCharacterHasItem);
   } catch (err) {
-    handleError(res, err, 'Error updating characterhasitem');
+    handleError(res, err, "Error updating characterhasitem");
   }
 };
 
@@ -152,7 +164,7 @@ const remove = async (req: Request, res: Response): Promise<void> => {
     const deletedCharacterHasItem = await deleteCharacterHasItem(id);
     res.status(StatusCodes.OK).json(deletedCharacterHasItem);
   } catch (err) {
-    handleError(res, err, 'Error deleting characterhasitem');
+    handleError(res, err, "Error deleting characterhasitem");
   }
 };
 

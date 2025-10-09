@@ -12,7 +12,9 @@ const createCharacterSchema = Joi.object<CreateCharacterDTO>({
   money: Joi.number().min(0).required(),
   imageUrl: Joi.string().uri().optional(),
   gender: Joi.string().required(),
-  type: Joi.string().valid(...Object.values(charaterType)).required(),
+  type: Joi.string()
+    .valid(...Object.values(charaterType))
+    .required(),
   generation: Joi.number().integer().min(0).required(),
   userId: Joi.string().uuid().required(),
   archetypeId: Joi.string().uuid().required(),
@@ -28,7 +30,7 @@ const updateCharacterSchema = Joi.object<UpdateCharacterDTO>({
   money: Joi.number().min(0),
   type: Joi.string().valid(...Object.values(charaterType)),
   generation: Joi.number().integer().min(0),
-  imageUrl: Joi.string().uri(), 
+  imageUrl: Joi.string().uri(),
   gender: Joi.string(),
   archetypeId: Joi.string().uuid(),
   annotations: Joi.string().min(0).max(1000),
