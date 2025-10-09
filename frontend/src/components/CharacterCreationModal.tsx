@@ -3,7 +3,8 @@ import Decimal from "decimal.js";
 
 // Types
 import { 
-  CreateFullCharacter, 
+  CreateFullCharacter,
+  CreateCharacter,
   Archetype, 
   Attributes,
   CharacterType,
@@ -24,6 +25,8 @@ import NavigationButtons from "./character-creation/NavigationButtons";
 import StepOne from "./character-creation/steps/StepOne";
 import StepTwo from "./character-creation/steps/StepTwo";
 import StepThree from "./character-creation/steps/StepThree";
+
+import { useCharacters } from "@/hooks/useCharacters";
 
 // Constants
 export const STEP_NAMES = ["Informações Básicas", "Atributos & Estatísticas", "Resumo Final"];
@@ -114,6 +117,9 @@ export default function CharacterCreationModal({ isOpen, onClose, userId }: Char
   const [attributes, setAttributes] = useState<Attributes[]>([]);
   const [expertises, setExpertises] = useState<Attributes[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // ← Novo estado para submit
+
+  const { addCharacter, characters } = useCharacters(userId);
   
   // ATTRIBUTE_KEYS será definido dinamicamente com base no fetch
   const [attributeKeys, setAttributeKeys] = useState<string[]>([]);
@@ -295,78 +301,76 @@ export default function CharacterCreationModal({ isOpen, onClose, userId }: Char
     }
   };
 
-  const handleFinish = async () => {
+const handleFinish = async () => {
+  setIsSubmitting(true);
   try {
     console.log("Personagem Criado:", characterData, derivedStats);
 
-    // 1️⃣ Criar o personagem
-    const characterResponse = await api.post("/characters", {
+    // 1️⃣ Criar o personagem (APENAS dados que o backend conhece)
+    const characterPayload: CreateCharacter = {
       ...characterData.info,
       userId: userId,
-    });
+      archetypeId: characterData.archetype.id,
+      // NÃO envie initialHp, initialMp, initialTp - o backend não conhece!
+    };
 
-    const createdCharacter = characterResponse.data;
+    // Passa os derivedStats como segundo parâmetro para o cache
+    const createdCharacter = await addCharacter(characterPayload, derivedStats);
     console.log("Personagem criado com sucesso:", createdCharacter);
 
-    // 2️⃣ Mapear e enviar ATRIBUTOS - já estão com a estrutura correta
-    const characterAttributes = characterData.attributes.map(charAttr => ({
-      ...charAttr,
-      characterId: createdCharacter.id // Atualizar com o ID do personagem criado
-    }));
-
-    console.log("Atributos do personagem:", characterAttributes);
-
-    for (const attribute of characterAttributes) {
-      await api.post("/characterattributes", attribute);
-    }
-    console.log("Atributos criados com sucesso!");
-
-    // 3️⃣ Mapear e enviar PERÍCIAS calculadas
-    const characterExpertises = Object.entries(derivedStats.pericias).map(([skillKey, skillValue]) => {
-      const skillName = SKILL_NAME_MAPPING[skillKey];
-      const expertiseFromDB = expertises.find(dbExp => dbExp.name === skillName);
-      if (!expertiseFromDB) return null;
+    // 2️⃣ Criar atributos, perícias e status em paralelo
+    await Promise.all([
+      // Atributos
+      ...characterData.attributes.map(charAttr =>
+        api.post("/characterattributes", {
+          ...charAttr,
+          characterId: createdCharacter.id
+        })
+      ),
       
-      return createCharacterAttribute(expertiseFromDB.id, skillName, skillValue);
-    }).filter((exp): exp is CreateCharacterAttribute => exp !== null);
+      // Perícias
+      ...Object.entries(derivedStats.pericias).map(([skillKey, skillValue]) => {
+        const skillName = SKILL_NAME_MAPPING[skillKey];
+        const expertiseFromDB = expertises.find(dbExp => dbExp.name === skillName);
+        if (!expertiseFromDB) return Promise.resolve(null);
+        
+        return api.post("/characterattributes", {
+          characterId: createdCharacter.id,
+          attributeId: expertiseFromDB.id,
+          valueBase: skillValue,
+          valueInv: 0,
+          valueExtra: 0,
+        });
+      }),
+      
+      // Status (criamos no banco normalmente)
+      ...[
+        { name: "HP", value: derivedStats.hp },
+        { name: "MP", value: derivedStats.mp },
+        { name: "TP", value: derivedStats.tp },
+        { name: "Movimento", value: derivedStats.movimento },
+      ].map(status =>
+        api.post("/status", {
+          name: status.name,
+          valueMax: status.value,
+          valueBonus: 0,
+          valueActual: status.value,
+          characterId: createdCharacter.id
+        })
+      )
+    ]);
 
-    console.log("Perícias do personagem:", characterExpertises);
+    console.log("Tudo criado com sucesso!");
 
-    for (const expertise of characterExpertises) {
-      await api.post("/characterattributes", {
-        ...expertise,
-        characterId: createdCharacter.id
-      });
-    }
-    console.log("Perícias criadas com sucesso!");
-
-    const statusToCreate = [
-    { name: "HP", value: derivedStats.hp },
-    { name: "MP", value: derivedStats.mp },
-    { name: "TP", value: derivedStats.tp },
-    { name: "Movimento", value: derivedStats.movimento },
-  ];
-
-    for (const status of statusToCreate) {
-      await api.post("/status", {
-        name: status.name,
-        valueMax: status.value,
-        valueBonus: 0,
-        valueActual: status.value,
-        characterId: createdCharacter.id
-      });
-    }
-    console.log("Status criados com sucesso!");
-
-    // 4️⃣ Limpar formulário e fechar modal
     resetForm();
     onClose();
-
     alert("Personagem criado com sucesso!");
 
   } catch (error) {
     console.error("Erro ao criar personagem:", error);
     alert("Erro ao criar personagem. Verifique o console para mais detalhes.");
+  } finally {
+    setIsSubmitting(false);
   }
 };
 

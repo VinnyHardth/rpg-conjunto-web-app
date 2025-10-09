@@ -1,5 +1,5 @@
 import api from "./axios";
-import { User, Character, CharacterAttribute, Status, Attributes } from "@/types/models";
+import { User, Character, CharacterAttribute, Status, Attributes, CreateCharacter } from "@/types/models";
 
 import { Archetype } from "@/types/models";
 
@@ -14,6 +14,11 @@ export const fetchCharacter = async (characterId: string): Promise<Character> =>
   const { data } = await api.get(`/characters/${characterId}`);
   return data;
 }
+
+export const createCharacter = async (characterData: CreateCharacter): Promise<Character> => {
+  const response = await api.post("/characters", characterData);
+  return response.data;
+};
 
 export const fetchUserCharacters = async (userId: string): Promise<Character[]> => {
   const { data } = await api.get(`/characters/user/${userId}`);
