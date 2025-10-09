@@ -20,6 +20,12 @@ export interface CreateFullCharacter {
 export type User = UserDTO;
 export type LoginUser = LoginUserDTO;
 export type Character = CharacterDTO;
+export type CreateCharacter = CreateCharacterDTO & {
+  initialHp?: number;
+  initialMp?: number;
+  initialTp?: number;
+};
+
 export type CharacterAttribute = CharacterAttributeDTO;
 export type CreateCharacterAttribute = CreateCharacterAttributeDTO;
 export type Status = StatusDTO;
