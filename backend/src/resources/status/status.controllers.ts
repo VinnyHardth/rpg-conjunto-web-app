@@ -1,6 +1,13 @@
-import { Request, Response } from 'express';
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
-import { createStatus, getStatusById, getStatusByCharacterId, getStatus, updateStatus, deleteStatus } from './status.services';
+import { Request, Response } from "express";
+import { ReasonPhrases, StatusCodes } from "http-status-codes";
+import {
+  createStatus,
+  getStatusById,
+  getStatusByCharacterId,
+  getStatus,
+  updateStatus,
+  deleteStatus,
+} from "./status.services";
 
 const handleError = (res: Response, err: any, context: string): void => {
   console.error(`${context}:`, err);
@@ -36,7 +43,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
     const newStatus = await createStatus(statusData);
     res.status(StatusCodes.CREATED).json(newStatus);
   } catch (err) {
-    handleError(res, err, 'Error creating status');
+    handleError(res, err, "Error creating status");
   }
 };
 
@@ -63,12 +70,12 @@ const getById = async (req: Request, res: Response): Promise<void> => {
   try {
     const status = await getStatusById(id);
     if (!status) {
-      res.status(StatusCodes.NOT_FOUND).json({ message: 'Status not found' });
+      res.status(StatusCodes.NOT_FOUND).json({ message: "Status not found" });
       return;
     }
     res.status(StatusCodes.OK).json(status);
   } catch (err) {
-    handleError(res, err, 'Error retrieving status');
+    handleError(res, err, "Error retrieving status");
   }
 };
 
@@ -95,12 +102,12 @@ const getByCharacterId = async (req: Request, res: Response): Promise<void> => {
   try {
     const status = await getStatusByCharacterId(characterId);
     if (!status) {
-      res.status(StatusCodes.NOT_FOUND).json({ message: 'Status not found' });
+      res.status(StatusCodes.NOT_FOUND).json({ message: "Status not found" });
       return;
     }
     res.status(StatusCodes.OK).json(status);
   } catch (err) {
-    handleError(res, err, 'Error retrieving status');
+    handleError(res, err, "Error retrieving status");
   }
 };
 
@@ -119,7 +126,7 @@ const getAll = async (req: Request, res: Response): Promise<void> => {
     const statuss = await getStatus();
     res.status(StatusCodes.OK).json(statuss);
   } catch (err) {
-    handleError(res, err, 'Error retrieving statuss');
+    handleError(res, err, "Error retrieving statuss");
   }
 };
 
@@ -156,7 +163,7 @@ const update = async (req: Request, res: Response): Promise<void> => {
     const updatedStatus = await updateStatus(id, updateData);
     res.status(StatusCodes.OK).json(updatedStatus);
   } catch (err) {
-    handleError(res, err, 'Error updating status');
+    handleError(res, err, "Error updating status");
   }
 };
 
@@ -184,7 +191,7 @@ const remove = async (req: Request, res: Response): Promise<void> => {
     const deletedStatus = await deleteStatus(id);
     res.status(StatusCodes.OK).json(deletedStatus);
   } catch (err) {
-    handleError(res, err, 'Error deleting status');
+    handleError(res, err, "Error deleting status");
   }
 };
 

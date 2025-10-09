@@ -1,9 +1,13 @@
-import { Request, Response } from 'express';
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
+import { Request, Response } from "express";
+import { ReasonPhrases, StatusCodes } from "http-status-codes";
 
-import { CreateUserDTO, DeleteUserDTO, UpdateUserDTO, UserDTO } from './user.types';
-import * as userServices from './user.services';
-
+import {
+  CreateUserDTO,
+  DeleteUserDTO,
+  UpdateUserDTO,
+  UserDTO,
+} from "./user.types";
+import * as userServices from "./user.services";
 
 const create = async (req: Request, res: Response): Promise<void> => {
   /*
@@ -32,9 +36,11 @@ const create = async (req: Request, res: Response): Promise<void> => {
 
   try {
     // Checa se o usuário já existe
-    const existingUserByEmail = await userServices.getUserByEmail(userData.email);
+    const existingUserByEmail = await userServices.getUserByEmail(
+      userData.email,
+    );
 
-    if (existingUserByEmail ) {
+    if (existingUserByEmail) {
       res.status(422).json({
         message: "User with the provided email already exists",
       });
@@ -43,7 +49,6 @@ const create = async (req: Request, res: Response): Promise<void> => {
 
     const newUser: UserDTO = await userServices.createUser(userData);
     res.status(StatusCodes.CREATED).json(newUser);
-
   } catch (err) {
     console.error("Error creating user:", err);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -52,9 +57,8 @@ const create = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-
 const getById = async (req: Request, res: Response): Promise<void> => {
-    /*
+  /*
       #swagger.summary = 'Get user by ID'
       #swagger.description = 'Endpoint to retrieve a user by their ID.'
 
@@ -72,26 +76,27 @@ const getById = async (req: Request, res: Response): Promise<void> => {
 
       #swagger.responses[404] = { description: 'User not found' }
       #swagger.responses[500] = { description: 'Internal Server Error' }
-    */ 
+    */
 
-    const { id } = req.params;
+  const { id } = req.params;
 
-    try {
-        const user: UserDTO | null = await userServices.getUserById(id);
-        if (!user) {
-            res.status(StatusCodes.NOT_FOUND).json({ message: 'User not found' });
-            return;
-        }
-        res.status(StatusCodes.OK).json(user);
-    } catch (error) {
-        console.error('Error retrieving user:', error);
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: ReasonPhrases.INTERNAL_SERVER_ERROR });
+  try {
+    const user: UserDTO | null = await userServices.getUserById(id);
+    if (!user) {
+      res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
+      return;
     }
+    res.status(StatusCodes.OK).json(user);
+  } catch (error) {
+    console.error("Error retrieving user:", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: ReasonPhrases.INTERNAL_SERVER_ERROR });
+  }
 };
 
-
 const getByEmail = async (req: Request, res: Response): Promise<void> => {
-    /*
+  /*
       #swagger.summary = 'Get user by email'
       #swagger.description = 'Endpoint to retrieve a user by their email.'
 
@@ -109,26 +114,27 @@ const getByEmail = async (req: Request, res: Response): Promise<void> => {
 
       #swagger.responses[404] = { description: 'User not found' }
       #swagger.responses[500] = { description: 'Internal Server Error' }
-    */ 
+    */
 
-    const { email } = req.params as { email: string };
+  const { email } = req.params as { email: string };
 
-    try {
-        const user: UserDTO | null = await userServices.getUserByEmail(email);
-        if (!user) {
-            res.status(StatusCodes.NOT_FOUND).json({ message: 'User not found' });
-            return;
-        }
-        res.status(StatusCodes.OK).json(user);
-    } catch (error) {
-        console.error('Error retrieving user:', error);
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: ReasonPhrases.INTERNAL_SERVER_ERROR });
+  try {
+    const user: UserDTO | null = await userServices.getUserByEmail(email);
+    if (!user) {
+      res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
+      return;
     }
+    res.status(StatusCodes.OK).json(user);
+  } catch (error) {
+    console.error("Error retrieving user:", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: ReasonPhrases.INTERNAL_SERVER_ERROR });
+  }
 };
 
-
 const getAll = async (req: Request, res: Response): Promise<void> => {
-    /*
+  /*
       #swagger.summary = 'Get all users'
       #swagger.description = 'Endpoint to retrieve all users.'
 
@@ -142,18 +148,19 @@ const getAll = async (req: Request, res: Response): Promise<void> => {
       #swagger.responses[500] = { description: 'Internal Server Error' }
     */
 
-    try {
-        const users: UserDTO[] = await userServices.getUsers();
-        res.status(StatusCodes.OK).json(users);
-    } catch (error) {
-        console.error('Error retrieving users:', error);
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: ReasonPhrases.INTERNAL_SERVER_ERROR });
-    }
+  try {
+    const users: UserDTO[] = await userServices.getUsers();
+    res.status(StatusCodes.OK).json(users);
+  } catch (error) {
+    console.error("Error retrieving users:", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: ReasonPhrases.INTERNAL_SERVER_ERROR });
+  }
 };
 
-
 const update = async (req: Request, res: Response): Promise<void> => {
-    /*
+  /*
       #swagger.summary = 'Update a user'
       #swagger.description = 'Endpoint to update an existing user.'
 
@@ -182,28 +189,29 @@ const update = async (req: Request, res: Response): Promise<void> => {
       #swagger.responses[500] = { description: 'Internal Server Error' }
     */
 
+  const { id } = req.params;
+  const userData: UpdateUserDTO = req.body;
 
-    const { id } = req.params;
-    const userData: UpdateUserDTO = req.body;
-
-    try {
-        // Check if user exists
-        const existingUser = await userServices.getUserById(id);
-        if (!existingUser) {
-            res.status(StatusCodes.NOT_FOUND).json({ message: 'User not found' });
-            return;
-        }
-
-        const updatedUser: UserDTO = await userServices.updateUser(id, userData);
-        res.status(StatusCodes.OK).json(updatedUser);
-    } catch (error) {
-        console.error('Error updating user:', error);
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: ReasonPhrases.INTERNAL_SERVER_ERROR });
+  try {
+    // Check if user exists
+    const existingUser = await userServices.getUserById(id);
+    if (!existingUser) {
+      res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
+      return;
     }
+
+    const updatedUser: UserDTO = await userServices.updateUser(id, userData);
+    res.status(StatusCodes.OK).json(updatedUser);
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: ReasonPhrases.INTERNAL_SERVER_ERROR });
+  }
 };
 
 const remove = async (req: Request, res: Response): Promise<void> => {
-    /*
+  /*
       #swagger.summary = 'Delete a user'
       #swagger.description = 'Endpoint to delete a user.'
 
@@ -222,23 +230,25 @@ const remove = async (req: Request, res: Response): Promise<void> => {
       #swagger.responses[500] = { description: 'Internal Server Error' }
     */
 
-    const { id } = req.params;
-    const userData: DeleteUserDTO = { id };
+  const { id } = req.params;
+  const userData: DeleteUserDTO = { id };
 
-    try {
-        // Check if user exists
-        const existingUser = await userServices.getUserById(id);
-        if (!existingUser) {
-            res.status(StatusCodes.NOT_FOUND).json({ message: 'User not found' });
-            return;
-        }
-
-        const deletedUser: UserDTO = await userServices.deleteUser(userData);
-        res.status(StatusCodes.OK).json(deletedUser);
-    } catch (error) {
-        console.error('Error deleting user:', error);
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: ReasonPhrases.INTERNAL_SERVER_ERROR });
+  try {
+    // Check if user exists
+    const existingUser = await userServices.getUserById(id);
+    if (!existingUser) {
+      res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
+      return;
     }
+
+    const deletedUser: UserDTO = await userServices.deleteUser(userData);
+    res.status(StatusCodes.OK).json(deletedUser);
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: ReasonPhrases.INTERNAL_SERVER_ERROR });
+  }
 };
 
 export default { create, getById, getByEmail, getAll, update, remove };

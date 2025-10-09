@@ -1,6 +1,12 @@
-import { Request, Response } from 'express';
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
-import { createItemSkills, getItemSkillsById, getItemSkillss, updateItemSkills, deleteItemSkills } from './itemSkills.services';
+import { Request, Response } from "express";
+import { ReasonPhrases, StatusCodes } from "http-status-codes";
+import {
+  createItemSkills,
+  getItemSkillsById,
+  getItemSkillss,
+  updateItemSkills,
+  deleteItemSkills,
+} from "./itemSkills.services";
 
 const handleError = (res: Response, err: any, context: string): void => {
   console.error(`${context}:`, err);
@@ -36,7 +42,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
     const newItemSkills = await createItemSkills(itemskillsData);
     res.status(StatusCodes.CREATED).json(newItemSkills);
   } catch (err) {
-    handleError(res, err, 'Error creating itemskills');
+    handleError(res, err, "Error creating itemskills");
   }
 };
 
@@ -63,12 +69,14 @@ const getById = async (req: Request, res: Response): Promise<void> => {
   try {
     const itemskills = await getItemSkillsById(id);
     if (!itemskills) {
-      res.status(StatusCodes.NOT_FOUND).json({ message: 'ItemSkills not found' });
+      res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "ItemSkills not found" });
       return;
     }
     res.status(StatusCodes.OK).json(itemskills);
   } catch (err) {
-    handleError(res, err, 'Error retrieving itemskills');
+    handleError(res, err, "Error retrieving itemskills");
   }
 };
 
@@ -87,7 +95,7 @@ const getAll = async (req: Request, res: Response): Promise<void> => {
     const itemskillss = await getItemSkillss();
     res.status(StatusCodes.OK).json(itemskillss);
   } catch (err) {
-    handleError(res, err, 'Error retrieving itemskillss');
+    handleError(res, err, "Error retrieving itemskillss");
   }
 };
 
@@ -124,7 +132,7 @@ const update = async (req: Request, res: Response): Promise<void> => {
     const updatedItemSkills = await updateItemSkills(id, updateData);
     res.status(StatusCodes.OK).json(updatedItemSkills);
   } catch (err) {
-    handleError(res, err, 'Error updating itemskills');
+    handleError(res, err, "Error updating itemskills");
   }
 };
 
@@ -152,7 +160,7 @@ const remove = async (req: Request, res: Response): Promise<void> => {
     const deletedItemSkills = await deleteItemSkills(id);
     res.status(StatusCodes.OK).json(deletedItemSkills);
   } catch (err) {
-    handleError(res, err, 'Error deleting itemskills');
+    handleError(res, err, "Error deleting itemskills");
   }
 };
 

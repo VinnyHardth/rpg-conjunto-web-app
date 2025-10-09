@@ -1,14 +1,15 @@
-import { Request, Response } from 'express';
-import { AttributeKind } from '@prisma/client';
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
+import { Request, Response } from "express";
+import { AttributeKind } from "@prisma/client";
+import { ReasonPhrases, StatusCodes } from "http-status-codes";
 
-
-import { createAttributes, 
-         getAttributesById, 
-         getAttributes,
-         getAttributesByKind,
-         updateAttributes, 
-         deleteAttributes } from './attributes.services';
+import {
+  createAttributes,
+  getAttributesById,
+  getAttributes,
+  getAttributesByKind,
+  updateAttributes,
+  deleteAttributes,
+} from "./attributes.services";
 
 const handleError = (res: Response, err: any, context: string): void => {
   console.error(`${context}:`, err);
@@ -44,7 +45,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
     const newAttributes = await createAttributes(attributesData);
     res.status(StatusCodes.CREATED).json(newAttributes);
   } catch (err) {
-    handleError(res, err, 'Error creating attributes');
+    handleError(res, err, "Error creating attributes");
   }
 };
 
@@ -71,12 +72,14 @@ const getById = async (req: Request, res: Response): Promise<void> => {
   try {
     const attributes = await getAttributesById(id);
     if (!attributes) {
-      res.status(StatusCodes.NOT_FOUND).json({ message: 'Attributes not found' });
+      res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "Attributes not found" });
       return;
     }
     res.status(StatusCodes.OK).json(attributes);
   } catch (err) {
-    handleError(res, err, 'Error retrieving attributes');
+    handleError(res, err, "Error retrieving attributes");
   }
 };
 
@@ -101,14 +104,16 @@ const getByKind = async (req: Request, res: Response): Promise<void> => {
   const { kind } = req.params;
 
   try {
-    const attributes = await getAttributesByKind( kind as AttributeKind);
+    const attributes = await getAttributesByKind(kind as AttributeKind);
     if (!attributes) {
-      res.status(StatusCodes.NOT_FOUND).json({ message: 'Attributes not found' });
+      res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "Attributes not found" });
       return;
     }
     res.status(StatusCodes.OK).json(attributes);
   } catch (err) {
-    handleError(res, err, 'Error retrieving attributes');
+    handleError(res, err, "Error retrieving attributes");
   }
 };
 
@@ -127,7 +132,7 @@ const getAll = async (req: Request, res: Response): Promise<void> => {
     const attributess = await getAttributes();
     res.status(StatusCodes.OK).json(attributess);
   } catch (err) {
-    handleError(res, err, 'Error retrieving attributess');
+    handleError(res, err, "Error retrieving attributess");
   }
 };
 
@@ -164,7 +169,7 @@ const update = async (req: Request, res: Response): Promise<void> => {
     const updatedAttributes = await updateAttributes(id, updateData);
     res.status(StatusCodes.OK).json(updatedAttributes);
   } catch (err) {
-    handleError(res, err, 'Error updating attributes');
+    handleError(res, err, "Error updating attributes");
   }
 };
 
@@ -192,8 +197,8 @@ const remove = async (req: Request, res: Response): Promise<void> => {
     const deletedAttributes = await deleteAttributes(id);
     res.status(StatusCodes.OK).json(deletedAttributes);
   } catch (err) {
-    handleError(res, err, 'Error deleting attributes');
+    handleError(res, err, "Error deleting attributes");
   }
 };
 
-export default { create, getById, getByKind ,getAll, update, remove };
+export default { create, getById, getByKind, getAll, update, remove };

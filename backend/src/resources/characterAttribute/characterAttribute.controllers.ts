@@ -1,13 +1,14 @@
-import { Request, Response } from 'express';
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
+import { Request, Response } from "express";
+import { ReasonPhrases, StatusCodes } from "http-status-codes";
 
-import { createCharacterAttribute,
-         getCharacterAttributeById,
-         getCharacterAttributes,
-         getCharacterAttributesByCharacterId,
-         updateCharacterAttribute,
-         deleteCharacterAttribute
-        } from './characterAttribute.services';
+import {
+  createCharacterAttribute,
+  getCharacterAttributeById,
+  getCharacterAttributes,
+  getCharacterAttributesByCharacterId,
+  updateCharacterAttribute,
+  deleteCharacterAttribute,
+} from "./characterAttribute.services";
 
 const handleError = (res: Response, err: any, context: string): void => {
   console.error(`${context}:`, err);
@@ -40,10 +41,12 @@ const create = async (req: Request, res: Response): Promise<void> => {
   const characterattributeData = req.body;
 
   try {
-    const newCharacterAttribute = await createCharacterAttribute(characterattributeData);
+    const newCharacterAttribute = await createCharacterAttribute(
+      characterattributeData,
+    );
     res.status(StatusCodes.CREATED).json(newCharacterAttribute);
   } catch (err) {
-    handleError(res, err, 'Error creating characterattribute');
+    handleError(res, err, "Error creating characterattribute");
   }
 };
 
@@ -70,12 +73,14 @@ const getById = async (req: Request, res: Response): Promise<void> => {
   try {
     const characterattribute = await getCharacterAttributeById(id);
     if (!characterattribute) {
-      res.status(StatusCodes.NOT_FOUND).json({ message: 'CharacterAttribute not found' });
+      res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "CharacterAttribute not found" });
       return;
     }
     res.status(StatusCodes.OK).json(characterattribute);
   } catch (err) {
-    handleError(res, err, 'Error retrieving characterattribute');
+    handleError(res, err, "Error retrieving characterattribute");
   }
 };
 
@@ -100,10 +105,11 @@ const getByCharacterId = async (req: Request, res: Response): Promise<void> => {
   const { characterId } = req.params;
 
   try {
-    const characterattributes = await getCharacterAttributesByCharacterId(characterId);
+    const characterattributes =
+      await getCharacterAttributesByCharacterId(characterId);
     res.status(StatusCodes.OK).json(characterattributes);
   } catch (err) {
-    handleError(res, err, 'Error retrieving characterattributes');
+    handleError(res, err, "Error retrieving characterattributes");
   }
 };
 
@@ -122,7 +128,7 @@ const getAll = async (req: Request, res: Response): Promise<void> => {
     const characterattributes = await getCharacterAttributes();
     res.status(StatusCodes.OK).json(characterattributes);
   } catch (err) {
-    handleError(res, err, 'Error retrieving characterattributes');
+    handleError(res, err, "Error retrieving characterattributes");
   }
 };
 
@@ -156,10 +162,13 @@ const update = async (req: Request, res: Response): Promise<void> => {
   const updateData = req.body;
 
   try {
-    const updatedCharacterAttribute = await updateCharacterAttribute(id, updateData);
+    const updatedCharacterAttribute = await updateCharacterAttribute(
+      id,
+      updateData,
+    );
     res.status(StatusCodes.OK).json(updatedCharacterAttribute);
   } catch (err) {
-    handleError(res, err, 'Error updating characterattribute');
+    handleError(res, err, "Error updating characterattribute");
   }
 };
 
@@ -187,7 +196,7 @@ const remove = async (req: Request, res: Response): Promise<void> => {
     const deletedCharacterAttribute = await deleteCharacterAttribute(id);
     res.status(StatusCodes.OK).json(deletedCharacterAttribute);
   } catch (err) {
-    handleError(res, err, 'Error deleting characterattribute');
+    handleError(res, err, "Error deleting characterattribute");
   }
 };
 

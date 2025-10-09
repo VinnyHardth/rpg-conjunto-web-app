@@ -1,13 +1,20 @@
-import Joi from 'joi';
+import Joi from "joi";
 
-import { ComponentType, OperationType } from '@prisma/client';
-import { CreateEffectModifierDTO, UpdateEffectModifierDTO } from './effectModifier.types';
+import { ComponentType, OperationType } from "@prisma/client";
+import {
+  CreateEffectModifierDTO,
+  UpdateEffectModifierDTO,
+} from "./effectModifier.types";
 
 export const createEffectTargetSchema = Joi.object<CreateEffectModifierDTO>({
   effectId: Joi.string().uuid().required(),
-  componentType: Joi.string().valid(...Object.values(ComponentType)).required(),
+  componentType: Joi.string()
+    .valid(...Object.values(ComponentType))
+    .required(),
   componentName: Joi.string().required(),
-  operationType: Joi.string().valid(...Object.values(OperationType)).required(),
+  operationType: Joi.string()
+    .valid(...Object.values(OperationType))
+    .required(),
 });
 
 export const updateEffectTargetSchema = Joi.object<UpdateEffectModifierDTO>({

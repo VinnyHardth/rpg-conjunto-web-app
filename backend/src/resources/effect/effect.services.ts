@@ -1,9 +1,11 @@
-import { PrismaClient } from '@prisma/client';
-import { CreateEffectDTO, UpdateEffectDTO, EffectDTO } from './effect.types';
+import { PrismaClient } from "@prisma/client";
+import { CreateEffectDTO, UpdateEffectDTO, EffectDTO } from "./effect.types";
 
 const prisma = new PrismaClient();
 
-export const createEffect = async (data: CreateEffectDTO): Promise<EffectDTO> => {
+export const createEffect = async (
+  data: CreateEffectDTO,
+): Promise<EffectDTO> => {
   return prisma.effect.create({ data });
 };
 
@@ -15,12 +17,16 @@ export const getEffects = async (): Promise<EffectDTO[]> => {
   return prisma.effect.findMany();
 };
 
-export const updateEffect = async (id: string, data: UpdateEffectDTO): Promise<EffectDTO> => {
+export const updateEffect = async (
+  id: string,
+  data: UpdateEffectDTO,
+): Promise<EffectDTO> => {
   return prisma.effect.update({ where: { id }, data });
 };
 
 export const deleteEffect = async (id: string): Promise<EffectDTO> => {
-  return prisma.effect.update({ where: { id }, data: { deletedAt: new Date() } });
+  return prisma.effect.update({
+    where: { id },
+    data: { deletedAt: new Date() },
+  });
 };
-
-

@@ -1,24 +1,42 @@
-import { PrismaClient } from '@prisma/client';
-import { CreateCharacterHasItemDTO, UpdateCharacterHasItemDTO, CharacterHasItemDTO } from './characterHasItem.types';
+import { PrismaClient } from "@prisma/client";
+import {
+  CreateCharacterHasItemDTO,
+  UpdateCharacterHasItemDTO,
+  CharacterHasItemDTO,
+} from "./characterHasItem.types";
 
 const prisma = new PrismaClient();
 
-export const createCharacterHasItem = async (data: CreateCharacterHasItemDTO): Promise<CharacterHasItemDTO> => {
+export const createCharacterHasItem = async (
+  data: CreateCharacterHasItemDTO,
+): Promise<CharacterHasItemDTO> => {
   return prisma.characterHasItem.create({ data });
 };
 
-export const getCharacterHasItemById = async (id: string): Promise<CharacterHasItemDTO | null> => {
+export const getCharacterHasItemById = async (
+  id: string,
+): Promise<CharacterHasItemDTO | null> => {
   return prisma.characterHasItem.findUnique({ where: { id } });
 };
 
-export const getCharacterHasItems = async (): Promise<CharacterHasItemDTO[]> => {
+export const getCharacterHasItems = async (): Promise<
+  CharacterHasItemDTO[]
+> => {
   return prisma.characterHasItem.findMany();
 };
 
-export const updateCharacterHasItem = async (id: string, data: UpdateCharacterHasItemDTO): Promise<CharacterHasItemDTO> => {
+export const updateCharacterHasItem = async (
+  id: string,
+  data: UpdateCharacterHasItemDTO,
+): Promise<CharacterHasItemDTO> => {
   return prisma.characterHasItem.update({ where: { id }, data });
 };
 
-export const deleteCharacterHasItem = async (id: string): Promise<CharacterHasItemDTO> => {
-  return prisma.characterHasItem.update({ where: { id }, data: { deletedAt: new Date() } });
+export const deleteCharacterHasItem = async (
+  id: string,
+): Promise<CharacterHasItemDTO> => {
+  return prisma.characterHasItem.update({
+    where: { id },
+    data: { deletedAt: new Date() },
+  });
 };
