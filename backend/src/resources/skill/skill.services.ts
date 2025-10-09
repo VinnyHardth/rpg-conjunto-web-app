@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client';
-import { CreateSkillDTO, UpdateSkillDTO, SkillDTO } from './skill.types';
+import { PrismaClient } from "@prisma/client";
+import { CreateSkillDTO, UpdateSkillDTO, SkillDTO } from "./skill.types";
 
 const prisma = new PrismaClient();
 
@@ -15,10 +15,16 @@ export const getSkills = async (): Promise<SkillDTO[]> => {
   return prisma.skill.findMany();
 };
 
-export const updateSkill = async (id: string, data: UpdateSkillDTO): Promise<SkillDTO> => {
+export const updateSkill = async (
+  id: string,
+  data: UpdateSkillDTO,
+): Promise<SkillDTO> => {
   return prisma.skill.update({ where: { id }, data });
 };
 
 export const deleteSkill = async (id: string): Promise<SkillDTO> => {
-  return prisma.skill.update({ where: { id }, data: { deletedAt: new Date() } });
+  return prisma.skill.update({
+    where: { id },
+    data: { deletedAt: new Date() },
+  });
 };

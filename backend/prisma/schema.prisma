@@ -2,29 +2,30 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL") // mysql://user:pass@host:3306/db
 }
 
 // ------------- Enums -------------
-enum CostType { 
-  MP 
+enum CostType {
+  MP
   TP
   HP
   COMBINATION
-  NONE 
+  NONE
 }
 
-enum SkillUseType { 
-  PASSIVE 
-  ACTIVE 
+enum SkillUseType {
+  PASSIVE
+  ACTIVE
 }
 
-enum SourceType { 
-  ITEM 
-  SKILL 
-  OTHER 
+enum SourceType {
+  ITEM
+  SKILL
+  OTHER
 }
 
 enum DamageType {
@@ -41,15 +42,15 @@ enum StackingPolicy {
   NONE
 }
 
-enum EquipSlot { 
-  HEAD 
-  CHEST 
-  LEGS 
-  HAND 
-  OFFHAND 
-  RING1 
-  RING2  
-  NONE 
+enum EquipSlot {
+  HEAD
+  CHEST
+  LEGS
+  HAND
+  OFFHAND
+  RING1
+  RING2
+  NONE
 }
 
 enum AttributeKind {
@@ -91,14 +92,14 @@ enum OperationType {
 
 // ------------- Catálogos -------------
 model User {
-  id        String      @id @default(uuid()) @db.Char(36)
-  nickname  String      @db.VarChar(191)
-  email     String      @unique @db.VarChar(191)
-  password  String      @db.VarChar(191)
-  imageUrl  String?     @db.VarChar(191)
+  id       String  @id @default(uuid()) @db.Char(36)
+  nickname String  @db.VarChar(191)
+  email    String  @unique @db.VarChar(191)
+  password String  @db.VarChar(191)
+  imageUrl String? @db.VarChar(191)
 
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   characters Character[]
@@ -110,82 +111,80 @@ model Archetype {
   id   String @id @default(uuid()) @db.Char(36)
   name String @db.VarChar(191)
 
-  tp   Float
-  hp   Float
-  mp   Float
+  tp Float
+  hp Float
+  mp Float
 
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
-  
+
   character Character[]
 
   @@map("archetypes")
 }
 
-
 // ------------- Núcleo do jogador -------------
 model Character {
-  id           String   @id @default(uuid()) @db.Char(36)
-  name         String   @db.VarChar(191)
-  race         String?  @db.VarChar(191)
-  age          Int?
-  height       Float?
-  gender       String   @db.VarChar(191)
-  money        Decimal  @default(0) @db.Decimal(12, 2)
+  id     String  @id @default(uuid()) @db.Char(36)
+  name   String  @db.VarChar(191)
+  race   String? @db.VarChar(191)
+  age    Int?
+  height Float?
+  gender String  @db.VarChar(191)
+  money  Decimal @default(0) @db.Decimal(12, 2)
 
-  annotations  String?  @db.LongText()
+  annotations String? @db.LongText()
 
-  generation   Int      @default(2)
-  type         charaterType @default(PC)
+  generation Int          @default(2)
+  type       charaterType @default(PC)
 
-  imageUrl     String?  @db.VarChar(191)
+  imageUrl String? @db.VarChar(191)
 
-  userId       String   @db.Char(36)
-  archetypeId  String?  @db.Char(36)
+  userId      String  @db.Char(36)
+  archetypeId String? @db.Char(36)
 
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  archetype  Archetype? @relation(fields: [archetypeId], references: [id], onDelete: SetNull)
-  
-  attributes  CharacterAttribute[]
-  statuses    Status[]
-  items       CharacterHasItem[]
-  skills      Skill[]
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  archetype Archetype? @relation(fields: [archetypeId], references: [id], onDelete: SetNull)
+
+  attributes     CharacterAttribute[]
+  statuses       Status[]
+  items          CharacterHasItem[]
+  skills         Skill[]
   appliedEffects AppliedEffect[]
 
   @@index([userId])
-
   @@map("characters")
 }
 
 // ------------- Atributos e Status -------------
-model Attributes {           // catálogo de tipos (FOR, DEX, etc.)
-  id     String @id @default(uuid()) @db.Char(36)
-  name   String @db.VarChar(191)
-  kind   AttributeKind @default(ATTRIBUTE) // 'ATTRIBUTE','EXPERTISE'
+model Attributes {
+  id   String        @id @default(uuid()) @db.Char(36)
+  name String        @db.VarChar(191)
+  kind AttributeKind @default(ATTRIBUTE) // 'ATTRIBUTE','EXPERTISE'
 
   values CharacterAttribute[]
 
   @@map("attributes")
 }
 
-model CharacterAttribute {   // valores do personagem
-  id           String @id @default(uuid()) @db.Char(36)
-  characterId  String @db.Char(36)
-  attributeId  String @db.Char(36)
-  valueBase    Int    @default(0)
-  valueInv     Int    @default(0)
-  valueExtra   Int    @default(0)
+model CharacterAttribute {
+  id          String @id @default(uuid()) @db.Char(36)
+  characterId String @db.Char(36)
+  attributeId String @db.Char(36)
+  valueBase   Int    @default(0)
+  valueInv    Int    @default(0)
+  valueExtra  Int    @default(0)
 
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  character Character  @relation(fields: [characterId], references: [id], onDelete: Cascade)
   attribute Attributes @relation(fields: [attributeId], references: [id], onDelete: Restrict)
 
   @@unique([characterId, attributeId])
@@ -194,15 +193,15 @@ model CharacterAttribute {   // valores do personagem
 }
 
 model Status {
-  id           String  @id @default(uuid()) @db.Char(36)
-  characterId  String  @db.Char(36)
-  name         String  @db.VarChar(50) // 'HP','MP','TP'...
-  valueMax     Float   @default(0)
-  valueBonus   Float   @default(0)
-  valueActual  Float   @default(0)
+  id          String @id @default(uuid()) @db.Char(36)
+  characterId String @db.Char(36)
+  name        String @db.VarChar(50) // 'HP','MP','TP'...
+  valueMax    Float  @default(0)
+  valueBonus  Float  @default(0)
+  valueActual Float  @default(0)
 
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
@@ -214,17 +213,17 @@ model Status {
 
 // ------------- Efeitos -------------
 model Effect {
-  id      String @id @default(uuid()) @db.Char(36)
-  name    String @db.VarChar(191)
-  imgUrl  String? @db.VarChar(191)
+  id          String  @id @default(uuid()) @db.Char(36)
+  name        String  @db.VarChar(191)
+  imgUrl      String? @db.VarChar(191)
   description String? @db.VarChar(400)
   removableBy String? @db.VarChar(191)
 
-  damageType DamageType
+  damageType     DamageType
   stackingPolicy StackingPolicy
 
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   targets        EffectModifier[]
@@ -235,16 +234,16 @@ model Effect {
   @@map("effects")
 }
 
-model EffectModifier {               // o que o efeito altera
-  id         String     @id @default(uuid()) @db.Char(36)
-  effectId   String     @db.Char(36)
+model EffectModifier {
+  id       String @id @default(uuid()) @db.Char(36)
+  effectId String @db.Char(36)
 
   componentName String
   componentType ComponentType
   operationType OperationType
 
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   effect Effect @relation(fields: [effectId], references: [id], onDelete: Cascade)
@@ -253,20 +252,20 @@ model EffectModifier {               // o que o efeito altera
   @@map("effect_target")
 }
 
-model AppliedEffect {              // runtime
+model AppliedEffect {
   id          String     @id @default(uuid()) @db.Char(36)
   characterId String     @db.Char(36)
   effectId    String     @db.Char(36)
   sourceType  SourceType
-  
-  duration    Int        @default(0) 
-  startedAt   Int        @default(0) 
-  expiresAt   Int        @default(0)
-  stacks      Int        @default(0)
-  value       Int        @default(0)
 
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  duration  Int @default(0)
+  startedAt Int @default(0)
+  expiresAt Int @default(0)
+  stacks    Int @default(0)
+  value     Int @default(0)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
@@ -279,21 +278,21 @@ model AppliedEffect {              // runtime
 }
 
 // ------------- Habilidades -------------
-model Abilities {                 // catálogo
-  id             String    @id @default(uuid()) @db.Char(36)
-  name           String    @db.VarChar(191)
-  description    String?   @db.Text
-  imageURL       String?   @db.VarChar(191)
+model Abilities {
+  id          String  @id @default(uuid()) @db.Char(36)
+  name        String  @db.VarChar(191)
+  description String? @db.Text
+  imageURL    String? @db.VarChar(191)
 
-  cost_type      CostType  @default(NONE)
-  mp_cost        Int       @default(0)
-  tp_cost        Int       @default(0)
-  hp_cost        Int       @default(0)
+  cost_type CostType @default(NONE)
+  mp_cost   Int      @default(0)
+  tp_cost   Int      @default(0)
+  hp_cost   Int      @default(0)
 
-  cooldown_value Int       @default(0)
+  cooldown_value Int @default(0)
 
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   effects   AbilityEffect[]
@@ -303,37 +302,37 @@ model Abilities {                 // catálogo
   @@map("Abilities")
 }
 
-model AbilityEffect {              // Abilities ↔ Effects (catálogo)
-  id         String @id @default(uuid()) @db.Char(36)
-  abilityId  String @db.Char(36)
-  effectId   String @db.Char(36)
-  
+model AbilityEffect {
+  id        String @id @default(uuid()) @db.Char(36)
+  abilityId String @db.Char(36)
+  effectId  String @db.Char(36)
+
   formula String? @db.VarChar(191)
 
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  ability  Abilities  @relation(fields: [abilityId], references: [id], onDelete: Cascade)
-  effect   Effect     @relation(fields: [effectId], references: [id], onDelete: Restrict)
+  ability Abilities @relation(fields: [abilityId], references: [id], onDelete: Cascade)
+  effect  Effect    @relation(fields: [effectId], references: [id], onDelete: Restrict)
 
   @@unique([abilityId, effectId])
   @@map("ability_effects")
 }
 
-model Skill {                      // instância por personagem
-  id           String       @id @default(uuid()) @db.Char(36)
-  characterId  String       @db.Char(36)
-  abilityId    String       @db.Char(36)
-  cooldown     Int          @default(0)
-  useType      SkillUseType @default(ACTIVE)
+model Skill {
+  id          String       @id @default(uuid()) @db.Char(36)
+  characterId String       @db.Char(36)
+  abilityId   String       @db.Char(36)
+  cooldown    Int          @default(0)
+  useType     SkillUseType @default(ACTIVE)
 
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  character Character  @relation(fields: [characterId], references: [id], onDelete: Cascade)
-  ability  Abilities @relation(fields: [abilityId], references: [id], onDelete: Restrict)
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  ability   Abilities @relation(fields: [abilityId], references: [id], onDelete: Restrict)
 
   @@unique([characterId, abilityId])
   @@map("skills")
@@ -341,16 +340,16 @@ model Skill {                      // instância por personagem
 
 // ------------- Itens / Inventário -------------
 model Items {
-  id            String   @id @default(uuid()) @db.Char(36)
-  name          String   @db.VarChar(191)
-  description   String?  @db.Text
-  imageURL      String?  @db.VarChar(191)
-  value         Int      @default(0)
+  id          String  @id @default(uuid()) @db.Char(36)
+  name        String  @db.VarChar(191)
+  description String? @db.Text
+  imageURL    String? @db.VarChar(191)
+  value       Int     @default(0)
 
-  itemType      itemType @default(MISC)
+  itemType itemType @default(MISC)
 
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   inventory  CharacterHasItem[]
@@ -368,9 +367,9 @@ model CharacterHasItem {
   value         Int?
   is_equipped   Boolean   @default(false)
   equipped_slot EquipSlot @default(NONE)
-  
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
@@ -382,15 +381,15 @@ model CharacterHasItem {
   @@map("character_has_item")
 }
 
-model ItemHasEffect {              // Items ↔ Effects (catálogo N:N)
+model ItemHasEffect {
   id        String @id @default(uuid()) @db.Char(36)
   itemId    String @db.Char(36)
   effectsId String @db.Char(36)
 
-  formula  String @db.VarChar(191)
+  formula String @db.VarChar(191)
 
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   item   Items  @relation(fields: [itemId], references: [id], onDelete: Cascade)
@@ -400,18 +399,18 @@ model ItemHasEffect {              // Items ↔ Effects (catálogo N:N)
   @@map("item_has_effects")
 }
 
-model ItemSkills {                 // Items ↔ Abilities (catálogo N:N)
-  id         String @id @default(uuid()) @db.Char(36)
+model ItemSkills {
+  id        String @id @default(uuid()) @db.Char(36)
   abilityId String @db.Char(36)
-  itemId     String @db.Char(36)
-  cooldown   Int    @default(0)
+  itemId    String @db.Char(36)
+  cooldown  Int    @default(0)
 
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  ability  Abilities @relation(fields: [abilityId], references: [id], onDelete: Restrict)
-  item     Items      @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  ability Abilities @relation(fields: [abilityId], references: [id], onDelete: Restrict)
+  item    Items     @relation(fields: [itemId], references: [id], onDelete: Cascade)
 
   @@unique([itemId, abilityId])
   @@map("item_skills")

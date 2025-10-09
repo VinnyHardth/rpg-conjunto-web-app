@@ -1,6 +1,11 @@
-import { Request, Response } from 'express';
-import { createArchetype, getArchetypeById, getArchetypes, updateArchetype, deleteArchetype } from './archetype.services';
-
+import { Request, Response } from "express";
+import {
+  createArchetype,
+  getArchetypeById,
+  getArchetypes,
+  updateArchetype,
+  deleteArchetype,
+} from "./archetype.services";
 
 const create = async (req: Request, res: Response) => {
   /*
@@ -31,7 +36,7 @@ const create = async (req: Request, res: Response) => {
     const newArchetype = await createArchetype(archetypeData);
     res.status(201).json(newArchetype);
   } catch (err) {
-    res.status(500).json({ message: 'Error creating archetype', error: err });
+    res.status(500).json({ message: "Error creating archetype", error: err });
   }
 };
 
@@ -61,11 +66,11 @@ const getById = async (req: Request, res: Response) => {
   try {
     const archetype = await getArchetypeById(id);
     if (!archetype) {
-      return res.status(404).json({ message: 'Archetype not found' });
+      return res.status(404).json({ message: "Archetype not found" });
     }
     res.status(200).json(archetype);
   } catch (err) {
-    res.status(500).json({ message: 'Error retrieving archetype', error: err });
+    res.status(500).json({ message: "Error retrieving archetype", error: err });
   }
 };
 
@@ -85,7 +90,9 @@ const getAll = async (req: Request, res: Response) => {
     const archetypes = await getArchetypes();
     res.status(200).json(archetypes);
   } catch (err) {
-    res.status(500).json({ message: 'Error retrieving archetypes', error: err });
+    res
+      .status(500)
+      .json({ message: "Error retrieving archetypes", error: err });
   }
 };
 
@@ -127,7 +134,7 @@ const update = async (req: Request, res: Response) => {
     const updatedArchetype = await updateArchetype(id, updateData);
     res.status(200).json(updatedArchetype);
   } catch (err) {
-    res.status(500).json({ message: 'Error updating archetype', error: err });
+    res.status(500).json({ message: "Error updating archetype", error: err });
   }
 };
 
@@ -158,7 +165,7 @@ const remove = async (req: Request, res: Response) => {
     const deletedArchetype = await deleteArchetype(id);
     res.status(200).json(deletedArchetype);
   } catch (err) {
-    res.status(500).json({ message: 'Error deleting archetype', error: err });
+    res.status(500).json({ message: "Error deleting archetype", error: err });
   }
 };
 

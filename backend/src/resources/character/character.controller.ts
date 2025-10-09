@@ -1,9 +1,13 @@
-import { Prisma } from '@prisma/client';
-import { Request, Response } from 'express';
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
+import { Prisma } from "@prisma/client";
+import { Request, Response } from "express";
+import { ReasonPhrases, StatusCodes } from "http-status-codes";
 
-import { CreateCharacterDTO, DeleteCharacterDTO, UpdateCharacterDTO, CharacterDTO } from './character.types';
-import * as characterServices from './character.services';
+import {
+  CreateCharacterDTO,
+  UpdateCharacterDTO,
+  CharacterDTO,
+} from "./character.types";
+import * as characterServices from "./character.services";
 
 const handleError = (res: Response, err: any, context: string): void => {
   console.error(`${context}:`, err);
@@ -11,7 +15,6 @@ const handleError = (res: Response, err: any, context: string): void => {
     error: ReasonPhrases.INTERNAL_SERVER_ERROR,
   });
 };
-
 
 const create = async (req: Request, res: Response): Promise<void> => {
   /*
@@ -39,9 +42,8 @@ const create = async (req: Request, res: Response): Promise<void> => {
   const characterData: CreateCharacterDTO = req.body;
 
   try {
-    const newCharacter: CharacterDTO = await characterServices.createCharacter(
-      characterData
-    );
+    const newCharacter: CharacterDTO =
+      await characterServices.createCharacter(characterData);
     res.status(StatusCodes.CREATED).json(newCharacter);
   } catch (err) {
     handleError(res, err, "Error creating character");
@@ -71,7 +73,8 @@ const getById = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
 
   try {
-    const character: CharacterDTO | null = await characterServices.getCharacterById(id);
+    const character: CharacterDTO | null =
+      await characterServices.getCharacterById(id);
 
     if (!character) {
       res.status(StatusCodes.NOT_FOUND).json({
@@ -80,12 +83,15 @@ const getById = async (req: Request, res: Response): Promise<void> => {
       return;
     }
     res.status(StatusCodes.OK).json(character);
-    } catch (err) {
-        handleError(res, err, "Error retrieving character");
-    }
+  } catch (err) {
+    handleError(res, err, "Error retrieving character");
+  }
 };
 
-const getUserCharacters = async (req: Request, res: Response): Promise<void> => {
+const getUserCharacters = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   /*
     #swagger.summary = 'Get characters by user ID'
     #swagger.description = 'Endpoint to retrieve all characters for a specific user.'
@@ -105,10 +111,11 @@ const getUserCharacters = async (req: Request, res: Response): Promise<void> => 
     #swagger.responses[500] = { description: 'Internal Server Error' }
   */
 
- const { userId } = req.params;
+  const { userId } = req.params;
 
   try {
-    const characters: CharacterDTO[] = await characterServices.getUserCharacters(userId);
+    const characters: CharacterDTO[] =
+      await characterServices.getUserCharacters(userId);
     res.status(StatusCodes.OK).json(characters);
   } catch (err) {
     handleError(res, err, "Error retrieving user characters");
@@ -224,12 +231,11 @@ const remove = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-
-export default{
-    create,
-    getById,
-    getUserCharacters,
-    getAll,
-    update,
-    remove,
+export default {
+  create,
+  getById,
+  getUserCharacters,
+  getAll,
+  update,
+  remove,
 };

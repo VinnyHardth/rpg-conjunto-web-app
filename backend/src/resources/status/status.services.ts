@@ -1,9 +1,11 @@
-import { PrismaClient } from '@prisma/client';
-import { CreateStatusDTO, UpdateStatusDTO, StatusDTO } from './status.types';
+import { PrismaClient } from "@prisma/client";
+import { CreateStatusDTO, UpdateStatusDTO, StatusDTO } from "./status.types";
 
 const prisma = new PrismaClient();
 
-export const createStatus = async (data: CreateStatusDTO): Promise<StatusDTO> => {
+export const createStatus = async (
+  data: CreateStatusDTO,
+): Promise<StatusDTO> => {
   return prisma.status.create({ data });
 };
 
@@ -15,14 +17,22 @@ export const getStatus = async (): Promise<StatusDTO[]> => {
   return prisma.status.findMany();
 };
 
-export const getStatusByCharacterId = async (characterId: string): Promise<StatusDTO[]> => {
+export const getStatusByCharacterId = async (
+  characterId: string,
+): Promise<StatusDTO[]> => {
   return prisma.status.findMany({ where: { characterId } });
 };
 
-export const updateStatus = async (id: string, data: UpdateStatusDTO): Promise<StatusDTO> => {
+export const updateStatus = async (
+  id: string,
+  data: UpdateStatusDTO,
+): Promise<StatusDTO> => {
   return prisma.status.update({ where: { id }, data });
 };
 
 export const deleteStatus = async (id: string): Promise<StatusDTO> => {
-  return prisma.status.update({ where: { id }, data: { deletedAt: new Date() } });
+  return prisma.status.update({
+    where: { id },
+    data: { deletedAt: new Date() },
+  });
 };

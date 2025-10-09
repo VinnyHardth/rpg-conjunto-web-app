@@ -29,103 +29,103 @@ const router = Router();
 router.use(
   "/auth",
   // #swagger.tags = ['Auth']
-  authRouter
+  authRouter,
 );
 
 router.use(
   "/users",
   // #swagger.tags = ['Users']
-  userRouter
+  userRouter,
 );
 
 router.use(
   "/archetypes",
   // #swagger.tags = ['Archetypes']
-  archetypeRouter
+  archetypeRouter,
 );
 
 router.use(
   "/characters",
   // #swagger.tags = ['Characters']
-  characterRouter
+  characterRouter,
 );
 
 router.use(
   "/characterattributes",
   // #swagger.tags = ['CharacterAttributes']
-  characterAttributeRouter
+  characterAttributeRouter,
 );
 
 router.use(
   "/characterhasitems",
   // #swagger.tags = ['CharacterHasItems']
-  characterHasItemRouter
+  characterHasItemRouter,
 );
 
 router.use(
   "/abilities",
   // #swagger.tags = ['Abilities']
-  abilitiesRouter
+  abilitiesRouter,
 );
 
 router.use(
   "/abilityeffects",
   // #swagger.tags = ['AbilityEffects']
-  abilityEffectRouter
+  abilityEffectRouter,
 );
 
 router.use(
   "/attributes",
   // #swagger.tags = ['Attributes']
-  attributeRouter
+  attributeRouter,
 );
 
 router.use(
   "/effects",
   // #swagger.tags = ['Effects']
-  effectRouter
+  effectRouter,
 );
 
 router.use(
   "/effectmodifiers",
   // #swagger.tags = ['effectmodifiers']
-  effectModifierRouter
+  effectModifierRouter,
 );
 
 router.use(
   "/appliedeffects",
   // #swagger.tags = ['AppliedEffects']
-  appliedEffectRouter
+  appliedEffectRouter,
 );
 
 router.use(
   "/items",
   // #swagger.tags = ['Items']
-  itemsRouter
+  itemsRouter,
 );
 
 router.use(
   "/itemskills",
   // #swagger.tags = ['ItemSkills']
-  itemSkillsRouter
+  itemSkillsRouter,
 );
 
 router.use(
   "/itemhaseffects",
   // #swagger.tags = ['ItemHasEffects']
-  itemHasEffectRouter
+  itemHasEffectRouter,
 );
 
 router.use(
   "/skills",
   // #swagger.tags = ['Skills']
-  skillRouter
+  skillRouter,
 );
 
 router.use(
   "/status",
   // #swagger.tags = ['Status']
-  statusRouter
+  statusRouter,
 );
 
 export default router;

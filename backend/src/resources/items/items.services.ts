@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client';
-import { CreateItemsDTO, UpdateItemsDTO, ItemsDTO } from './items.types';
+import { PrismaClient } from "@prisma/client";
+import { CreateItemsDTO, UpdateItemsDTO, ItemsDTO } from "./items.types";
 
 const prisma = new PrismaClient();
 
@@ -15,10 +15,16 @@ export const getItemss = async (): Promise<ItemsDTO[]> => {
   return prisma.items.findMany();
 };
 
-export const updateItems = async (id: string, data: UpdateItemsDTO): Promise<ItemsDTO> => {
+export const updateItems = async (
+  id: string,
+  data: UpdateItemsDTO,
+): Promise<ItemsDTO> => {
   return prisma.items.update({ where: { id }, data });
 };
 
 export const deleteItems = async (id: string): Promise<ItemsDTO> => {
-  return prisma.items.update({ where: { id }, data: { deletedAt: new Date() } });
+  return prisma.items.update({
+    where: { id },
+    data: { deletedAt: new Date() },
+  });
 };

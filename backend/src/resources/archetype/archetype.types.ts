@@ -1,8 +1,13 @@
-import { Archetype } from '@prisma/client';
+import { Archetype } from "@prisma/client";
 
 type CreateArchetypeDTO = Pick<Archetype, "name" | "hp" | "mp" | "tp">;
 type UpdateArchetypeDTO = Partial<CreateArchetypeDTO>;
-type DeleteArchetypeDTO = Pick<Archetype, 'id'>;
+type DeleteArchetypeDTO = Pick<Archetype, "id">;
 type ArchetypeDTO = Archetype;
 
-export { CreateArchetypeDTO, UpdateArchetypeDTO, DeleteArchetypeDTO, ArchetypeDTO };
+export {
+  CreateArchetypeDTO,
+  UpdateArchetypeDTO,
+  DeleteArchetypeDTO,
+  ArchetypeDTO,
+};

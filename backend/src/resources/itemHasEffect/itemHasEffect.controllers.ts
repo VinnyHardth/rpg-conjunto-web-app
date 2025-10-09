@@ -1,6 +1,12 @@
-import { Request, Response } from 'express';
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
-import { createItemHasEffect, getItemHasEffectById, getItemHasEffects, updateItemHasEffect, deleteItemHasEffect } from './itemHasEffect.services';
+import { Request, Response } from "express";
+import { ReasonPhrases, StatusCodes } from "http-status-codes";
+import {
+  createItemHasEffect,
+  getItemHasEffectById,
+  getItemHasEffects,
+  updateItemHasEffect,
+  deleteItemHasEffect,
+} from "./itemHasEffect.services";
 
 const handleError = (res: Response, err: any, context: string): void => {
   console.error(`${context}:`, err);
@@ -36,7 +42,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
     const newItemHasEffect = await createItemHasEffect(itemhaseffectData);
     res.status(StatusCodes.CREATED).json(newItemHasEffect);
   } catch (err) {
-    handleError(res, err, 'Error creating itemhaseffect');
+    handleError(res, err, "Error creating itemhaseffect");
   }
 };
 
@@ -63,12 +69,14 @@ const getById = async (req: Request, res: Response): Promise<void> => {
   try {
     const itemhaseffect = await getItemHasEffectById(id);
     if (!itemhaseffect) {
-      res.status(StatusCodes.NOT_FOUND).json({ message: 'ItemHasEffect not found' });
+      res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "ItemHasEffect not found" });
       return;
     }
     res.status(StatusCodes.OK).json(itemhaseffect);
   } catch (err) {
-    handleError(res, err, 'Error retrieving itemhaseffect');
+    handleError(res, err, "Error retrieving itemhaseffect");
   }
 };
 
@@ -87,7 +95,7 @@ const getAll = async (req: Request, res: Response): Promise<void> => {
     const itemhaseffects = await getItemHasEffects();
     res.status(StatusCodes.OK).json(itemhaseffects);
   } catch (err) {
-    handleError(res, err, 'Error retrieving itemhaseffects');
+    handleError(res, err, "Error retrieving itemhaseffects");
   }
 };
 
@@ -124,7 +132,7 @@ const update = async (req: Request, res: Response): Promise<void> => {
     const updatedItemHasEffect = await updateItemHasEffect(id, updateData);
     res.status(StatusCodes.OK).json(updatedItemHasEffect);
   } catch (err) {
-    handleError(res, err, 'Error updating itemhaseffect');
+    handleError(res, err, "Error updating itemhaseffect");
   }
 };
 
@@ -152,7 +160,7 @@ const remove = async (req: Request, res: Response): Promise<void> => {
     const deletedItemHasEffect = await deleteItemHasEffect(id);
     res.status(StatusCodes.OK).json(deletedItemHasEffect);
   } catch (err) {
-    handleError(res, err, 'Error deleting itemhaseffect');
+    handleError(res, err, "Error deleting itemhaseffect");
   }
 };
 

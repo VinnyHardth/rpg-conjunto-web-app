@@ -1,6 +1,12 @@
-import { Request, Response } from 'express';
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
-import { createSkill, getSkillById, getSkills, updateSkill, deleteSkill } from './skill.services';
+import { Request, Response } from "express";
+import { ReasonPhrases, StatusCodes } from "http-status-codes";
+import {
+  createSkill,
+  getSkillById,
+  getSkills,
+  updateSkill,
+  deleteSkill,
+} from "./skill.services";
 
 const handleError = (res: Response, err: any, context: string): void => {
   console.error(`${context}:`, err);
@@ -36,7 +42,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
     const newSkill = await createSkill(skillData);
     res.status(StatusCodes.CREATED).json(newSkill);
   } catch (err) {
-    handleError(res, err, 'Error creating skill');
+    handleError(res, err, "Error creating skill");
   }
 };
 
@@ -63,12 +69,12 @@ const getById = async (req: Request, res: Response): Promise<void> => {
   try {
     const skill = await getSkillById(id);
     if (!skill) {
-      res.status(StatusCodes.NOT_FOUND).json({ message: 'Skill not found' });
+      res.status(StatusCodes.NOT_FOUND).json({ message: "Skill not found" });
       return;
     }
     res.status(StatusCodes.OK).json(skill);
   } catch (err) {
-    handleError(res, err, 'Error retrieving skill');
+    handleError(res, err, "Error retrieving skill");
   }
 };
 
@@ -87,7 +93,7 @@ const getAll = async (req: Request, res: Response): Promise<void> => {
     const skills = await getSkills();
     res.status(StatusCodes.OK).json(skills);
   } catch (err) {
-    handleError(res, err, 'Error retrieving skills');
+    handleError(res, err, "Error retrieving skills");
   }
 };
 
@@ -124,7 +130,7 @@ const update = async (req: Request, res: Response): Promise<void> => {
     const updatedSkill = await updateSkill(id, updateData);
     res.status(StatusCodes.OK).json(updatedSkill);
   } catch (err) {
-    handleError(res, err, 'Error updating skill');
+    handleError(res, err, "Error updating skill");
   }
 };
 
@@ -152,7 +158,7 @@ const remove = async (req: Request, res: Response): Promise<void> => {
     const deletedSkill = await deleteSkill(id);
     res.status(StatusCodes.OK).json(deletedSkill);
   } catch (err) {
-    handleError(res, err, 'Error deleting skill');
+    handleError(res, err, "Error deleting skill");
   }
 };
 

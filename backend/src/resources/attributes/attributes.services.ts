@@ -1,14 +1,22 @@
-import { PrismaClient } from '@prisma/client';
-import { AttributeKind } from '@prisma/client';
-import { CreateAttributesDTO, UpdateAttributesDTO, AttributesDTO } from './attributes.types';
+import { PrismaClient } from "@prisma/client";
+import { AttributeKind } from "@prisma/client";
+import {
+  CreateAttributesDTO,
+  UpdateAttributesDTO,
+  AttributesDTO,
+} from "./attributes.types";
 
 const prisma = new PrismaClient();
 
-export const createAttributes = async (data: CreateAttributesDTO): Promise<AttributesDTO> => {
+export const createAttributes = async (
+  data: CreateAttributesDTO,
+): Promise<AttributesDTO> => {
   return prisma.attributes.create({ data });
 };
 
-export const getAttributesById = async (id: string): Promise<AttributesDTO | null> => {
+export const getAttributesById = async (
+  id: string,
+): Promise<AttributesDTO | null> => {
   return prisma.attributes.findUnique({ where: { id } });
 };
 
@@ -16,11 +24,16 @@ export const getAttributes = async (): Promise<AttributesDTO[]> => {
   return prisma.attributes.findMany();
 };
 
-export const getAttributesByKind = async (kind: AttributeKind): Promise<AttributesDTO[]> => {
+export const getAttributesByKind = async (
+  kind: AttributeKind,
+): Promise<AttributesDTO[]> => {
   return prisma.attributes.findMany({ where: { kind } });
 };
 
-export const updateAttributes = async (id: string, data: UpdateAttributesDTO): Promise<AttributesDTO> => {
+export const updateAttributes = async (
+  id: string,
+  data: UpdateAttributesDTO,
+): Promise<AttributesDTO> => {
   return prisma.attributes.update({ where: { id }, data });
 };
 

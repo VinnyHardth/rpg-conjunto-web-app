@@ -1,6 +1,12 @@
-import { Request, Response } from 'express';
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
-import { createItems, getItemsById, getItemss, updateItems, deleteItems } from './items.services';
+import { Request, Response } from "express";
+import { ReasonPhrases, StatusCodes } from "http-status-codes";
+import {
+  createItems,
+  getItemsById,
+  getItemss,
+  updateItems,
+  deleteItems,
+} from "./items.services";
 
 const handleError = (res: Response, err: any, context: string): void => {
   console.error(`${context}:`, err);
@@ -36,7 +42,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
     const newItems = await createItems(itemsData);
     res.status(StatusCodes.CREATED).json(newItems);
   } catch (err) {
-    handleError(res, err, 'Error creating items');
+    handleError(res, err, "Error creating items");
   }
 };
 
@@ -63,12 +69,12 @@ const getById = async (req: Request, res: Response): Promise<void> => {
   try {
     const items = await getItemsById(id);
     if (!items) {
-      res.status(StatusCodes.NOT_FOUND).json({ message: 'Items not found' });
+      res.status(StatusCodes.NOT_FOUND).json({ message: "Items not found" });
       return;
     }
     res.status(StatusCodes.OK).json(items);
   } catch (err) {
-    handleError(res, err, 'Error retrieving items');
+    handleError(res, err, "Error retrieving items");
   }
 };
 
@@ -87,7 +93,7 @@ const getAll = async (req: Request, res: Response): Promise<void> => {
     const itemss = await getItemss();
     res.status(StatusCodes.OK).json(itemss);
   } catch (err) {
-    handleError(res, err, 'Error retrieving itemss');
+    handleError(res, err, "Error retrieving itemss");
   }
 };
 
@@ -124,7 +130,7 @@ const update = async (req: Request, res: Response): Promise<void> => {
     const updatedItems = await updateItems(id, updateData);
     res.status(StatusCodes.OK).json(updatedItems);
   } catch (err) {
-    handleError(res, err, 'Error updating items');
+    handleError(res, err, "Error updating items");
   }
 };
 
@@ -152,7 +158,7 @@ const remove = async (req: Request, res: Response): Promise<void> => {
     const deletedItems = await deleteItems(id);
     res.status(StatusCodes.OK).json(deletedItems);
   } catch (err) {
-    handleError(res, err, 'Error deleting items');
+    handleError(res, err, "Error deleting items");
   }
 };
 

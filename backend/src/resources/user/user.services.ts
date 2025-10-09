@@ -1,12 +1,17 @@
 import { PrismaClient } from "@prisma/client";
 import { genSalt, hash } from "bcryptjs";
 
-import { CreateUserDTO, UpdateUserDTO, DeleteUserDTO, UserDTO } from "./user.types";
+import {
+  CreateUserDTO,
+  UpdateUserDTO,
+  DeleteUserDTO,
+  UserDTO,
+} from "./user.types";
 
 const prisma = new PrismaClient();
 
 const toUserDTO = (user: any): UserDTO => {
-  const { password, ...rest } = user;
+  const { _, ...rest } = user;
   return rest as UserDTO;
 };
 
@@ -45,7 +50,10 @@ const getUsers = async (): Promise<UserDTO[]> => {
   return users.map(toUserDTO);
 };
 
-const updateUser = async (id: string, data: UpdateUserDTO): Promise<UserDTO> => {
+const updateUser = async (
+  id: string,
+  data: UpdateUserDTO,
+): Promise<UserDTO> => {
   if (data.password) {
     const salt = await genSalt(10);
     data.password = await hash(data.password, salt);
@@ -68,4 +76,11 @@ const deleteUser = async (data: DeleteUserDTO): Promise<UserDTO> => {
   return toUserDTO(user);
 };
 
-export { createUser, getUserById, getUserByEmail, getUsers, updateUser, deleteUser };
+export {
+  createUser,
+  getUserById,
+  getUserByEmail,
+  getUsers,
+  updateUser,
+  deleteUser,
+};
