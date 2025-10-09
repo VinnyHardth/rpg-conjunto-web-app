@@ -35,6 +35,9 @@ services:
       - /app/node_modules
     ports:
       - ${BACKEND_PORT}:${BACKEND_PORT}
+    env_file:
+      - .env              # ← global (na raiz)
+      - ./backend/.env    # ← local (dentro do backend)
     networks:
       - rpg-manager-network
   frontend:
