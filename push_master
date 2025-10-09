@@ -1,0 +1,19 @@
+#!/bin/sh
+# Uso: ./push-pr.sh
+# Faz git push + gh pr create usando a mensagem do último commit
+
+set -e
+
+# obtém dados
+MSG=$(git log -1 --pretty=%B | head -n 1)
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+# faz push (cria branch remota se não existir)
+git push -u origin "$BRANCH"
+
+# cria PR com a mesma mensagem
+gh pr create \
+  --base main \
+  --head "$BRANCH" \
+  --title "$MSG" \
+  --body "$MSG"
