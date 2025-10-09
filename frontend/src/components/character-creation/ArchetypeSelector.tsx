@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { fetchArchetypes } from "@/lib/api";
-import { Archetype } from "@/types/character";
+import { Archetype } from "@/types/models";
 
 interface ArchetypeSelectorProps {
   onSelectArchetype: (archetype: Archetype | null) => void;
