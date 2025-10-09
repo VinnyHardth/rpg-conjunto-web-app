@@ -113,3 +113,4 @@ export type AttributeKey =
   | "Constitution" | "Charisma" | "Destiny";
 
 export const GENEROS_MOCK = ["Masculino", "Feminino", "Não Binário", "Outro"];
+export const STEPS_NAMES = ["Informações Básicas", "Atributos & Estatísticas", "Resumo Final"];

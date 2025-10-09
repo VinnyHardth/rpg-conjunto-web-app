@@ -1,5 +1,5 @@
 import React from "react";
-import { STEP_NAMES } from "@/types/character";
+import { STEPS_NAMES } from "@/types/models";
 
 interface StepIndicatorProps {
   currentStep: number;
@@ -9,7 +9,7 @@ interface StepIndicatorProps {
 export default function StepIndicator({ currentStep, totalSteps }: StepIndicatorProps) {
   return (
     <div className="flex justify-between items-center mb-6">
-      {STEP_NAMES.map((name, index) => (
+      {STEPS_NAMES.map((name, index) => (
         <React.Fragment key={index}>
           <div className="flex flex-col items-center">
             <div className={`
