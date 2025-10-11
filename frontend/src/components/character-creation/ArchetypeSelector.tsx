@@ -35,13 +35,13 @@ export default function ArchetypeSelector({
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedId = event.target.value;
-    
+
     if (!selectedId) {
       onSelectArchetype(null);
       return;
     }
 
-    const selectedArchetype = archetypes.find(a => a.id === selectedId);
+    const selectedArchetype = archetypes.find((a) => a.id === selectedId);
 
     if (selectedArchetype) {
       onSelectArchetype(selectedArchetype);
@@ -64,18 +64,20 @@ export default function ArchetypeSelector({
       </div>
     );
   }
-  
-  const selectedArchetype = archetypes.find(a => a.id === selectedArchetypeId);
+
+  const selectedArchetype = archetypes.find(
+    (a) => a.id === selectedArchetypeId,
+  );
 
   return (
     <div className="space-y-2">
-      <label 
-        htmlFor="archetype-select" 
+      <label
+        htmlFor="archetype-select"
         className="block text-sm font-medium text-gray-700"
       >
         Selecione o Arquétipo:
       </label>
-      
+
       <select
         id="archetype-select"
         value={selectedArchetypeId || ""}
@@ -84,20 +86,27 @@ export default function ArchetypeSelector({
         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border bg-white focus:border-purple-500 focus:ring-purple-500 text-base"
       >
         <option value="" disabled>
-          {archetypes.length === 0 ? "Nenhum arquétipo disponível" : "--- Escolha um Arquétipo ---"}
+          {archetypes.length === 0
+            ? "Nenhum arquétipo disponível"
+            : "--- Escolha um Arquétipo ---"}
         </option>
-        
+
         {archetypes.map((archetype) => (
           <option key={archetype.id} value={archetype.id}>
-            {archetype.name} 
+            {archetype.name}
           </option>
         ))}
       </select>
 
       {selectedArchetype && (
         <div className="p-3 mt-2 bg-purple-50 border border-purple-200 rounded-lg text-sm">
-          <p className="font-semibold text-purple-800">Estatísticas Base de {selectedArchetype.name}:</p>
-          <p className="text-gray-700">HP: {selectedArchetype.hp} | MP: {selectedArchetype.mp} | TP: {selectedArchetype.tp}</p>
+          <p className="font-semibold text-purple-800">
+            Estatísticas Base de {selectedArchetype.name}:
+          </p>
+          <p className="text-gray-700">
+            HP: {selectedArchetype.hp} | MP: {selectedArchetype.mp} | TP:{" "}
+            {selectedArchetype.tp}
+          </p>
         </div>
       )}
     </div>

@@ -5,7 +5,7 @@ type UpdateAttributesDTO = Partial<CreateAttributesDTO>;
 type AttributesDTO = Attributes;
 type DeleteAttributesDTO = Pick<Attributes, "id">;
 
-export {
+export type {
   CreateAttributesDTO,
   UpdateAttributesDTO,
   AttributesDTO,

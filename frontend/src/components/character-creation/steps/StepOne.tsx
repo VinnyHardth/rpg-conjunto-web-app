@@ -11,7 +11,10 @@ export default function StepOne({ characterData, onDataChange }: StepOneProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <AvatarUpload />
-      <BasicInfoForm characterData={characterData} onDataChange={onDataChange} />
+      <BasicInfoForm
+        characterData={characterData}
+        onDataChange={onDataChange}
+      />
     </div>
   );
 }

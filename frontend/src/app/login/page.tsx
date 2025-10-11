@@ -32,8 +32,20 @@ export default function LoginPage() {
   return (
     <AuthLayout title="Login">
       <form onSubmit={handleSubmit} className="space-y-5">
-        <InputField name="email" type="email" value={form.email} onChange={handleChange} placeholder="Email" />
-        <InputField name="password" type="password" value={form.password} onChange={handleChange} placeholder="Senha" />
+        <InputField
+          name="email"
+          type="email"
+          value={form.email}
+          onChange={handleChange}
+          placeholder="Email"
+        />
+        <InputField
+          name="password"
+          type="password"
+          value={form.password}
+          onChange={handleChange}
+          placeholder="Senha"
+        />
         {error && <p className="text-red-500 text-sm">{error}</p>}
         <Button type="submit">Entrar</Button>
       </form>

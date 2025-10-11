@@ -5,7 +5,7 @@ type UpdateArchetypeDTO = Partial<CreateArchetypeDTO>;
 type DeleteArchetypeDTO = Pick<Archetype, "id">;
 type ArchetypeDTO = Archetype;
 
-export {
+export type {
   CreateArchetypeDTO,
   UpdateArchetypeDTO,
   DeleteArchetypeDTO,
