@@ -13,7 +13,11 @@ interface StepTwoProps {
     tp: number;
     movimento: number;
   };
-  onDataChange: (section: "atributos", key: string, value: string | number) => void;
+  onDataChange: (
+    section: "atributos",
+    key: string,
+    value: string | number,
+  ) => void;
   onArchetypeSelect: (archetype: Archetype | null) => void;
   getAttributeValue: (attributeName: string) => number;
   attributes: Attributes[];
@@ -35,13 +39,16 @@ export default function StepTwo({
       {/* COLUNA 1: INPUTS DE ATRIBUTOS */}
       <div className="p-4 border border-indigo-200 rounded-lg bg-indigo-50 h-full">
         <h3 className="font-bold text-xl mb-4 text-indigo-700 flex items-center">
-          <span className="mr-2">📝</span> Defina seus {attributeKeys.length} Atributos
+          <span className="mr-2">📝</span> Defina seus {attributeKeys.length}{" "}
+          Atributos
         </h3>
-        
+
         <AttributeInputs
           attributeKeys={attributeKeys}
           getAttributeValue={getAttributeValue}
-          onAttributeChange={(attr, value) => onDataChange("atributos", attr, value)}
+          onAttributeChange={(attr, value) =>
+            onDataChange("atributos", attr, value)
+          }
         />
 
         <ArchetypeSelector
@@ -50,17 +57,15 @@ export default function StepTwo({
         />
 
         <p className="text-xs text-gray-500 mt-4">
-          Altere os valores acima para ver o impacto em tempo real na coluna ao lado.
+          Altere os valores acima para ver o impacto em tempo real na coluna ao
+          lado.
         </p>
       </div>
 
       {/* COLUNA 2: ESTATÍSTICAS CALCULADAS */}
       <div className="space-y-4">
         <ResourceDisplay derivedStats={derivedStats} />
-        <SkillsDisplay 
-          derivedStats={derivedStats} 
-          expertises={expertises}
-        />
+        <SkillsDisplay derivedStats={derivedStats} expertises={expertises} />
       </div>
     </div>
   );

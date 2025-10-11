@@ -4,7 +4,11 @@ type Props = {
   color?: "primary" | "secondary";
 };
 
-export default function Button({ children, type = "button", color = "primary" }: Props) {
+export default function Button({
+  children,
+  type = "button",
+  color = "primary",
+}: Props) {
   const base = "w-full font-bold py-2 px-4 rounded-md transition";
   const styles =
     color === "primary"

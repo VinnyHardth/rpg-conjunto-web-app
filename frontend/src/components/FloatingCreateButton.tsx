@@ -4,10 +4,10 @@ import React, { useState } from "react";
 import CharacterCreationModal from "./CharacterCreationModal";
 
 type Props = {
-  userId: string ;
+  userId: string;
 };
 
-export default function CreateIcon({userId}: Props) {
+export default function CreateIcon({ userId }: Props) {
   const [isModalOpen, setModalOpen] = useState(false);
 
   return (
