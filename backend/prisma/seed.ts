@@ -1,27 +1,51 @@
 import { PrismaClient } from "@prisma/client";
 
-import { abilitiesSeeder } from "./seeders/abilities";
-import { attributesSeeder } from "./seeders/attributes";
-import { archetypeSeeder } from "./seeders/archetypes";
-import { characterSeeder } from "./seeders/character";
-import { effectSeeder } from "./seeders/effects";
-import { expertisesSeeder } from "./seeders/expertises";
-import { itemSeeder } from "./seeders/items";
-import { userSeeder } from "./seeders/user";
+import { seedUser } from "./seeders/user";
+import { seedArchetypes } from "./seeders/archetypes";
+import { seedAttributes } from "./seeders/attributes";
+import { seedExpertises } from "./seeders/expertises";
+import { seedAbilities } from "./seeders/abilities";
+import { seedEffects } from "./seeders/effects";
+import { seedEffectModifiers } from "./seeders/effectModifiers";
+import { seedItems } from "./seeders/items";
+import { seedItemHasEffect } from "./seeders/itemHasEffect";
+import { seedItemSkills } from "./seeders/itemSkills";
+import { seedCharacter } from "./seeders/character";
+import { seedCharacterAttributes } from "./seeders/characterAttribute";
+import { seedCharacterHasItem } from "./seeders/characterHasItem";
+import { seedAppliedEffects } from "./seeders/appliedEffects";
+import { seedStatus } from "./seeders/status";
+import { seedSkills } from "./seeders/skills";
+import { seedAbilityEffects } from "./seeders/abilityEffect";
 
 const prisma = new PrismaClient();
 
 async function main() {
   try {
     await prisma.$connect();
-    await userSeeder();
-    await archetypeSeeder();
-    await attributesSeeder();
-    await expertisesSeeder();
-    await abilitiesSeeder();
-    await itemSeeder();
-    await effectSeeder();
-    await characterSeeder();
+
+    // Ordem lógica de inserção
+    await seedUser();
+    await seedArchetypes();
+    await seedAttributes();
+    await seedExpertises();
+    await seedAbilities();
+    await seedEffects();
+    await seedEffectModifiers();
+    await seedItems();
+
+    // Relações entre entidades
+    await seedItemHasEffect();
+    await seedItemSkills();
+    await seedAbilityEffects();
+
+    // Núcleo dos personagens
+    await seedCharacter();
+    await seedCharacterAttributes();
+    await seedCharacterHasItem();
+    await seedStatus();
+    await seedSkills();
+    await seedAppliedEffects();
 
     console.log("Seed concluído com sucesso!");
   } catch (e) {
