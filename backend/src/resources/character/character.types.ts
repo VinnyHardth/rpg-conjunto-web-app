@@ -19,7 +19,7 @@ type UpdateCharacterDTO = Partial<CreateCharacterDTO>;
 type DeleteCharacterDTO = Pick<Character, "id">;
 type CharacterDTO = Character;
 
-export {
+export type {
   CreateCharacterDTO,
   UpdateCharacterDTO,
   DeleteCharacterDTO,

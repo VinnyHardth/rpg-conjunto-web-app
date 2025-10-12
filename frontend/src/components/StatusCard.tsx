@@ -53,23 +53,28 @@ const StatusCard: React.FC<StatusProps> = ({
           </div>
         </div>
         <div className="secondary-bars">
-  {/* MP */}
-  <div className="bar-row">
-    <div className="bar-background">
-      <div className="bar-fill mp" style={{ width: `${mpPercent}%` }}></div>
-    </div>
-    <span className="bar-label mp">MP: {mpDisplay}</span>
-  </div>
+          {/* MP */}
+          <div className="bar-row">
+            <div className="bar-background">
+              <div
+                className="bar-fill mp"
+                style={{ width: `${mpPercent}%` }}
+              ></div>
+            </div>
+            <span className="bar-label mp">MP: {mpDisplay}</span>
+          </div>
 
-  {/* TP */}
-  <div className="tp-bar-row">
-    <div className="bar-background">
-      <div className="bar-fill tp" style={{ width: `${tpPercent}%` }}></div>
-    </div>
-    <span className="bar-label tp">TP: {tpDisplay}</span>
-  </div>
-</div>
-
+          {/* TP */}
+          <div className="tp-bar-row">
+            <div className="bar-background">
+              <div
+                className="bar-fill tp"
+                style={{ width: `${tpPercent}%` }}
+              ></div>
+            </div>
+            <span className="bar-label tp">TP: {tpDisplay}</span>
+          </div>
+        </div>
       </div>
     </div>
   );

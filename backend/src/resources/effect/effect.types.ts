@@ -13,4 +13,4 @@ type UpdateEffectDTO = Partial<CreateEffectDTO>;
 type EffectDTO = Effect;
 type DeleteEffectDTO = Pick<Effect, "id">;
 
-export { CreateEffectDTO, UpdateEffectDTO, EffectDTO, DeleteEffectDTO };
+export type { CreateEffectDTO, UpdateEffectDTO, EffectDTO, DeleteEffectDTO };

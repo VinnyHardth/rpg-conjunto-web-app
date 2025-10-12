@@ -1,5 +1,12 @@
 import api from "./axios";
-import { User, Character, CharacterAttribute, Status, Attributes, CreateCharacter } from "@/types/models";
+import {
+  User,
+  Character,
+  CharacterAttribute,
+  Status,
+  Attributes,
+  CreateCharacter,
+} from "@/types/models";
 
 import { Archetype } from "@/types/models";
 
@@ -10,46 +17,61 @@ export const fetchUser = async (): Promise<User> => {
 
 // characters endpoint ---------------------------------------------------------
 
-export const fetchCharacter = async (characterId: string): Promise<Character> => {
+export const fetchCharacter = async (
+  characterId: string,
+): Promise<Character> => {
   const { data } = await api.get(`/characters/${characterId}`);
   return data;
-}
+};
 
-export const createCharacter = async (characterData: CreateCharacter): Promise<Character> => {
+export const createCharacter = async (
+  characterData: CreateCharacter,
+): Promise<Character> => {
   const response = await api.post("/characters", characterData);
   return response.data;
 };
 
-export const fetchUserCharacters = async (userId: string): Promise<Character[]> => {
+export const fetchUserCharacters = async (
+  userId: string,
+): Promise<Character[]> => {
   const { data } = await api.get(`/characters/user/${userId}`);
   return data;
 };
 
-
-export const fetchCharacterAttributes = async (characterId: string): Promise<CharacterAttribute[]> => {
-  const { data } = await api.get(`/character-attributes/character/${characterId}`);
+export const fetchCharacterAttributes = async (
+  characterId: string,
+): Promise<CharacterAttribute[]> => {
+  const { data } = await api.get(
+    `/character-attributes/character/${characterId}`,
+  );
   return data;
 };
 
-export const fetchCharacterStatus = async (characterId: string): Promise<Status[]> => {
+export const fetchCharacterStatus = async (
+  characterId: string,
+): Promise<Status[]> => {
   const { data } = await api.get(`/status/character/${characterId}`);
   return data;
 };
 
-export const fetchCharacterArchetype = async (characterId: string): Promise<Archetype> => {
+export const fetchCharacterArchetype = async (
+  characterId: string,
+): Promise<Archetype> => {
   const { data } = await api.get(`/archetypes/character/${characterId}`);
   return data;
-}
+};
 
 export const fetchArchetypes = async (): Promise<Archetype[]> => {
   const { data } = await api.get("/archetypes");
   return data;
 };
 
-export const fetchAttributeKinds = async (kind: string): Promise<Attributes[]> => {
+export const fetchAttributeKinds = async (
+  kind: string,
+): Promise<Attributes[]> => {
   const { data } = await api.get("/attributes/kind/" + kind);
   return data;
-}
+};
 
 export type FullCharacter = Character & {
   attributes: CharacterAttribute[];
@@ -57,7 +79,9 @@ export type FullCharacter = Character & {
   archetype: Archetype;
 };
 
-export const fetchAllCharacterData = async (characterId: string): Promise<FullCharacter> => {
+export const fetchAllCharacterData = async (
+  characterId: string,
+): Promise<FullCharacter> => {
   const [character, attributes, status, archetype] = await Promise.all([
     fetchCharacter(characterId),
     fetchCharacterAttributes(characterId),

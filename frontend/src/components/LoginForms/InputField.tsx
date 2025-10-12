@@ -1,18 +1,29 @@
 import React from "react";
 
 type Props = {
-    label?: string;
-    type?: string;
-    name: string;
-    placeholder?: string;
-    value: string;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  label?: string;
+  type?: string;
+  name: string;
+  placeholder?: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export default function InputField({ label, type = "text", name, value, placeholder, onChange }: Props) {
+export default function InputField({
+  label,
+  type = "text",
+  name,
+  value,
+  placeholder,
+  onChange,
+}: Props) {
   return (
     <div>
-      {label && <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>}
+      {label && (
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          {label}
+        </label>
+      )}
       <input
         type={type}
         name={name}
