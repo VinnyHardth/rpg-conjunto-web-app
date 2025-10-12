@@ -122,7 +122,6 @@ export function useCharacters(userId?: string) {
     refreshCharacters: mutate,
   };
 }
-
 // Funções auxiliares
 function buildAttributeMap(
   attributes: CreateCharacterAttribute[], 

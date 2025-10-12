@@ -1,8 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
-import Decimal from "decimal.js";
 
 // Types
-import { 
+import {
   CreateFullCharacter,
   Archetype, 
   Attributes,
@@ -15,7 +14,10 @@ import {
 import { fetchAttributeKinds } from "@/lib/api";
 
 // Utilities
-import { calculateExpertises, calculateStatus } from "@/lib/characterCalculations";
+import {
+  calculateExpertises,
+  calculateStatus,
+} from "@/lib/characterCalculations";
 
 // Components
 import StepIndicator from "./character-creation/StepIndicator";
@@ -27,46 +29,52 @@ import StepThree from "./character-creation/steps/StepThree";
 import { useCharacters } from "@/hooks/useCharacters";
 
 // Constants
-export const STEP_NAMES = ["Informações Básicas", "Atributos & Estatísticas", "Resumo Final"];
+export const STEP_NAMES = [
+  "Informações Básicas",
+  "Atributos & Estatísticas",
+  "Resumo Final",
+];
+
+
 
 const ATTRIBUTE_ORDER = [
   "Strength",
-  "Dexterity", 
+  "Dexterity",
   "Intelligence",
   "Wisdom",
   "Constitution",
   "Charisma",
-  "Destiny"
-]; 
+  "Destiny",
+];
 
-const initialCharacterData: CreateFullCharacter = { 
-  info: { 
-    name: "", 
-    race: "", 
-    age: 0, 
-    height: 0, 
-    money: new Decimal(50), 
-    type: CharacterType.PC, 
-    generation: 0, 
+const initialCharacterData: CreateFullCharacter = {
+  info: {
+    name: "",
+    race: "",
+    age: 0,
+    height: 0,
+    money: 50,
+    type: CharacterType.PC,
+    generation: 0,
     gender: "",
-    userId: "", 
-    archetypeId: "", 
+    userId: "",
+    archetypeId: "",
     annotations: "",
     imageUrl: "https://placehold.co/150x150",
-  }, 
-  attributes: [], 
-  expertises: [], 
-  status: [], 
-  archetype: { 
-    id: "", 
-    name: "", 
-    hp: 0, 
-    mp: 0, 
-    tp: 0, 
-    createdAt: new Date(), 
-    updatedAt: new Date(), 
-    deletedAt: null 
-  } 
+  },
+  attributes: [],
+  expertises: [],
+  status: [],
+  archetype: {
+    id: "",
+    name: "",
+    hp: 0,
+    mp: 0,
+    tp: 0,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    deletedAt: null,
+  },
 };
 
 interface CharacterCreationModalProps {
@@ -82,23 +90,27 @@ interface CalculatedStats {
 }
 
 const createCharacterAttribute = (
-  attributeId: string, 
-  attributeName: string, 
-  valueBase: number = 0
+  attributeId: string,
+  attributeName: string,
+  valueBase: number = 0,
 ): CreateCharacterAttribute => {
   return {
     characterId: "", // Será preenchido quando o personagem for criado
     attributeId: attributeId,
     valueBase: valueBase,
     valueInv: 0,
-    valueExtra: 0
+    valueExtra: 0,
   };
 };
 
-
-export default function CharacterCreationModal({ isOpen, onClose, userId }: CharacterCreationModalProps) {
+export default function CharacterCreationModal({
+  isOpen,
+  onClose,
+  userId,
+}: CharacterCreationModalProps) {
   const [currentStep, setCurrentStep] = useState(0);
-  const [characterData, setCharacterData] = useState<CreateFullCharacter>(initialCharacterData);
+  const [characterData, setCharacterData] =
+    useState<CreateFullCharacter>(initialCharacterData);
   const [attributes, setAttributes] = useState<Attributes[]>([]);
   const [expertises, setExpertises] = useState<Attributes[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -110,50 +122,56 @@ export default function CharacterCreationModal({ isOpen, onClose, userId }: Char
   const [attributeKeys, setAttributeKeys] = useState<string[]>([]);
 
   // Buscar atributos e perícias do banco
- useEffect(() => {
-  const fetchData = async () => {
-    if (!isOpen) return;
-    
-    setIsLoading(true);
-    try {
-      const [attributesData, expertisesData] = await Promise.all([
-        fetchAttributeKinds(AttributeKind.ATTRIBUTE),
-        fetchAttributeKinds(AttributeKind.EXPERTISE)
-      ]);
-      
-      setAttributes(attributesData);
-      setExpertises(expertisesData);
-      
-      // Ordenar os atributos e perícias
-      setAttributes(attributesData.sort((a, b) => ATTRIBUTE_ORDER.indexOf(a.name) - ATTRIBUTE_ORDER.indexOf(b.name)));
-      
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!isOpen) return;
 
-      // Definir ATTRIBUTE_KEYS dinamicamente com base nos nomes dos atributos do banco
-      const dynamicAttributeKeys = attributesData.map(attr => attr.name);
-      setAttributeKeys(dynamicAttributeKeys);
-      
-      console.log("Atributos carregados:", dynamicAttributeKeys);
-      console.log("Perícias carregadas:", expertisesData.map(exp => exp.name));
-      
-      // Inicializar atributos básicos com estrutura CORRETA
-      const initialAttributes = attributesData.map(attribute => 
-        createCharacterAttribute(attribute.id, attribute.name, 0)
-      );
-      
-      setCharacterData(prev => ({
-        ...prev,
-        attributes: initialAttributes
-      }));
-      
-    } catch (error) {
-      console.error("Erro ao buscar dados:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  
-  fetchData();
-}, [isOpen]);
+      setIsLoading(true);
+      try {
+        const [attributesData, expertisesData] = await Promise.all([
+          fetchAttributeKinds(AttributeKind.ATTRIBUTE),
+          fetchAttributeKinds(AttributeKind.EXPERTISE),
+        ]);
+
+        setAttributes(attributesData);
+        setExpertises(expertisesData);
+
+        // Ordenar os atributos e perícias
+        setAttributes(
+          attributesData.sort(
+            (a, b) =>
+              ATTRIBUTE_ORDER.indexOf(a.name) - ATTRIBUTE_ORDER.indexOf(b.name),
+          ),
+        );
+
+        // Definir ATTRIBUTE_KEYS dinamicamente com base nos nomes dos atributos do banco
+        const dynamicAttributeKeys = attributesData.map((attr) => attr.name);
+        setAttributeKeys(dynamicAttributeKeys);
+
+        console.log("Atributos carregados:", dynamicAttributeKeys);
+        console.log(
+          "Perícias carregadas:",
+          expertisesData.map((exp) => exp.name),
+        );
+
+        // Inicializar atributos básicos com estrutura CORRETA
+        const initialAttributes = attributesData.map((attribute) =>
+          createCharacterAttribute(attribute.id, attribute.name, 0),
+        );
+
+        setCharacterData((prev) => ({
+          ...prev,
+          attributes: initialAttributes,
+        }));
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [isOpen]);
 
   // Função para resetar completamente o formulário
   const resetForm = () => {
@@ -164,44 +182,54 @@ export default function CharacterCreationModal({ isOpen, onClose, userId }: Char
 
   // Converter atributos para números no formato esperado pelas funções de cálculo
   const attributesAsNumbers = useMemo(() => {
-  // Criar um mapa para acesso rápido: attributeId -> valueBase
-  const attributeValueMap = new Map(
-    characterData.attributes.map(attr => [attr.attributeId, attr.valueBase])
-  );
-  
-  return attributeKeys.reduce((acc, key) => {
-    const attributeDef = attributes.find(attr => attr.name === key);
-    const value = attributeDef ? attributeValueMap.get(attributeDef.id) || 0 : 0;
-    
-    return {
-      ...acc,
-      [key]: value,
-    };
-  }, {} as Record<string, number>);
-}, [characterData.attributes, attributeKeys, attributes]);
+    // Criar um mapa para acesso rápido: attributeId -> valueBase
+    const attributeValueMap = new Map(
+      characterData.attributes.map((attr) => [
+        attr.attributeId,
+        attr.valueBase,
+      ]),
+    );
+
+    return attributeKeys.reduce(
+      (acc, key) => {
+        const attributeDef = attributes.find((attr) => attr.name === key);
+        const value = attributeDef
+          ? attributeValueMap.get(attributeDef.id) || 0
+          : 0;
+
+        return {
+          ...acc,
+          [key]: value,
+        };
+      },
+      {} as Record<string, number>,
+    );
+  }, [characterData.attributes, attributeKeys, attributes]);
 
   // Calcular estatísticas derivadas usando as novas funções
   const calculatedStats: CalculatedStats = useMemo(() => {
     const expertises = calculateExpertises(attributesAsNumbers);
-    const status = calculateStatus(attributesAsNumbers, characterData.archetype);
-    
+    const status = calculateStatus(
+      attributesAsNumbers,
+      characterData.archetype,
+    );
+
     return {
       expertises,
-      status
+      status,
     };
   }, [attributesAsNumbers, characterData.archetype]);
 
   // Combinar com os modificadores do arquétipo
   const derivedStats = useMemo(() => {
-    
     return {
       pericias: calculatedStats.expertises,
-      hp: calculatedStats.status.hp  || 0,
+      hp: calculatedStats.status.hp || 0,
       mp: calculatedStats.status.mp || 0,
       tp: calculatedStats.status.tp || 0,
-      movimento: calculatedStats.status.mov || 0
+      movimento: calculatedStats.status.mov || 0,
     };
-  }, [calculatedStats,]);
+  }, [calculatedStats]);
 
   // Resetar o formulário quando o modal abrir
   useEffect(() => {
@@ -227,61 +255,71 @@ export default function CharacterCreationModal({ isOpen, onClose, userId }: Char
   };
 
   // Atualizar informações básicas
-  const handleDataChange = (section: "base" | "atributos", key: string, value: string | number) => {
-  if (section === "base") {
-    setCharacterData(prev => ({
-      ...prev,
-      info: {
-        ...prev.info,
-        [key]: value
-      }
-    }));
-  } else if (section === "atributos") {
-    setCharacterData(prev => {
-      const existingAttributeIndex = prev.attributes.findIndex(attr => {
-        // Encontrar pelo nome do atributo através do ID
-        const attributeDef = attributes.find(a => a.id === attr.attributeId);
-        return attributeDef?.name === key;
-      });
-      
-      if (existingAttributeIndex >= 0) {
-        const updatedAttributes = [...prev.attributes];
-        updatedAttributes[existingAttributeIndex] = {
-          ...updatedAttributes[existingAttributeIndex],
-          valueBase: Number(value) || 0,
-        };
-        return { ...prev, attributes: updatedAttributes };
-      } else {
-        // Encontrar o atributo no banco pelo nome
-        const attributeFromDB = attributes.find(attr => attr.name === key);
-        if (attributeFromDB) {
-          const newAttribute = createCharacterAttribute(attributeFromDB.id, key, Number(value) || 0);
-          return { ...prev, attributes: [...prev.attributes, newAttribute] };
+  const handleDataChange = (
+    section: "base" | "atributos",
+    key: string,
+    value: string | number,
+  ) => {
+    if (section === "base") {
+      setCharacterData((prev) => ({
+        ...prev,
+        info: {
+          ...prev.info,
+          [key]: value,
+        },
+      }));
+    } else if (section === "atributos") {
+      setCharacterData((prev) => {
+        const existingAttributeIndex = prev.attributes.findIndex((attr) => {
+          // Encontrar pelo nome do atributo através do ID
+          const attributeDef = attributes.find(
+            (a) => a.id === attr.attributeId,
+          );
+          return attributeDef?.name === key;
+        });
+
+        if (existingAttributeIndex >= 0) {
+          const updatedAttributes = [...prev.attributes];
+          updatedAttributes[existingAttributeIndex] = {
+            ...updatedAttributes[existingAttributeIndex],
+            valueBase: Number(value) || 0,
+          };
+          return { ...prev, attributes: updatedAttributes };
+        } else {
+          // Encontrar o atributo no banco pelo nome
+          const attributeFromDB = attributes.find((attr) => attr.name === key);
+          if (attributeFromDB) {
+            const newAttribute = createCharacterAttribute(
+              attributeFromDB.id,
+              key,
+              Number(value) || 0,
+            );
+            return { ...prev, attributes: [...prev.attributes, newAttribute] };
+          }
+          return prev;
         }
-        return prev;
-      }
-    });
-  }
-};
+      });
+    }
+  };
 
   const handleArchetypeSelect = (archetype: Archetype | null) => {
     if (archetype) {
-      setCharacterData(prev => ({ 
-        ...prev, 
+      setCharacterData((prev) => ({
+        ...prev,
         archetype,
         info: {
           ...prev.info,
-          archetypeId: archetype.id
-        }
+          archetypeId: archetype.id,
+        },
       }));
     } else {
-      setCharacterData(prev => ({
+      setCharacterData((prev) => ({
         ...prev,
         archetype: initialCharacterData.archetype,
         info: {
           ...prev.info,
-          archetypeId: ""
-        }
+          archetypeId: "",
+        },
       }));
     }
   };
@@ -318,14 +356,14 @@ const handleFinish = async () => {
 
   // Função auxiliar para obter valor de atributo pelo nome
   const getAttributeValue = (attributeName: string): number => {
-  const attributeDef = attributes.find(attr => attr.name === attributeName);
-  if (!attributeDef) return 0;
-  
-  const characterAttribute = characterData.attributes.find(attr => 
-    attr.attributeId === attributeDef.id
-  );
-  return characterAttribute?.valueBase || 0;
-};
+    const attributeDef = attributes.find((attr) => attr.name === attributeName);
+    if (!attributeDef) return 0;
+
+    const characterAttribute = characterData.attributes.find(
+      (attr) => attr.attributeId === attributeDef.id,
+    );
+    return characterAttribute?.valueBase || 0;
+  };
 
   const renderCurrentStep = () => {
     if (isLoading) {
@@ -333,7 +371,9 @@ const handleFinish = async () => {
         <div className="min-h-[400px] flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Carregando atributos e perícias...</p>
+            <p className="mt-4 text-gray-600">
+              Carregando atributos e perícias...
+            </p>
           </div>
         </div>
       );
@@ -342,9 +382,9 @@ const handleFinish = async () => {
     switch (currentStep) {
       case 0:
         return (
-          <StepOne 
-            characterData={characterData} 
-            onDataChange={handleDataChange} 
+          <StepOne
+            characterData={characterData}
+            onDataChange={handleDataChange}
           />
         );
       case 1:
@@ -362,9 +402,9 @@ const handleFinish = async () => {
         );
       case 2:
         return (
-          <StepThree 
-            characterData={characterData} 
-            derivedStats={derivedStats} 
+          <StepThree
+            characterData={characterData}
+            derivedStats={derivedStats}
           />
         );
       default:
@@ -375,7 +415,7 @@ const handleFinish = async () => {
   return (
     <div className="fixed inset-0 bg-gray-800/75 flex justify-center items-center z-50 p-4">
       <div className="bg-white p-6 rounded-xl w-full max-w-4xl relative shadow-2xl transform transition-all duration-300 scale-100">
-        <button 
+        <button
           onClick={handleClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-red-600 transition-colors text-2xl"
           aria-label="Fechar Modal"
@@ -383,8 +423,12 @@ const handleFinish = async () => {
           ✖
         </button>
 
-        <h2 className="text-3xl font-extrabold text-gray-800 mb-1">Criar Novo Personagem</h2>
-        <p className="text-gray-500 mb-6">Processo de 3 Etapas. Crie seu herói em minutos.</p>
+        <h2 className="text-3xl font-extrabold text-gray-800 mb-1">
+          Criar Novo Personagem
+        </h2>
+        <p className="text-gray-500 mb-6">
+          Processo de 3 Etapas. Crie seu herói em minutos.
+        </p>
 
         <StepIndicator currentStep={currentStep} totalSteps={totalSteps} />
 

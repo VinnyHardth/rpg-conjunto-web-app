@@ -1,33 +1,53 @@
 repos:
   - repo: local
     hooks:
-
+      # --- Proteção principal ---
       - id: block-main-branch
         name: prevent commits to main
         entry: bash -c 'branch=$(git rev-parse --abbrev-ref HEAD); if [ "$branch" = "main" ]; then echo "❌ Commit to main branch is not allowed."; exit 1; fi'
         language: system
         pass_filenames: false
 
+      # --- Backend ---
       - id: prisma
         name: prisma checks
         entry: bash -c "cd backend && npx prisma format && npx prisma validate && npx prisma generate"
         language: system
         pass_filenames: false
 
-      - id: eslint
-        name: eslint --fix
+      - id: eslint-backend
+        name: eslint --fix backend
         entry: bash -c "cd backend && npx eslint --fix ."
         language: system
         pass_filenames: false
 
-      - id: prettier
-        name: prettier --write
+      - id: prettier-backend
+        name: prettier backend
         entry: bash -c "cd backend && npx prettier --write ."
         language: system
         pass_filenames: false
 
-      - id: typecheck
-        name: tsc --noEmit
+      - id: typecheck-backend
+        name: tsc --noEmit backend
         entry: bash -c "cd backend && npx tsc --noEmit"
+        language: system
+        pass_filenames: false
+
+      # --- Frontend ---
+      - id: eslint-frontend
+        name: eslint --fix frontend
+        entry: bash -c "cd frontend && npx eslint --fix ."
+        language: system
+        pass_filenames: false
+
+      - id: prettier-frontend
+        name: prettier frontend
+        entry: bash -c "cd frontend && npx prettier --write ."
+        language: system
+        pass_filenames: false
+
+      - id: typecheck-frontend
+        name: tsc --noEmit frontend
+        entry: bash -c "cd frontend && npx tsc --noEmit"
         language: system
         pass_filenames: false

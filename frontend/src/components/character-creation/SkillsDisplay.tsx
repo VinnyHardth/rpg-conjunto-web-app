@@ -7,18 +7,21 @@ interface SkillsDisplayProps {
   expertises: Attributes[];
 }
 
-export default function SkillsDisplay({ derivedStats, expertises }: SkillsDisplayProps) {
+export default function SkillsDisplay({
+  derivedStats,
+  expertises,
+}: SkillsDisplayProps) {
   // Mapeamento dos nomes internos para os nomes do banco
   const SKILL_NAME_MAPPING: Record<string, string> = {
-    "magicRes": "Magic resistance",
-    "fisicalRes": "Physical resistance", 
-    "perception": "Perception",
-    "intimidation": "Intimidation",
-    "faith": "Faith",
-    "inspiration": "Inspiration",
-    "determination": "Determination",
-    "bluff": "Bluff",
-    "reflexes": "Reflexes"
+    magicRes: "Magic resistance",
+    fisicalRes: "Physical resistance",
+    perception: "Perception",
+    intimidation: "Intimidation",
+    faith: "Faith",
+    inspiration: "Inspiration",
+    determination: "Determination",
+    bluff: "Bluff",
+    reflexes: "Reflexes",
   };
 
   return (
@@ -29,10 +32,13 @@ export default function SkillsDisplay({ derivedStats, expertises }: SkillsDispla
       <div className="grid grid-cols-2 gap-3">
         {Object.entries(derivedStats.pericias).map(([skillKey, skillValue]) => {
           const skillName = SKILL_NAME_MAPPING[skillKey] || skillKey;
-          const expertise = expertises.find(exp => exp.name === skillName);
-          
+          const expertise = expertises.find((exp) => exp.name === skillName);
+
           return (
-            <div key={skillKey} className="bg-white p-2 rounded-md border flex justify-between items-center">
+            <div
+              key={skillKey}
+              className="bg-white p-2 rounded-md border flex justify-between items-center"
+            >
               <label className="text-sm font-medium text-gray-700">
                 {expertise?.name || skillName}:
               </label>

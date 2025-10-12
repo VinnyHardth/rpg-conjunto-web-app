@@ -20,9 +20,10 @@ export default function NavigationButtons({
         disabled={currentStep === 0}
         className={`
           px-6 py-2 rounded-lg font-semibold transition-all
-          ${currentStep === 0
-            ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-            : "bg-gray-300 text-gray-700 hover:bg-gray-400"
+          ${
+            currentStep === 0
+              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+              : "bg-gray-300 text-gray-700 hover:bg-gray-400"
           }
         `}
       >
@@ -41,7 +42,7 @@ export default function NavigationButtons({
           onClick={onFinish}
           className="bg-green-600 text-white px-8 py-2 rounded-lg font-bold hover:bg-green-700 shadow-xl transition-colors transform hover:scale-[1.02]"
         >
-        Finalizar Criação
+          Finalizar Criação
         </button>
       )}
     </div>

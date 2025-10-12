@@ -1,6 +1,8 @@
 import { AttributeKey, Archetype } from "@/types/models";
 
-export const calculateExpertises = (attributes: Record<AttributeKey, number>): Record<string, number> => {
+export const calculateExpertises = (
+  attributes: Record<AttributeKey, number>,
+): Record<string, number> => {
   const str = attributes.Strength || 0;
   const dex = attributes.Dexterity || 0;
   const int = attributes.Intelligence || 0;
@@ -20,9 +22,12 @@ export const calculateExpertises = (attributes: Record<AttributeKey, number>): R
     bluff: Math.floor((car + int) / 2),
     reflexes: Math.floor((dex + con) / 2),
   };
-}
+};
 
-export const calculateStatus = (attributes: Record<AttributeKey, number>, archetype: Archetype): Record<string, number> => {
+export const calculateStatus = (
+  attributes: Record<AttributeKey, number>,
+  archetype: Archetype,
+): Record<string, number> => {
   const str = attributes.Strength || 0;
   const dex = attributes.Dexterity || 0;
   const int = attributes.Intelligence || 0;
@@ -35,9 +40,11 @@ export const calculateStatus = (attributes: Record<AttributeKey, number>, archet
   const det = Math.floor((con + des) / 2);
 
   return {
-    hp: 10 + Math.ceil((con + 0.25 * (str + dex) + 0.25 * (int + wis)) * archetype.hp),
-    mp: 10 + (Math.ceil(((int + wis) / 2)) * archetype.mp),
+    hp:
+      10 +
+      Math.ceil((con + 0.25 * (str + dex) + 0.25 * (int + wis)) * archetype.hp),
+    mp: 10 + Math.ceil((int + wis) / 2) * archetype.mp,
     tp: 10 + Math.ceil((dex + str) / 2) * archetype.tp,
     mov: Math.ceil((dex + con + rf + rm + det) / 2),
   };
-}
+};

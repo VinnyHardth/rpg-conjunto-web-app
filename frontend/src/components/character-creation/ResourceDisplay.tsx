@@ -7,12 +7,20 @@ interface ResourceDisplayProps {
   };
 }
 
-export default function ResourceDisplay({ derivedStats }: ResourceDisplayProps) {
+export default function ResourceDisplay({
+  derivedStats,
+}: ResourceDisplayProps) {
   const resources = [
     { label: "HP", value: derivedStats.hp, color: "red", icon: "❤️" },
     { label: "MP", value: derivedStats.mp, color: "blue", icon: "✨" },
     { label: "TP", value: derivedStats.tp, color: "orange", icon: "⚡" },
-    { label: "Movimento", value: derivedStats.movimento, unit: "m", color: "green", icon: "👟" },
+    {
+      label: "Movimento",
+      value: derivedStats.movimento,
+      unit: "m",
+      color: "green",
+      icon: "👟",
+    },
   ];
 
   return (
@@ -22,13 +30,18 @@ export default function ResourceDisplay({ derivedStats }: ResourceDisplayProps) 
       </h3>
       <div className="grid grid-cols-2 gap-3">
         {resources.map(({ label, value, unit = "", color, icon }) => (
-          <div key={label} className={`bg-white border-l-4 border-${color}-500 p-2 rounded shadow-sm`}>
+          <div
+            key={label}
+            className={`bg-white border-l-4 border-${color}-500 p-2 rounded shadow-sm`}
+          >
             <div className="text-sm font-semibold text-gray-500 flex items-center">
               {icon} {label}
             </div>
             <div className={`text-2xl font-extrabold text-${color}-800`}>
               {value}
-              <span className="text-sm font-normal ml-1 text-gray-500">{unit}</span>
+              <span className="text-sm font-normal ml-1 text-gray-500">
+                {unit}
+              </span>
             </div>
           </div>
         ))}

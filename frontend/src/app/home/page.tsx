@@ -11,7 +11,9 @@ const LoadingCharactersPlaceholder = () => (
   <div className="flex flex-col items-center justify-center p-12 bg-gray-50 border border-gray-200 rounded-xl shadow-md">
     <div className="w-10 h-10 border-4 border-t-4 border-t-blue-500 border-gray-200 rounded-full animate-spin mb-4"></div>
     <p className="text-lg font-medium text-gray-700">Carregando heróis...</p>
-    <p className="text-sm text-gray-500">Buscando dados no servidor de aventura.</p>
+    <p className="text-sm text-gray-500">
+      Buscando dados no servidor de aventura.
+    </p>
   </div>
 );
 
@@ -28,10 +30,9 @@ const NoCharactersPlaceholder = () => (
       Parece que sua jornada ainda não começou! Crie seu primeiro herói para
       iniciar a aventura.
     </p>
-    <FloatingCreateButton  userId={""}/>
+    <FloatingCreateButton userId={""} />
   </div>
 );
-
 
 export default function HomePage() {
   const { user, loading: userLoading } = useUser();
@@ -55,11 +56,9 @@ export default function HomePage() {
 
   const isDataLoading = charactersLoading || characters === null;
 
-
   return (
     // --- 2. MELHORIA UI: Layout e Container ---
     <div className="p-6 md:p-10 min-h-screen bg-gray-50">
-      
       {/* 3. MELHORIA UX: Título Personalizado */}
       <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-2">
         Bem-vindo, {user.nickname || "Aventureiro"}!
@@ -86,7 +85,7 @@ export default function HomePage() {
       </div>
       
       {/* Botão flutuante mantido para criação rápida (MELHORIA UX) */}
-      <FloatingCreateButton userId={user.id}/>
+      <FloatingCreateButton userId={user.id} />
     </div>
   );
 }

@@ -15,7 +15,9 @@ export function useUser() {
       .catch(() => router.push("/login"))
       .finally(() => isMounted && setLoading(false));
 
-    return () => { isMounted = false };
+    return () => {
+      isMounted = false;
+    };
   }, [router]);
 
   return { user, loading };

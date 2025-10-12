@@ -26,8 +26,8 @@ services:
   backend:
     container_name: backend_rpg-manager
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: backend/Dockerfile
       args:
         - VERSION=v1
     volumes:
@@ -43,8 +43,8 @@ services:
   frontend:
     container_name: frontend_rpg-manager
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: frontend/Dockerfile
       args:
         - VERSION=v1
     ports:

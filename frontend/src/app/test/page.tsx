@@ -1,18 +1,18 @@
-import StatusCard from '@/components/StatusCard'
+import StatusCard from "@/components/StatusCard";
 
 const HomePage = () => {
   return (
     <div
       style={{
         padding: 10,
-        backgroundColor: '#1e1e24',
-        display: 'flex',
-        flexDirection: 'row',
-        flexWrap: 'wrap',          // 👉 quebra de linha automática
-        alignItems: 'flex-start',
-        justifyContent: 'center',
+        backgroundColor: "#1e1e24",
+        display: "flex",
+        flexDirection: "row",
+        flexWrap: "wrap", // 👉 quebra de linha automática
+        alignItems: "flex-start",
+        justifyContent: "center",
         gap: 10,
-        height: '50vh',
+        height: "50vh",
       }}
     >
       <StatusCard
@@ -74,9 +74,7 @@ const HomePage = () => {
         tpMax={100}
         avatarUrl="/image_5429f0.png"
       />
-      </div>    
-
-    
+    </div>
   );
 };
 
