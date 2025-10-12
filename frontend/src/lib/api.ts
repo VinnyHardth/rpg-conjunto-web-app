@@ -1,5 +1,5 @@
 import api from "./axios";
-import { User, Character, CharacterAttribute, Status, Attributes, CreateCharacter } from "@/types/models";
+import { User, Character, CharacterAttribute, Status, Attributes, CreateCharacter, CharacterHasItem, Skill, FullCharacterData } from "@/types/models";
 
 import { Archetype } from "@/types/models";
 
@@ -15,6 +15,16 @@ export const fetchCharacter = async (characterId: string): Promise<Character> =>
   return data;
 }
 
+export const fetchCharacterInventory = async (characterId: string): Promise<CharacterHasItem[]> => {
+  const { data } = await api.get(`/characterhasitems/character/${characterId}`);
+  return data;
+}
+
+export const fetchCharacterSkills = async (characterId: string): Promise<Skill[]> => {
+  const { data } = await api.get(`/skills/character/${characterId}`);
+  return data;
+}
+
 export const createCharacter = async (characterData: CreateCharacter): Promise<Character> => {
   const response = await api.post("/characters", characterData);
   return response.data;
@@ -27,7 +37,7 @@ export const fetchUserCharacters = async (userId: string): Promise<Character[]> 
 
 
 export const fetchCharacterAttributes = async (characterId: string): Promise<CharacterAttribute[]> => {
-  const { data } = await api.get(`/character-attributes/character/${characterId}`);
+  const { data } = await api.get(`/characterattributes/character/${characterId}`);
   return data;
 };
 
@@ -36,8 +46,8 @@ export const fetchCharacterStatus = async (characterId: string): Promise<Status[
   return data;
 };
 
-export const fetchCharacterArchetype = async (characterId: string): Promise<Archetype> => {
-  const { data } = await api.get(`/archetypes/character/${characterId}`);
+export const fetchCharacterArchetypeData = async (archetypeId: string): Promise<Archetype> => {
+  const { data } = await api.get(`/archetypes/${archetypeId}`);
   return data;
 }
 
@@ -51,18 +61,24 @@ export const fetchAttributeKinds = async (kind: string): Promise<Attributes[]> =
   return data;
 }
 
-export type FullCharacter = Character & {
-  attributes: CharacterAttribute[];
-  status: Status[];
-  archetype: Archetype;
-};
 
-export const fetchAllCharacterData = async (characterId: string): Promise<FullCharacter> => {
-  const [character, attributes, status, archetype] = await Promise.all([
-    fetchCharacter(characterId),
-    fetchCharacterAttributes(characterId),
-    fetchCharacterStatus(characterId),
-    fetchCharacterArchetype(characterId),
-  ]);
-  return { ...character, attributes, status, archetype };
+export const fetchFullCharacter = async (characterId: string): Promise<FullCharacterData> => {
+  const fullCharacter = await api.get(`/characters/full/${characterId}`);
+  const character = fullCharacter.data.info;
+  const attributes = fullCharacter.data.attributes;
+  const status = fullCharacter.data.status;
+  const inventory = fullCharacter.data.inventory;
+  const skills = fullCharacter.data.skills;
+  const archetype = fullCharacter.data.archetype;
+
+  console.log("fullCharacter.data:", fullCharacter.data);
+
+  return {
+    info: character,
+    attributes,
+    status,
+    inventory,
+    skills,
+    archetype
+  };
 };

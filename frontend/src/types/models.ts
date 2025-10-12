@@ -6,6 +6,11 @@ import { CharacterAttributeDTO, CreateCharacterAttributeDTO } from "@/../../back
 import { StatusDTO, CreateStatusDTO } from "@/../../backend/src/resources/status/status.types";
 import { ArchetypeDTO } from "@/../../backend/src/resources/archetype/archetype.types";
 import { AttributesDTO } from "@/../../backend/src/resources/attributes/attributes.types";
+import { CharacterHasItemDTO } from "@/../../backend/src/resources/characterHasItem/characterHasItem.types";
+import { CreateSkillDTO, SkillDTO } from "@/../../backend/src/resources/skill/skill.types";
+import { CreateAbilitiesDTO, AbilitiesDTO } from "@/../../backend/src/resources/abilities/abilities.types";
+
+import Decimal from "decimal.js";
 
 // Frontend types
 export interface CreateFullCharacter {
@@ -13,7 +18,16 @@ export interface CreateFullCharacter {
     attributes: CreateCharacterAttributeDTO[];
     expertises: CreateCharacterAttributeDTO[];
     status: CreateStatusDTO[];
-    archetype: Archetype;
+    archetype: ArchetypeDTO;
+}
+
+export interface FullCharacterData {
+    info: CharacterDTO;
+    archetype: ArchetypeDTO | null;
+    attributes: CharacterAttributeDTO[];
+    status: StatusDTO[];
+    inventory: CharacterHasItemDTO[];
+    skills: SkillDTO[];
 }
 
 // Aliases for cleaner usage
@@ -31,6 +45,11 @@ export type CreateCharacterAttribute = CreateCharacterAttributeDTO;
 export type Status = StatusDTO;
 export type Attributes = AttributesDTO;
 export type Archetype = ArchetypeDTO;
+export type abilities = AbilitiesDTO;
+export type CharacterHasItem = CharacterHasItemDTO;
+export type CreateSkill = CreateSkillDTO;
+export type Skill = SkillDTO;
+export type CreateAbilities = CreateAbilitiesDTO;
 
 // Enums from Prisma schema (para uso no frontend)
 export enum CostType { 
@@ -120,3 +139,49 @@ export type AttributeKey =
 
 export const GENEROS_MOCK = ["Masculino", "Feminino", "Não Binário", "Outro"];
 export const STEPS_NAMES = ["Informações Básicas", "Atributos & Estatísticas", "Resumo Final"];
+
+// Tipos para atualizações
+export type CharacterBasicInfoUpdate = {
+  name?: string;
+  race?: string ;
+  age?: number ;
+  height?: number ;
+  gender?: string;
+  money?: Decimal;
+  annotations?: string ;
+  generation?: number;
+  type?: CharacterType;
+  archetypeId?: string;
+  imageUrl?: string;
+};
+export interface CharacterAttributeUpdate {
+  id: string;
+  valueBase?: number;
+  valueInv?: number;
+  docExtra?: number;
+}
+
+export interface StatusUpdate {
+  id: string;
+  valueMax?: number;
+  valueBonus?: number;
+  valueActual?: number;
+}
+
+export interface SkillUpdate {
+  id: string;
+  cooldown?: number;
+  useType?: SkillUseType;
+}
+
+export interface InventoryUpdate {
+  id: string;
+  quantity?: number;
+  is_equipped?: boolean;
+  equipped_slot?: EquipSlot;
+}
+
+// Tipo para atualizações parciais do FullCharacterData
+export type PartialFullCharacterData = {
+  [K in keyof FullCharacterData]?: Partial<FullCharacterData[K]>;
+};
