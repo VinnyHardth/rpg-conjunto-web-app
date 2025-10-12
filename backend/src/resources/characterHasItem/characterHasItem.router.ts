@@ -8,6 +8,7 @@ const router = Router();
 // read methods ---------------------------------------------------------------
 router.get("/", characterhasitemController.getAll);
 router.get("/:id", characterhasitemController.getById);
+router.get("/character/:characterId", characterhasitemController.getByCharacterId);
 
 // write methods --------------------------------------------------------------
 router.post(

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { ReasonPhrases, StatusCodes } from "http-status-codes";
 import {
   createSkill,
+  getSkillByCharacterId,
   getSkillById,
   getSkills,
   updateSkill,
@@ -43,6 +44,34 @@ const create = async (req: Request, res: Response): Promise<void> => {
     res.status(StatusCodes.CREATED).json(newSkill);
   } catch (err) {
     handleError(res, err, "Error creating skill");
+  }
+};
+
+const getByCharacterId = async (req: Request, res: Response): Promise<void> => {
+  /*
+    #swagger.summary = 'Get skills by character ID'
+    #swagger.description = 'Endpoint to retrieve skills by character ID.'
+    #swagger.parameters['id'] = {
+      in: 'path',
+      description: 'ID of the character to retrieve skills for',
+      required: true,
+      type: 'string'
+    }
+    #swagger.responses[200] = {
+      description: 'Skills retrieved successfully.',
+      schema: { type: 'array', items: { $ref: '#/definitions/SkillDTO' } }
+    }
+    #swagger.responses[404] = { description: 'Character not found' }
+    #swagger.responses[500] = { description: 'Internal Server Error' }
+  */
+
+  const { characterId } = req.params;
+
+  try {
+    const skills = await getSkillByCharacterId(characterId);
+    res.status(StatusCodes.OK).json(skills);
+  } catch (err) {
+    handleError(res, err, "Error retrieving skills");
   }
 };
 
@@ -162,4 +191,4 @@ const remove = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export default { create, getById, getAll, update, remove };
+export default { create, getByCharacterId, getById, getAll, update, remove };

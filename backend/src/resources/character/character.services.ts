@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import {
+  FullCharacterData,
   CreateCharacterDTO,
   UpdateCharacterDTO,
   CharacterDTO,
@@ -21,6 +22,48 @@ const getCharacterById = async (id: string): Promise<CharacterDTO | null> => {
     where: { id },
   });
 };
+
+
+const getFullCharacterData = async (id: string): Promise<FullCharacterData> => {
+  // 1️⃣ Buscar personagem base
+  const character = await prisma.character.findUnique({
+    where: { id },
+  });
+
+  if (!character) {
+    throw new Error("Character not found");
+  }
+
+  // 2️⃣ Rodar todas as queries em paralelo
+  const [attributes, status, inventory, skills, archetype] = await Promise.all([
+    prisma.characterAttribute.findMany({
+      where: { characterId: id },
+    }),
+    prisma.status.findMany({
+      where: { characterId: id },
+    }),
+    prisma.characterHasItem.findMany({
+      where: { characterId: id },
+    }),
+    prisma.skill.findMany({
+      where: { characterId: id },
+    }),
+    prisma.archetype.findUnique({
+      where: { id: character.archetypeId ?? "" },
+    }),
+  ]);
+
+  // 3️⃣ Retornar o resultado formatado
+  return {
+    info: character,
+    attributes,
+    status,
+    inventory,
+    skills,
+    archetype,
+  };
+};
+
 
 const getUserCharacters = async (userId: string): Promise<CharacterDTO[]> => {
   return prisma.character.findMany({
@@ -55,6 +98,7 @@ const deleteCharacter = async (id: string): Promise<CharacterDTO> => {
 
 export {
   createCharacter,
+  getFullCharacterData,
   getCharacterById,
   getUserCharacters,
   getCharacters,

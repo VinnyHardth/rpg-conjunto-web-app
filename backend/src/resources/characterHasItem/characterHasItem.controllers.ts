@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { ReasonPhrases, StatusCodes } from "http-status-codes";
 import {
   createCharacterHasItem,
+  getCharacterHasItemsByCharacterId,
   getCharacterHasItemById,
   getCharacterHasItems,
   updateCharacterHasItem,
@@ -44,6 +45,37 @@ const create = async (req: Request, res: Response): Promise<void> => {
     res.status(StatusCodes.CREATED).json(newCharacterHasItem);
   } catch (err) {
     handleError(res, err, "Error creating characterhasitem");
+  }
+};
+
+const getByCharacterId = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  /*
+    #swagger.summary = 'Get all characterhasitems by character ID'
+    #swagger.description = 'Endpoint to retrieve all characterhasitems by character ID.'
+    #swagger.parameters['characterId'] = {
+      in: 'path',
+      description: 'ID of the character to retrieve characterhasitems for',
+      required: true,
+      type: 'string'
+    }
+    #swagger.responses[200] = {
+      description: 'CharacterHasItems retrieved successfully.',
+      schema: { type: 'array', items: { $ref: '#/definitions/CharacterHasItemDTO' } }
+    }
+    #swagger.responses[500] = { description: 'Internal Server Error' }
+  */
+
+  const { characterId } = req.params;
+
+  try {
+    const characterhasitems =
+      await getCharacterHasItemsByCharacterId(characterId);
+    res.status(StatusCodes.OK).json(characterhasitems);
+  } catch (err) {
+    handleError(res, err, "Error retrieving characterhasitems");
   }
 };
 
@@ -168,4 +200,4 @@ const remove = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export default { create, getById, getAll, update, remove };
+export default { create, getByCharacterId, getById, getAll, update, remove };

@@ -8,6 +8,7 @@ const router = Router();
 // read methods ---------------------------------------------------------------
 router.get("/", skillController.getAll);
 router.get("/:id", skillController.getById);
+router.get("/character/:characterId", skillController.getByCharacterId);
 
 // write methods --------------------------------------------------------------
 router.post(

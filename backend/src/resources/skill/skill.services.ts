@@ -7,6 +7,10 @@ export const createSkill = async (data: CreateSkillDTO): Promise<SkillDTO> => {
   return prisma.skill.create({ data });
 };
 
+export const getSkillByCharacterId = async (characterId: string): Promise<SkillDTO[]> => {
+  return prisma.skill.findMany({ where: { characterId } });
+}
+
 export const getSkillById = async (id: string): Promise<SkillDTO | null> => {
   return prisma.skill.findUnique({ where: { id } });
 };

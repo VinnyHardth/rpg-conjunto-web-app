@@ -13,6 +13,12 @@ export const createCharacterHasItem = async (
   return prisma.characterHasItem.create({ data });
 };
 
+export const getCharacterHasItemsByCharacterId = async (
+  characterId: string,
+): Promise<CharacterHasItemDTO[]> => {
+  return prisma.characterHasItem.findMany({ where: { characterId } });
+};
+
 export const getCharacterHasItemById = async (
   id: string,
 ): Promise<CharacterHasItemDTO | null> => {
