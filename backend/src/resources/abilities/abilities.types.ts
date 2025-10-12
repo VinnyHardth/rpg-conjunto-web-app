@@ -1,23 +1,6 @@
-import { Abilities } from "@prisma/client";
-
-type CreateAbilitiesDTO = Pick<
-  Abilities,
-  | "name"
-  | "description"
-  | "imageURL"
-  | "cost_type"
-  | "mp_cost"
-  | "tp_cost"
-  | "hp_cost"
-  | "cooldown_value"
->;
-type UpdateAbilitiesDTO = Partial<CreateAbilitiesDTO>;
-type AbilitiesDTO = Abilities;
-type DeleteAbilitiesDTO = Pick<Abilities, "id">;
-
-export {
+export type {
   CreateAbilitiesDTO,
   UpdateAbilitiesDTO,
   AbilitiesDTO,
   DeleteAbilitiesDTO,
-};
+} from "@rpg/shared";
