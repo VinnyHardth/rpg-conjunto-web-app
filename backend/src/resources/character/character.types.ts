@@ -1,27 +1,6 @@
-import { Character } from "@prisma/client";
-
-type CreateCharacterDTO = Pick<
-  Character,
-  | "name"
-  | "race"
-  | "age"
-  | "height"
-  | "money"
-  | "imageUrl"
-  | "userId"
-  | "archetypeId"
-  | "generation"
-  | "type"
-  | "annotations"
-  | "gender"
->;
-type UpdateCharacterDTO = Partial<CreateCharacterDTO>;
-type DeleteCharacterDTO = Pick<Character, "id">;
-type CharacterDTO = Character;
-
 export type {
   CreateCharacterDTO,
   UpdateCharacterDTO,
   DeleteCharacterDTO,
   CharacterDTO,
-};
+} from "@rpg/shared";

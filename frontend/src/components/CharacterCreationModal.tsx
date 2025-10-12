@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useEffect } from "react";
-import Decimal from "decimal.js";
 
 // Types
 import {
@@ -67,7 +66,7 @@ const initialCharacterData: CreateFullCharacter = {
     race: "",
     age: 0,
     height: 0,
-    money: new Decimal(50),
+    money: 50,
     type: CharacterType.PC,
     generation: 0,
     gender: "",
