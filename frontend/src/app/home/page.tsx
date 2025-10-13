@@ -59,7 +59,19 @@ export default function HomePage() {
 
   return (
     // --- 2. MELHORIA UI: Layout e Container ---
-    <div className="p-6 md:p-10 min-h-screen bg-gray-50">
+    <div className="relative p-6 md:p-10 min-h-screen bg-gray-50">
+      <form
+        action="/api/logout"
+        method="post"
+        className="absolute right-6 top-6"
+      >
+        <button
+          type="submit"
+          className="rounded-full border border-gray-300 bg-white/90 px-3 py-1 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-white"
+        >
+          Sair
+        </button>
+      </form>
       {/* 3. MELHORIA UX: Título Personalizado */}
       <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-2">
         Bem-vindo, {user.nickname || "Aventureiro"}!
@@ -69,14 +81,14 @@ export default function HomePage() {
       </h2>
 
       {/* Container de Personagens */}
-      <div className="min-h-[300px] flex justify-center items-start">
+      <div className="min-h-[300px] flex justify-start items-start">
         {isDataLoading ? (
           <LoadingCharactersPlaceholder />
         ) : characters.length === 0 ? (
           <NoCharactersPlaceholder userId={user.id} />
         ) : (
-          // --- 4. MELHORIA UI: Layout de Grid para Cards ---
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
+          // --- 4. MELHORIA UI: Layout flexível para Cards ---
+          <div className="flex flex-wrap gap-3 w-full">
             {characters.map((c) => (
               // Garantimos que o CharacterCard tenha largura total da coluna
               <CharacterCard
@@ -99,7 +111,12 @@ export default function HomePage() {
           </p>
         </header>
 
-        <CampaignListModel userId={user.id} />
+        <CampaignListModel
+          userId={user.id}
+          onSelectCampaign={(campaignId) =>
+            router.push(`/campaigns/${campaignId}/hub`)
+          }
+        />
       </section>
 
       {/* Botão flutuante mantido para criação rápida (MELHORIA UX) */}

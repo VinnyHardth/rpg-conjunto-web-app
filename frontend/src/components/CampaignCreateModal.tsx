@@ -58,8 +58,6 @@ export default function CampaignCreateModal({
   const [invitedMembers, setInvitedMembers] = useState<InviteEntry[]>([]);
   const [inviteError, setInviteError] = useState<string | null>(null);
 
-  const [campaignSummary, setCampaignSummary] = useState<Campaign | null>(null);
-
   useEffect(() => {
     const refreshSummary = async () => {
       if (!createdCampaign) return;
@@ -68,7 +66,6 @@ export default function CampaignCreateModal({
           fetchCampaignById(createdCampaign.id),
           fetchCampaignMembersByCampaign(createdCampaign.id),
         ]);
-        setCampaignSummary(campaignData);
         setInvitedMembers((prev) =>
           prev.map((entry) => {
             const fresh = membersData.find((member) => member.id === entry.id);
@@ -95,7 +92,6 @@ export default function CampaignCreateModal({
     setCurrentStep("form");
     setIsSubmitting(false);
     setCreatedCampaign(null);
-    setCampaignSummary(null);
     setInviteEmail("");
     setInviteRole(CampaignMemberRole.PLAYER);
     setIsInviting(false);
@@ -166,7 +162,6 @@ export default function CampaignCreateModal({
     try {
       const campaign = await createCampaign(payload);
       setCreatedCampaign(campaign);
-      setCampaignSummary(campaign);
       setCurrentStep("invites");
     } catch (error) {
       console.error("Erro ao criar campanha:", error);
@@ -185,7 +180,7 @@ export default function CampaignCreateModal({
         ? window.location.origin
         : "http://localhost:4000";
     return createdCampaign
-      ? `${base}/campaigns/join/${createdCampaign.id}`
+      ? `${base}/campaigns/${createdCampaign.id}/join`
       : "";
   }, [createdCampaign]);
 

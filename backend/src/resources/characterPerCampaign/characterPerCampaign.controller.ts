@@ -9,6 +9,7 @@ import {
   getCharacterPerCampaignsByCharacterId,
   updateCharacterPerCampaign,
   deleteCharacterPerCampaign,
+  getCharacterPerCampaignWithCharacterById,
 } from "./characterPerCampaign.services";
 
 const handleError = (res: Response, err: unknown, context: string): void => {
@@ -33,7 +34,20 @@ const create = async (req: Request, res: Response): Promise<void> => {
   */
   try {
     const relation = await createCharacterPerCampaign(req.body);
-    res.status(StatusCodes.CREATED).json(relation);
+    const enrichedRelation =
+      (await getCharacterPerCampaignWithCharacterById(relation.id)) ?? relation;
+
+    res.status(StatusCodes.CREATED).json(enrichedRelation);
+
+    if (req.io) {
+      const payload = {
+        campaignId: relation.campaignId,
+        relation: enrichedRelation,
+      };
+      req.io
+        .to(`campaign-${relation.campaignId}`)
+        .emit("campaign:characterLinked", payload);
+    }
   } catch (err) {
     handleError(res, err, "Error creating character-per-campaign relation");
   }
@@ -129,7 +143,18 @@ const remove = async (req: Request, res: Response): Promise<void> => {
 
   try {
     const relation = await deleteCharacterPerCampaign(id);
-    res.status(StatusCodes.OK).json(relation);
+    const responsePayload = { ...relation, character: null };
+    res.status(StatusCodes.OK).json(responsePayload);
+
+    if (req.io) {
+      const payload = {
+        campaignId: relation.campaignId,
+        relation: responsePayload,
+      };
+      req.io
+        .to(`campaign-${relation.campaignId}`)
+        .emit("campaign:characterUnlinked", payload);
+    }
   } catch (err) {
     handleError(res, err, "Error deleting character-per-campaign relation");
   }

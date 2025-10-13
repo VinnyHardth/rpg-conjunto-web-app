@@ -16,7 +16,7 @@ export const createAppliedEffectSchema = Joi.object<CreateAppliedEffectDTO>({
   startedAt: Joi.number().integer().min(0).required(),
   expiresAt: Joi.number().integer().min(0).required(),
   stacks: Joi.number().integer().min(0).required(),
-  value: Joi.number().integer().min(0).required(),
+  value: Joi.number().integer().required(),
 });
 
 export const updateAppliedEffectSchema = Joi.object<UpdateAppliedEffectDTO>({
@@ -27,5 +27,5 @@ export const updateAppliedEffectSchema = Joi.object<UpdateAppliedEffectDTO>({
   startedAt: Joi.number().integer().min(0).required(),
   expiresAt: Joi.number().integer().min(0).required(),
   stacks: Joi.number().integer().min(0),
-  value: Joi.number().integer().min(0),
+  value: Joi.number().integer(),
 }).min(1);

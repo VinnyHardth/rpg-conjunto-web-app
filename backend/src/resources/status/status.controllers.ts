@@ -7,6 +7,7 @@ import {
   getStatus,
   updateStatus,
   deleteStatus,
+  getCampaignIdsByCharacterId,
 } from "./status.services";
 
 const handleError = (res: Response, err: any, context: string): void => {
@@ -162,6 +163,26 @@ const update = async (req: Request, res: Response): Promise<void> => {
   try {
     const updatedStatus = await updateStatus(id, updateData);
     res.status(StatusCodes.OK).json(updatedStatus);
+
+    if (req.io && updatedStatus) {
+      try {
+        const [campaignIds, statuses] = await Promise.all([
+          getCampaignIdsByCharacterId(updatedStatus.characterId),
+          getStatusByCharacterId(updatedStatus.characterId),
+        ]);
+
+        campaignIds.forEach((campaignId) => {
+          req.io!.to(`campaign-${campaignId}`).emit("status:updated", {
+            campaignId,
+            characterId: updatedStatus.characterId,
+            status: updatedStatus,
+            statuses,
+          });
+        });
+      } catch (socketError) {
+        console.error("Falha ao emitir atualização de status:", socketError);
+      }
+    }
   } catch (err) {
     handleError(res, err, "Error updating status");
   }

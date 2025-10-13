@@ -1,19 +1,22 @@
 // hooks/useStatus.ts
-import { useEffect, useState } from "react";
+import useSWR from "swr";
 import { Status } from "@/types/models";
 import { fetchCharacterStatus } from "@/lib/api";
 
-export const useStatus = (characterId: string) => {
-  const [statusList, setStatusList] = useState<Status[]>([]);
-  const [loading, setLoading] = useState(true);
+export const statusCacheKey = (characterId?: string | null): string | null =>
+  characterId ? `character-status-${characterId}` : null;
 
-  useEffect(() => {
-    if (!characterId) return;
+export const useStatus = (characterId: string | null) => {
+  const shouldFetch = Boolean(characterId);
+  const { data, isLoading, mutate } = useSWR<Status[]>(
+    shouldFetch ? statusCacheKey(characterId) : null,
+    () => fetchCharacterStatus(characterId!),
+    { revalidateOnFocus: false },
+  );
 
-    fetchCharacterStatus(characterId)
-      .then(setStatusList)
-      .finally(() => setLoading(false));
-  }, [characterId]);
-
-  return { statusList, loading };
+  return {
+    statusList: data ?? [],
+    loading: isLoading,
+    mutateStatus: mutate,
+  };
 };

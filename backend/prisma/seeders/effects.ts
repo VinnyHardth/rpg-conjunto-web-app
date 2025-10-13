@@ -15,6 +15,36 @@ export const seedEffects = async () => {
         stackingPolicy: StackingPolicy.STACK,
         description: "Dano por turno",
       },
+      {
+        name: "Dano Físico",
+        damageType: DamageType.PHISICAL,
+        stackingPolicy: StackingPolicy.NONE,
+        description: "Dano físico direto",
+      },
+      {
+        name: "Dano Mágico",
+        damageType: DamageType.MAGIC,
+        stackingPolicy: StackingPolicy.NONE,
+        description: "Dano mágico direto",
+      },
+      {
+        name: "Cura",
+        damageType: DamageType.NONE,
+        stackingPolicy: StackingPolicy.NONE,
+        description: "Recupera pontos de vida imediatamente",
+      },
+      {
+        name: "Reduz Mana",
+        damageType: DamageType.NONE,
+        stackingPolicy: StackingPolicy.NONE,
+        description: "Reduz a quantidade atual de mana",
+      },
+      {
+        name: "Reduz Técnica",
+        damageType: DamageType.NONE,
+        stackingPolicy: StackingPolicy.NONE,
+        description: "Reduz a quantidade atual de técnica",
+      },
     ],
     skipDuplicates: true,
   });

@@ -32,7 +32,7 @@ export default function CharacterManagementPage({
 }) {
   const { id } = React.use(params);
   const [activeTab, setActiveTab] = useState<ManagementTab>("info");
-  const { data, isLoading, error, mutate } = useCharacterData(id);
+  const { data, isLoading, error } = useCharacterData(id);
   const [originalCharacterData, setOriginalCharacterData] =
     useState<FullCharacterData | null>(null);
   const [localCharacterData, setLocalCharacterData] =
