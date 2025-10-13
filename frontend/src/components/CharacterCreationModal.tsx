@@ -3,7 +3,6 @@ import React, { useState, useMemo, useEffect } from "react";
 // Types
 import {
   CreateFullCharacter,
-  CreateCharacter,
   Archetype,
   Attributes,
   CharacterType,
@@ -12,7 +11,6 @@ import {
 } from "@/types/models";
 
 // APIs and services
-import api from "@/lib/axios";
 import { fetchAttributeKinds } from "@/lib/api";
 
 // Utilities
@@ -36,19 +34,6 @@ export const STEP_NAMES = [
   "Atributos & Estatísticas",
   "Resumo Final",
 ];
-
-// Mapeamento dos nomes das perícias para os nomes que vêm do banco
-const SKILL_NAME_MAPPING: Record<string, string> = {
-  magicRes: "Magic resistance",
-  fisicalRes: "Physical resistance",
-  perception: "Perception",
-  intimidation: "Intimidation",
-  faith: "Faith",
-  inspiration: "Inspiration",
-  determination: "Determination",
-  bluff: "Bluff",
-  reflexes: "Reflexes",
-};
 
 const ATTRIBUTE_ORDER = [
   "Strength",
@@ -129,7 +114,7 @@ export default function CharacterCreationModal({
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); // ← Novo estado para submit
 
-  const { addCharacter, characters } = useCharacters(userId);
+  const { addCharacter, refreshCharacters } = useCharacters(userId);
 
   // ATTRIBUTE_KEYS será definido dinamicamente com base no fetch
   const [attributeKeys, setAttributeKeys] = useState<string[]>([]);
@@ -339,80 +324,23 @@ export default function CharacterCreationModal({
 
   const handleFinish = async () => {
     setIsSubmitting(true);
+    characterData.info.userId = userId;
     try {
-      console.log("Personagem Criado:", characterData, derivedStats);
-
-      // 1️⃣ Criar o personagem (APENAS dados que o backend conhece)
-      const characterPayload: CreateCharacter = {
-        ...characterData.info,
-        userId: userId,
-        archetypeId: characterData.archetype.id,
-        // NÃO envie initialHp, initialMp, initialTp - o backend não conhece!
-      };
-
-      // Passa os derivedStats como segundo parâmetro para o cache
       const createdCharacter = await addCharacter(
-        characterPayload,
-        derivedStats,
+        characterData.info, // dados básicos
+        characterData.archetype, // arquétipo selecionado
+        characterData.attributes, // atributos do personagem
+        expertises, // perícias do banco
+        attributes,
       );
+
       console.log("Personagem criado com sucesso:", createdCharacter);
-
-      // 2️⃣ Criar atributos, perícias e status em paralelo
-      await Promise.all([
-        // Atributos
-        ...characterData.attributes.map((charAttr) =>
-          api.post("/characterattributes", {
-            ...charAttr,
-            characterId: createdCharacter.id,
-          }),
-        ),
-
-        // Perícias
-        ...Object.entries(derivedStats.pericias).map(
-          ([skillKey, skillValue]) => {
-            const skillName = SKILL_NAME_MAPPING[skillKey];
-            const expertiseFromDB = expertises.find(
-              (dbExp) => dbExp.name === skillName,
-            );
-            if (!expertiseFromDB) return Promise.resolve(null);
-
-            return api.post("/characterattributes", {
-              characterId: createdCharacter.id,
-              attributeId: expertiseFromDB.id,
-              valueBase: skillValue,
-              valueInv: 0,
-              valueExtra: 0,
-            });
-          },
-        ),
-
-        // Status (criamos no banco normalmente)
-        ...[
-          { name: "HP", value: derivedStats.hp },
-          { name: "MP", value: derivedStats.mp },
-          { name: "TP", value: derivedStats.tp },
-          { name: "Movimento", value: derivedStats.movimento },
-        ].map((status) =>
-          api.post("/status", {
-            name: status.name,
-            valueMax: status.value,
-            valueBonus: 0,
-            valueActual: status.value,
-            characterId: createdCharacter.id,
-          }),
-        ),
-      ]);
-
-      console.log("Tudo criado com sucesso!");
 
       resetForm();
       onClose();
-      alert("Personagem criado com sucesso!");
     } catch (error) {
       console.error("Erro ao criar personagem:", error);
-      alert(
-        "Erro ao criar personagem. Verifique o console para mais detalhes.",
-      );
+      alert("Erro ao criar personagem. Verifique o console.");
     } finally {
       setIsSubmitting(false);
     }

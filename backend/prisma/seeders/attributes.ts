@@ -6,6 +6,10 @@ export const seedAttributes = async () => {
       { name: "Força", kind: AttributeKind.ATTRIBUTE },
       { name: "Destreza", kind: AttributeKind.ATTRIBUTE },
       { name: "Inteligência", kind: AttributeKind.ATTRIBUTE },
+      { name: "Sabedoria", kind: AttributeKind.ATTRIBUTE },
+      { name: "Constituição", kind: AttributeKind.ATTRIBUTE },
+      { name: "Carisma", kind: AttributeKind.ATTRIBUTE },
+      { name: "Destino", kind: AttributeKind.ATTRIBUTE },
     ],
     skipDuplicates: true,
   });

@@ -1,4 +1,4 @@
-import { Attributes } from "@/types/models";
+import { Attributes, SKILL_NAME_MAPPING } from "@/types/models";
 
 interface SkillsDisplayProps {
   derivedStats: {
@@ -11,19 +11,6 @@ export default function SkillsDisplay({
   derivedStats,
   expertises,
 }: SkillsDisplayProps) {
-  // Mapeamento dos nomes internos para os nomes do banco
-  const SKILL_NAME_MAPPING: Record<string, string> = {
-    magicRes: "Magic resistance",
-    fisicalRes: "Physical resistance",
-    perception: "Perception",
-    intimidation: "Intimidation",
-    faith: "Faith",
-    inspiration: "Inspiration",
-    determination: "Determination",
-    bluff: "Bluff",
-    reflexes: "Reflexes",
-  };
-
   return (
     <div className="p-4 border border-purple-200 rounded-lg bg-purple-50">
       <h3 className="font-bold text-xl mb-3 text-purple-700 flex items-center">

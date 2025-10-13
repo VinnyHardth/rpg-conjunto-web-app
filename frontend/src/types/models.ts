@@ -49,14 +49,15 @@ export type Status = StatusDTO;
 export type Attributes = AttributesDTO;
 export type Archetype = ArchetypeDTO;
 
-export type AttributeKey =
-  | "Strength"
-  | "Dexterity"
-  | "Intelligence"
-  | "Wisdom"
-  | "Constitution"
-  | "Charisma"
-  | "Destiny";
+export type AttributeKey = // Chave de Atributo
+
+    | "Força" // Strength
+    | "Destreza" // Dexterity
+    | "Inteligência" // Intelligence
+    | "Sabedoria" // Wisdom
+    | "Constituição" // Constitution
+    | "Carisma" // Charisma
+    | "Destino"; // Destiny
 
 export const GENEROS_MOCK = ["Masculino", "Feminino", "Não Binário", "Outro"];
 export const STEPS_NAMES = [
@@ -64,3 +65,15 @@ export const STEPS_NAMES = [
   "Atributos & Estatísticas",
   "Resumo Final",
 ];
+
+export const SKILL_NAME_MAPPING: Record<string, string> = {
+  magicRes: "Res. Mágica",
+  fisicalRes: "Res. Física",
+  perception: "Percepção",
+  intimidation: "Intimidar",
+  faith: "Fé",
+  inspiration: "Inspiração",
+  determination: "Determinação",
+  bluff: "Lábia",
+  reflexes: "Reflexos",
+};

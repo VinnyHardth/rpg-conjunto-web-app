@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { ReasonPhrases, StatusCodes } from "http-status-codes";
 
 import {
+  FullCharacterData,
   CreateCharacterDTO,
   UpdateCharacterDTO,
   CharacterDTO,
@@ -47,6 +48,40 @@ const create = async (req: Request, res: Response): Promise<void> => {
     res.status(StatusCodes.CREATED).json(newCharacter);
   } catch (err) {
     handleError(res, err, "Error creating character");
+  }
+};
+
+const getFullCharacterData = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  /*
+    #swagger.summary = 'Get full character data by ID'
+    #swagger.description = 'Endpoint to retrieve full character data by character ID.'
+
+    #swagger.parameters['id'] = {
+      in: 'path',
+      description: 'ID of the character to retrieve full character data for',
+      required: true,
+      type: 'string'
+    }
+
+    #swagger.responses[200] = {
+      description: 'Full character data retrieved successfully.',
+      schema: { $ref: '#/definitions/FullCharacterData' }
+    }
+    #swagger.responses[404] = { description: 'Character not found' }
+    #swagger.responses[500] = { description: 'Internal Server Error' }
+  */
+
+  const { id } = req.params;
+
+  try {
+    const fullCharacterData: FullCharacterData =
+      await characterServices.getFullCharacterData(id);
+    res.status(StatusCodes.OK).json(fullCharacterData);
+  } catch (err) {
+    handleError(res, err, "Error retrieving full character data");
   }
 };
 
@@ -233,6 +268,7 @@ const remove = async (req: Request, res: Response): Promise<void> => {
 
 export default {
   create,
+  getFullCharacterData,
   getById,
   getUserCharacters,
   getAll,

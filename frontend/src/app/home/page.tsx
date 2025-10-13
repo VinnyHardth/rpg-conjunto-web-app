@@ -1,12 +1,10 @@
 "use client";
 
 import { useUser } from "@/hooks/useUser";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useCharacters } from "@/hooks/useCharacters";
 import CharacterCard from "@/components/CharacterCard"; // Mantido o CharacterCard
 import FloatingCreateButton from "@/components/FloatingCreateButton";
-import CharacterViewModal from "@/components/CharacterViewModal";
-import { Character } from "@/types/models";
 
 // Componente Placeholder para o estado de Loading (Melhoria UI)
 const LoadingCharactersPlaceholder = () => (
@@ -38,19 +36,9 @@ const NoCharactersPlaceholder = () => (
 
 export default function HomePage() {
   const { user, loading: userLoading } = useUser();
-  const { characters, loading: charactersLoading } = useCharacters(user?.id);
-  const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(
-    null,
-  );
+  const { characters, isLoading: charactersLoading } = useCharacters(user?.id);
 
-  /*******  c9889d5b-7888-4e4b-866e-dc2bf811c8bc  *******/
-  const handleViewCharacter = (character: Character) => {
-    setSelectedCharacter(character);
-  };
-
-  const handleCloseCharacter = () => {
-    setSelectedCharacter(null);
-  };
+  const router = useRouter();
 
   // --- 1. MELHORIA UX: Tratamento de Loading ---
   if (userLoading) {
@@ -93,18 +81,13 @@ export default function HomePage() {
               <CharacterCard
                 key={c.id}
                 character={c}
-                onClick={() => handleViewCharacter(c)}
+                onClick={() => router.push(`/characters/${c.id}/manage`)}
               />
             ))}
           </div>
         )}
       </div>
 
-      <CharacterViewModal
-        isOpen={!!selectedCharacter} // Abre se houver um personagem selecionado
-        onClose={handleCloseCharacter}
-        character={selectedCharacter}
-      />
       {/* Botão flutuante mantido para criação rápida (MELHORIA UX) */}
       <FloatingCreateButton userId={user.id} />
     </div>
