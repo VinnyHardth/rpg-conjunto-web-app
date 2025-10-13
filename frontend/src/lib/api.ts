@@ -1,11 +1,17 @@
 import api from "./axios";
-import {
+import type {
   User,
   Character,
   CharacterAttribute,
   Status,
   Attributes,
   CreateCharacter,
+  Campaign,
+  CreateCampaign,
+  CampaignMember,
+  CampaignMemberWithUser,
+  CharacterPerCampaignWithCharacter,
+  CreateCharacterPerCampaign,
 } from "@/types/models";
 
 import { CharacterHasItemDTO, SkillDTO, FullCharacterData } from "@rpg/shared";
@@ -108,4 +114,75 @@ export const fetchFullCharacter = async (
     skills,
     archetype,
   };
+};
+
+// campaigns ------------------------------------------------------------------
+
+export const fetchCampaignsByCreator = async (
+  creatorId: string,
+): Promise<Campaign[]> => {
+  const { data } = await api.get(`/campaigns/creator/${creatorId}`);
+  return data;
+};
+
+export const createCampaign = async (
+  payload: CreateCampaign,
+): Promise<Campaign> => {
+  const { data } = await api.post("/campaigns", payload);
+  return data;
+};
+
+export const addCampaignMember = async (
+  payload: Omit<CampaignMember, "id" | "createdAt" | "updatedAt" | "deletedAt">,
+): Promise<CampaignMember> => {
+  const { data } = await api.post("/campaignmembers", payload);
+  return data;
+};
+
+export const fetchCampaignById = async (
+  campaignId: string,
+): Promise<Campaign> => {
+  const { data } = await api.get(`/campaigns/${campaignId}`);
+  return data;
+};
+
+export const fetchCampaignMembersByUser = async (
+  userId: string,
+): Promise<CampaignMember[]> => {
+  const { data } = await api.get(`/campaignmembers/user/${userId}`);
+  return data;
+};
+
+export const fetchCampaignMembersByCampaign = async (
+  campaignId: string,
+): Promise<CampaignMemberWithUser[]> => {
+  const { data } = await api.get(`/campaignmembers/campaign/${campaignId}`);
+  return data;
+};
+
+export const fetchUserByEmail = async (email: string): Promise<User> => {
+  const encoded = encodeURIComponent(email);
+  const { data } = await api.get(`/users/email/${encoded}`);
+  return data;
+};
+
+export const fetchUserById = async (userId: string): Promise<User> => {
+  const { data } = await api.get(`/users/${userId}`);
+  return data;
+};
+
+export const fetchCampaignCharacters = async (
+  campaignId: string,
+): Promise<CharacterPerCampaignWithCharacter[]> => {
+  const { data } = await api.get(
+    `/characterpercampaigns/campaign/${campaignId}`,
+  );
+  return data;
+};
+
+export const addCharacterToCampaign = async (
+  payload: CreateCharacterPerCampaign,
+): Promise<CharacterPerCampaignWithCharacter> => {
+  const { data } = await api.post("/characterpercampaigns", payload);
+  return data;
 };

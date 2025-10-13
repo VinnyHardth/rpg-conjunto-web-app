@@ -12,3 +12,4 @@ export * from "./types/abilityEffect";
 export * from "./types/effects";
 export * from "./types/inventory";
 export * from "./types/skills";
+export * from "./types/campaign";

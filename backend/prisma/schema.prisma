@@ -90,6 +90,17 @@ enum OperationType {
   DICE
 }
 
+enum CampaignCharacterRole {
+  NPC
+  CHARACTER
+  ENEMY
+}
+
+enum CampaignMemberRole {
+  PLAYER
+  MASTER
+}
+
 // ------------- Catálogos -------------
 model User {
   id       String  @id @default(uuid()) @db.Char(36)
@@ -102,7 +113,9 @@ model User {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  characters Character[]
+  characters          Character[]
+  campaigns           Campaign[]       @relation("CampaignCreator")
+  campaignMemberships CampaignMember[] @relation("CampaignMemberUser")
 
   @@map("users")
 }
@@ -156,9 +169,69 @@ model Character {
   items          CharacterHasItem[]
   skills         Skill[]
   appliedEffects AppliedEffect[]
+  campaignLinks  CharacterPerCampaign[] @relation("CharacterCampaigns")
 
   @@index([userId])
   @@map("characters")
+}
+
+model Campaign {
+  id          String  @id @default(uuid()) @db.Char(36)
+  name        String  @db.VarChar(191)
+  description String? @db.Text
+  imageUrl    String? @db.VarChar(191)
+  isFinished  Boolean @default(false)
+  creatorId   String  @db.Char(36)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  creator    User                   @relation("CampaignCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  characters CharacterPerCampaign[] @relation("CampaignCharacters")
+  members    CampaignMember[]       @relation("CampaignMembers")
+
+  @@index([creatorId])
+  @@map("campaigns")
+}
+
+model CharacterPerCampaign {
+  id          String                @id @default(uuid()) @db.Char(36)
+  campaignId  String                @db.Char(36)
+  characterId String                @db.Char(36)
+  role        CampaignCharacterRole @default(CHARACTER)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  campaign  Campaign  @relation("CampaignCharacters", fields: [campaignId], references: [id], onDelete: Cascade)
+  character Character @relation("CharacterCampaigns", fields: [characterId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, characterId])
+  @@index([campaignId])
+  @@index([characterId])
+  @@map("character_per_campaign")
+}
+
+model CampaignMember {
+  id         String             @id @default(uuid()) @db.Char(36)
+  status     String?            @db.VarChar(191)
+  role       CampaignMemberRole @default(PLAYER)
+  campaignId String             @db.Char(36)
+  userId     String             @db.Char(36)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  campaign Campaign @relation("CampaignMembers", fields: [campaignId], references: [id], onDelete: Cascade)
+  user     User     @relation("CampaignMemberUser", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, userId])
+  @@index([campaignId])
+  @@index([userId])
+  @@map("campaign_members")
 }
 
 // ------------- Atributos e Status -------------

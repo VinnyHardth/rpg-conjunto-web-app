@@ -13,6 +13,8 @@ import {
   OperationType,
   DamageType,
   StackingPolicy,
+  CampaignCharacterRole,
+  CampaignMemberRole,
 } from "@prisma/client";
 
 dotenv.config();
@@ -108,6 +110,80 @@ const doc = {
       imageUrl: "http://example.com/images/updated_leena.png",
     },
     DeleteCharacterDTO: {
+      id: "uuid",
+    },
+
+    // Campaign definitions
+    CampaignDTO: {
+      id: "uuid",
+      name: "Campanha das Sombras",
+      description: "Uma aventura épica nas terras de Eldoria.",
+      imageUrl: "https://example.com/campaign.png",
+      isFinished: false,
+      creatorId: "uuid",
+      createdAt: "2023-10-01T12:00:00Z",
+      updatedAt: "2023-10-01T12:00:00Z",
+      deletedAt: null,
+    },
+    CreateCampaignDTO: {
+      name: "Campanha das Sombras",
+      description: "Uma aventura épica nas terras de Eldoria.",
+      imageUrl: "https://example.com/campaign.png",
+      isFinished: false,
+      creatorId: "uuid",
+    },
+    UpdateCampaignDTO: {
+      name: "Campanha revisada",
+      description: "Atualização na história",
+      imageUrl: "https://example.com/new-campaign.png",
+      isFinished: true,
+    },
+    DeleteCampaignDTO: {
+      id: "uuid",
+    },
+
+    CharacterPerCampaignDTO: {
+      id: "uuid",
+      campaignId: "uuid",
+      characterId: "uuid",
+      role: Object.values(CampaignCharacterRole)[1],
+      createdAt: "2023-10-01T12:00:00Z",
+      updatedAt: "2023-10-01T12:00:00Z",
+      deletedAt: null,
+    },
+    CreateCharacterPerCampaignDTO: {
+      campaignId: "uuid",
+      characterId: "uuid",
+      role: Object.values(CampaignCharacterRole)[0],
+    },
+    UpdateCharacterPerCampaignDTO: {
+      role: Object.values(CampaignCharacterRole)[2],
+    },
+    DeleteCharacterPerCampaignDTO: {
+      id: "uuid",
+    },
+
+    CampaignMemberDTO: {
+      id: "uuid",
+      status: "Ativo",
+      role: Object.values(CampaignMemberRole)[0],
+      campaignId: "uuid",
+      userId: "uuid",
+      createdAt: "2023-10-01T12:00:00Z",
+      updatedAt: "2023-10-01T12:00:00Z",
+      deletedAt: null,
+    },
+    CreateCampaignMemberDTO: {
+      status: "Ativo",
+      role: Object.values(CampaignMemberRole)[1],
+      campaignId: "uuid",
+      userId: "uuid",
+    },
+    UpdateCampaignMemberDTO: {
+      status: "Suspenso",
+      role: Object.values(CampaignMemberRole)[0],
+    },
+    DeleteCampaignMemberDTO: {
       id: "uuid",
     },
 

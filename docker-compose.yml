@@ -38,6 +38,10 @@ services:
     env_file:
       - .env              # ← global (na raiz)
       - ./backend/.env    # ← local (dentro do backend)
+    stdin_open: true
+    tty: true
+    depends_on:
+      - mysql
     networks:
       - rpg-manager-network
   frontend:
@@ -53,6 +57,10 @@ services:
       - ./frontend/:/app/
       - /app/node_modules
       - /app/.next
+    environment:
+      - NEXT_TELEMETRY_DISABLED=1
+    stdin_open: true
+    tty: true
     networks:
       - rpg-manager-network
 networks:
