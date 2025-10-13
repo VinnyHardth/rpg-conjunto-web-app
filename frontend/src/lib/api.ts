@@ -8,6 +8,8 @@ import {
   CreateCharacter,
 } from "@/types/models";
 
+import { CharacterHasItemDTO, SkillDTO, FullCharacterData } from "@rpg/shared";
+
 import { Archetype } from "@/types/models";
 
 export const fetchUser = async (): Promise<User> => {
@@ -22,17 +24,21 @@ export const fetchCharacter = async (
 ): Promise<Character> => {
   const { data } = await api.get(`/characters/${characterId}`);
   return data;
-}
+};
 
-export const fetchCharacterInventory = async (characterId: string): Promise<CharacterHasItem[]> => {
+export const fetchCharacterInventory = async (
+  characterId: string,
+): Promise<CharacterHasItemDTO[]> => {
   const { data } = await api.get(`/characterhasitems/character/${characterId}`);
   return data;
-}
+};
 
-export const fetchCharacterSkills = async (characterId: string): Promise<Skill[]> => {
+export const fetchCharacterSkills = async (
+  characterId: string,
+): Promise<SkillDTO[]> => {
   const { data } = await api.get(`/skills/character/${characterId}`);
   return data;
-}
+};
 
 export const createCharacter = async (
   characterData: CreateCharacter,
@@ -48,9 +54,12 @@ export const fetchUserCharacters = async (
   return data;
 };
 
-
-export const fetchCharacterAttributes = async (characterId: string): Promise<CharacterAttribute[]> => {
-  const { data } = await api.get(`/characterattributes/character/${characterId}`);
+export const fetchCharacterAttributes = async (
+  characterId: string,
+): Promise<CharacterAttribute[]> => {
+  const { data } = await api.get(
+    `/characterattributes/character/${characterId}`,
+  );
   return data;
 };
 
@@ -61,7 +70,9 @@ export const fetchCharacterStatus = async (
   return data;
 };
 
-export const fetchCharacterArchetypeData = async (archetypeId: string): Promise<Archetype> => {
+export const fetchCharacterArchetypeData = async (
+  archetypeId: string,
+): Promise<Archetype> => {
   const { data } = await api.get(`/archetypes/${archetypeId}`);
   return data;
 };
@@ -78,8 +89,9 @@ export const fetchAttributeKinds = async (
   return data;
 };
 
-
-export const fetchFullCharacter = async (characterId: string): Promise<FullCharacterData> => {
+export const fetchFullCharacter = async (
+  characterId: string,
+): Promise<FullCharacterData> => {
   const fullCharacter = await api.get(`/characters/full/${characterId}`);
   const character = fullCharacter.data.info;
   const attributes = fullCharacter.data.attributes;
@@ -94,6 +106,6 @@ export const fetchFullCharacter = async (characterId: string): Promise<FullChara
     status,
     inventory,
     skills,
-    archetype
+    archetype,
   };
 };

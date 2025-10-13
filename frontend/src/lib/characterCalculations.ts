@@ -3,13 +3,13 @@ import { AttributeKey, Archetype } from "@/types/models";
 export const calculateExpertises = (
   attributes: Record<AttributeKey, number>,
 ): Record<string, number> => {
-  const str = attributes.Strength || 0;
-  const dex = attributes.Dexterity || 0;
-  const int = attributes.Intelligence || 0;
-  const wis = attributes.Wisdom || 0;
-  const con = attributes.Constitution || 0;
-  const car = attributes.Charisma || 0;
-  const des = attributes.Destiny || 0;
+  const str = attributes.Força || 0;
+  const dex = attributes.Destreza || 0;
+  const int = attributes.Inteligência || 0;
+  const wis = attributes.Sabedoria || 0;
+  const con = attributes.Constituição || 0;
+  const car = attributes.Carisma || 0;
+  const des = attributes.Destino || 0;
 
   return {
     magicRes: Math.floor((int + con) / 2),
@@ -28,12 +28,12 @@ export const calculateStatus = (
   attributes: Record<AttributeKey, number>,
   archetype: Archetype,
 ): Record<string, number> => {
-  const str = attributes.Strength || 0;
-  const dex = attributes.Dexterity || 0;
-  const int = attributes.Intelligence || 0;
-  const wis = attributes.Wisdom || 0;
-  const con = attributes.Constitution || 0;
-  const des = attributes.Destiny || 0;
+  const str = attributes.Força || 0;
+  const dex = attributes.Destreza || 0;
+  const int = attributes.Inteligência || 0;
+  const wis = attributes.Sabedoria || 0;
+  const con = attributes.Constituição || 0;
+  const des = attributes.Destino || 0;
 
   const rm = Math.floor((int + con) / 2);
   const rf = Math.floor((str + con) / 2);

@@ -9,9 +9,9 @@ import type {
   CharacterAttribute,
 } from "@/types/models";
 
-import {
-  calculateExpertises,
-} from "@/lib/characterCalculations";
+import { SKILL_NAME_MAPPING } from "@/types/models";
+
+import { calculateExpertises } from "@/lib/characterCalculations";
 
 interface CharacterAttributeProps {
   attributes: CharacterAttribute[];
@@ -19,23 +19,16 @@ interface CharacterAttributeProps {
   onUpdate: (attributes: CharacterAttribute[]) => void;
 }
 
-const SKILL_NAME_MAPPING: Record<string, string> = {
-  magicRes: "Magic resistance",
-  fisicalRes: "Physical resistance",
-  perception: "Perception",
-  intimidation: "Intimidation",
-  faith: "Faith",
-  inspiration: "Inspiration",
-  determination: "Determination",
-  bluff: "Bluff",
-  reflexes: "Reflexes",
-};
-
 // Mapeamento reverso para encontrar a key pelo nome
-const REVERSE_SKILL_MAPPING: Record<string, string> = Object.entries(SKILL_NAME_MAPPING).reduce((acc, [key, value]) => {
-  acc[value] = key;
-  return acc;
-}, {} as Record<string, string>);
+const REVERSE_SKILL_MAPPING: Record<string, string> = Object.entries(
+  SKILL_NAME_MAPPING,
+).reduce(
+  (acc, [key, value]) => {
+    acc[value] = key;
+    return acc;
+  },
+  {} as Record<string, string>,
+);
 
 const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
   attributes,
@@ -45,7 +38,8 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
   const { data: attributesData } = useAttributes();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState<number>(0);
-  const [localAttributes, setLocalAttributes] = useState<CharacterAttribute[]>(attributes);
+  const [localAttributes, setLocalAttributes] =
+    useState<CharacterAttribute[]>(attributes);
 
   // Atualizar localAttributes quando attributes mudar
   useEffect(() => {
@@ -62,8 +56,10 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
 
   // Combinar dados com os valores atuais - USANDO localAttributes
   const allAttributes = attributesData.map((attribute) => {
-    const charAttribute = localAttributes.find((a) => a.attributeId === attribute.id);
-    
+    const charAttribute = localAttributes.find(
+      (a) => a.attributeId === attribute.id,
+    );
+
     if (charAttribute) {
       return {
         ...charAttribute,
@@ -71,7 +67,7 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
         kind: attribute.kind,
       };
     }
-    
+
     return {
       id: "",
       characterId: "",
@@ -89,10 +85,10 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
 
   // Separar por kind
   const baseAttributes = allAttributes.filter(
-    (attr) => attr.kind === "ATTRIBUTE"
+    (attr) => attr.kind === "ATTRIBUTE",
   );
   const expertises = allAttributes.filter((attr) => attr.kind === "EXPERTISE");
-  
+
   console.log("Base attributes:", baseAttributes);
   console.log("Expertises:", expertises);
 
@@ -104,29 +100,31 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
   const handleEditSave = () => {
     if (editingId && editValue >= 0 && archetype) {
       console.log("Editando atributo:", editingId, "novo valor:", editValue);
-      
+
       // 1. Atualizar apenas o atributo base que foi editado
       const updatedBaseAttributes = localAttributes.map((attr) =>
         attr.attributeId === editingId
           ? { ...attr, valueBase: editValue }
-          : attr
+          : attr,
       );
 
       console.log("Base attributes atualizados:", updatedBaseAttributes);
 
       // 2. Criar record de atributos para cálculos
-const attributeRecord = baseAttributes.reduce<Record<string, number>>(
-  (acc, attr) => {
-    if (attr.attributeId === editingId) {
-      acc[attr.name] = editValue;
-    } else {
-      const updatedAttr = updatedBaseAttributes.find(a => a.attributeId === attr.attributeId);
-      acc[attr.name] = updatedAttr?.valueBase || attr.valueBase;
-    }
-    return acc;
-  }, 
-  {}
-);
+      const attributeRecord = baseAttributes.reduce<Record<string, number>>(
+        (acc, attr) => {
+          if (attr.attributeId === editingId) {
+            acc[attr.name] = editValue;
+          } else {
+            const updatedAttr = updatedBaseAttributes.find(
+              (a) => a.attributeId === attr.attributeId,
+            );
+            acc[attr.name] = updatedAttr?.valueBase || attr.valueBase;
+          }
+          return acc;
+        },
+        {},
+      );
 
       console.log("Attribute record para cálculo:", attributeRecord);
 
@@ -137,11 +135,13 @@ const attributeRecord = baseAttributes.reduce<Record<string, number>>(
       // 4. Atualizar as perícias com os valores calculados
       const updatedExpertises: CharacterAttribute[] = expertises.map((exp) => {
         const skillKey = REVERSE_SKILL_MAPPING[exp.name];
-        
+
         if (skillKey && newExpertises[skillKey as AttributeKey] !== undefined) {
           const calculatedValue = newExpertises[skillKey as AttributeKey];
-          const originalExp = localAttributes.find(a => a.attributeId === exp.attributeId);
-          
+          const originalExp = localAttributes.find(
+            (a) => a.attributeId === exp.attributeId,
+          );
+
           return {
             id: originalExp?.id || "",
             characterId: originalExp?.characterId || "",
@@ -151,11 +151,13 @@ const attributeRecord = baseAttributes.reduce<Record<string, number>>(
             valueExtra: originalExp?.valueExtra || 0,
             createdAt: originalExp?.createdAt || new Date(),
             updatedAt: new Date(),
-            deletedAt: originalExp?.deletedAt || null,
+            deletedAt: null,
           };
         }
-        
-        const originalExp = localAttributes.find(a => a.attributeId === exp.attributeId);
+
+        const originalExp = localAttributes.find(
+          (a) => a.attributeId === exp.attributeId,
+        );
         return originalExp || exp;
       });
 
@@ -163,8 +165,12 @@ const attributeRecord = baseAttributes.reduce<Record<string, number>>(
 
       // 5. Combinar todos os atributos
       const finalAttributes: CharacterAttribute[] = [
-        ...updatedBaseAttributes.filter(attr => baseAttributes.some(baseAttr => baseAttr.attributeId === attr.attributeId)),
-        ...updatedExpertises
+        ...updatedBaseAttributes.filter((attr) =>
+          baseAttributes.some(
+            (baseAttr) => baseAttr.attributeId === attr.attributeId,
+          ),
+        ),
+        ...updatedExpertises,
       ];
 
       console.log("Atributos finais para update:", finalAttributes);
@@ -354,7 +360,7 @@ const attributeRecord = baseAttributes.reduce<Record<string, number>>(
               {allAttributes.reduce(
                 (sum, attr) =>
                   sum + attr.valueBase + attr.valueInv + attr.valueExtra,
-                0
+                0,
               )}
             </div>
             <div className="text-sm text-gray-600">Pontos Totais</div>

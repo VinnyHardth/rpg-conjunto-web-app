@@ -4,7 +4,6 @@ import { ReasonPhrases, StatusCodes } from "http-status-codes";
 
 import {
   FullCharacterData,
-  UpdateFullCharacterDTO,
   CreateCharacterDTO,
   UpdateCharacterDTO,
   CharacterDTO,
@@ -85,7 +84,6 @@ const getFullCharacterData = async (
     handleError(res, err, "Error retrieving full character data");
   }
 };
-
 
 const getById = async (req: Request, res: Response): Promise<void> => {
   /*
@@ -228,7 +226,6 @@ const update = async (req: Request, res: Response): Promise<void> => {
     handleError(res, err, "Error updating character");
   }
 };
-
 
 const remove = async (req: Request, res: Response): Promise<void> => {
   /*

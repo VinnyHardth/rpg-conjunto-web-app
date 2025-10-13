@@ -36,7 +36,7 @@ const NoCharactersPlaceholder = () => (
 
 export default function HomePage() {
   const { user, loading: userLoading } = useUser();
-  const { characters, loading: charactersLoading } = useCharacters(user?.id);
+  const { characters, isLoading: charactersLoading } = useCharacters(user?.id);
 
   const router = useRouter();
 
@@ -78,12 +78,16 @@ export default function HomePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
             {characters.map((c) => (
               // Garantimos que o CharacterCard tenha largura total da coluna
-              <CharacterCard key={c.id} character={c} onClick={() => router.push(`/characters/${c.id}/manage`)}  />
+              <CharacterCard
+                key={c.id}
+                character={c}
+                onClick={() => router.push(`/characters/${c.id}/manage`)}
+              />
             ))}
           </div>
         )}
       </div>
-      
+
       {/* Botão flutuante mantido para criação rápida (MELHORIA UX) */}
       <FloatingCreateButton userId={user.id} />
     </div>

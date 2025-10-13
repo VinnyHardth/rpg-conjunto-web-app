@@ -48,10 +48,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const getByCharacterId = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+const getByCharacterId = async (req: Request, res: Response): Promise<void> => {
   /*
     #swagger.summary = 'Get all characterhasitems by character ID'
     #swagger.description = 'Endpoint to retrieve all characterhasitems by character ID.'

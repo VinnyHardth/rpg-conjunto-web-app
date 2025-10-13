@@ -24,7 +24,6 @@ router.put(
   characterController.update,
 );
 
-
 // delete methods -------------------------------------------------------------
 router.delete("/:id", characterController.remove);
 

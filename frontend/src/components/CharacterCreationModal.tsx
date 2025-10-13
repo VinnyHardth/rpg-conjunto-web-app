@@ -3,7 +3,7 @@ import React, { useState, useMemo, useEffect } from "react";
 // Types
 import {
   CreateFullCharacter,
-  Archetype, 
+  Archetype,
   Attributes,
   CharacterType,
   CreateCharacterAttribute,
@@ -34,8 +34,6 @@ export const STEP_NAMES = [
   "Atributos & Estatísticas",
   "Resumo Final",
 ];
-
-
 
 const ATTRIBUTE_ORDER = [
   "Strength",
@@ -117,7 +115,7 @@ export default function CharacterCreationModal({
   const [isSubmitting, setIsSubmitting] = useState(false); // ← Novo estado para submit
 
   const { addCharacter, refreshCharacters } = useCharacters(userId);
-  
+
   // ATTRIBUTE_KEYS será definido dinamicamente com base no fetch
   const [attributeKeys, setAttributeKeys] = useState<string[]>([]);
 
@@ -324,30 +322,29 @@ export default function CharacterCreationModal({
     }
   };
 
-const handleFinish = async () => {
-  setIsSubmitting(true);
-  characterData.info.userId = userId;
-  try {
-    const createdCharacter = await addCharacter(
-      characterData.info,                 // dados básicos
-      characterData.archetype,            // arquétipo selecionado
-      characterData.attributes,           // atributos do personagem
-      expertises,                          // perícias do banco
-      attributes,
+  const handleFinish = async () => {
+    setIsSubmitting(true);
+    characterData.info.userId = userId;
+    try {
+      const createdCharacter = await addCharacter(
+        characterData.info, // dados básicos
+        characterData.archetype, // arquétipo selecionado
+        characterData.attributes, // atributos do personagem
+        expertises, // perícias do banco
+        attributes,
+      );
 
-    );
+      console.log("Personagem criado com sucesso:", createdCharacter);
 
-    console.log("Personagem criado com sucesso:", createdCharacter);
-
-    resetForm();
-    onClose();
-  } catch (error) {
-    console.error("Erro ao criar personagem:", error);
-    alert("Erro ao criar personagem. Verifique o console.");
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+      resetForm();
+      onClose();
+    } catch (error) {
+      console.error("Erro ao criar personagem:", error);
+      alert("Erro ao criar personagem. Verifique o console.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleClose = () => {
     resetForm();

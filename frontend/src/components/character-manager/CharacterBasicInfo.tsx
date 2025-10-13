@@ -1,29 +1,26 @@
 // app/characters/[id]/manage/components/CharacterBasicInfo.tsx
 "use client";
 
-import {
-  Archetype,
-  Character,
-  CharacterBasicInfoUpdate,
-  GENEROS_MOCK,
-} from "@/types/models";
+import { Archetype, Character, GENEROS_MOCK } from "@/types/models";
+
+import { CharacterBasicInfoUpdate } from "@rpg/shared";
 
 interface CharacterBasicInfoProps {
   character: Character;
   archetype: Archetype | null;
   // RENOMEADO: onSave para onUpdate, para indicar que é uma atualização local
-  onUpdate: (updates: CharacterBasicInfoUpdate) => void; 
+  onUpdate: (updates: CharacterBasicInfoUpdate) => void;
 }
 
 export default function CharacterBasicInfo({
   character,
   archetype,
   // RENOMEADO
-  onUpdate, 
+  onUpdate,
 }: CharacterBasicInfoProps) {
   const handleInputChange = (
     field: keyof CharacterBasicInfoUpdate,
-    value: string | number | null
+    value: string | number | null,
   ) => {
     // Agora, apenas notificamos o componente pai sobre a mudança
     onUpdate({ [field]: value });
@@ -34,7 +31,10 @@ export default function CharacterBasicInfo({
       <h2 className="text-2xl font-bold text-gray-800 mb-2">
         Informações Básicas
       </h2>
-      <p className="text-sm text-gray-500 mb-6">Detalhes fundamentais do seu personagem. As alterações são salvas automaticamente.</p>
+      <p className="text-sm text-gray-500 mb-6">
+        Detalhes fundamentais do seu personagem. As alterações são salvas
+        automaticamente.
+      </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
@@ -74,12 +74,14 @@ export default function CharacterBasicInfo({
               onChange={(e) =>
                 handleInputChange(
                   "age",
-                  e.target.value ? parseInt(e.target.value) : null
+                  e.target.value ? parseInt(e.target.value) : null,
                 )
               }
               className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12"
             />
-            <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm text-gray-500">anos</span>
+            <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm text-gray-500">
+              anos
+            </span>
           </div>
         </div>
 
@@ -95,12 +97,14 @@ export default function CharacterBasicInfo({
               onChange={(e) =>
                 handleInputChange(
                   "height",
-                  e.target.value ? parseFloat(e.target.value) : null
+                  e.target.value ? parseFloat(e.target.value) : null,
                 )
               }
               className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
             />
-            <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm text-gray-500">cm</span>
+            <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm text-gray-500">
+              cm
+            </span>
           </div>
         </div>
 
@@ -142,19 +146,25 @@ export default function CharacterBasicInfo({
           <h3 className="font-semibold text-lg text-gray-800 mb-3">
             Arquétipo: <span className="text-blue-600">{archetype.name}</span>
           </h3>
- 
+
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
             <div className="bg-white p-3 rounded-md border">
               <div className="text-xs text-red-600 font-bold">HP MOD</div>
-              <div className="text-xl font-bold text-red-500">x{archetype.hp}</div>
+              <div className="text-xl font-bold text-red-500">
+                x{archetype.hp}
+              </div>
             </div>
             <div className="bg-white p-3 rounded-md border">
               <div className="text-xs text-blue-600 font-bold">MP MOD</div>
-              <div className="text-xl font-bold text-blue-500">x{archetype.mp}</div>
+              <div className="text-xl font-bold text-blue-500">
+                x{archetype.mp}
+              </div>
             </div>
             <div className="bg-white p-3 rounded-md border">
               <div className="text-xs text-green-600 font-bold">TP MOD</div>
-              <div className="text-xl font-bold text-green-500">x{archetype.tp}</div>
+              <div className="text-xl font-bold text-green-500">
+                x{archetype.tp}
+              </div>
             </div>
           </div>
         </div>

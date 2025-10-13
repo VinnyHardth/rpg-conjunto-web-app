@@ -23,7 +23,6 @@ const getCharacterById = async (id: string): Promise<CharacterDTO | null> => {
   });
 };
 
-
 const getFullCharacterData = async (id: string): Promise<FullCharacterData> => {
   // 1️⃣ Buscar personagem base
   const character = await prisma.character.findUnique({
@@ -53,6 +52,8 @@ const getFullCharacterData = async (id: string): Promise<FullCharacterData> => {
     }),
   ]);
 
+  console.log("📊 Perícias encontradas:", attributes);
+
   // 3️⃣ Retornar o resultado formatado
   return {
     info: character,
@@ -63,7 +64,6 @@ const getFullCharacterData = async (id: string): Promise<FullCharacterData> => {
     archetype,
   };
 };
-
 
 const getUserCharacters = async (userId: string): Promise<CharacterDTO[]> => {
   return prisma.character.findMany({
