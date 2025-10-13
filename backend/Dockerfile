@@ -36,5 +36,5 @@ RUN npx prisma generate
 
 EXPOSE 3000
 
-# roda migrate + seed e inicia o servidor
-CMD wait-port mysql:3306 && npx prisma migrate dev && npm run seed && npm run dev
+# roda migrate + seed e inicia o servidor (expondo logs no stdout)
+CMD ["sh", "-c", "wait-port mysql:3306 && npx prisma migrate deploy && npm run seed && npm run dev"]

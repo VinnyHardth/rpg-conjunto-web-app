@@ -93,3 +93,18 @@ export const OperationType = {
 } as const;
 export type OperationType =
   (typeof OperationType)[keyof typeof OperationType];
+
+export const CampaignCharacterRole = {
+  NPC: "NPC",
+  CHARACTER: "CHARACTER",
+  ENEMY: "ENEMY",
+} as const;
+export type CampaignCharacterRole =
+  (typeof CampaignCharacterRole)[keyof typeof CampaignCharacterRole];
+
+export const CampaignMemberRole = {
+  PLAYER: "PLAYER",
+  MASTER: "MASTER",
+} as const;
+export type CampaignMemberRole =
+  (typeof CampaignMemberRole)[keyof typeof CampaignMemberRole];

@@ -7,7 +7,11 @@ import toast from "react-hot-toast";
 import CharacterBasicInfo from "@/components/character-manager/CharacterBasicInfo";
 import CharacterAttributes from "@/components/character-manager/CharacterAttributes";
 
-import { CharacterBasicInfoUpdate, FullCharacterData, CharacterDTO } from "@rpg/shared";
+import {
+  CharacterBasicInfoUpdate,
+  FullCharacterData,
+  CharacterDTO,
+} from "@rpg/shared";
 
 import { CharacterAttribute } from "@/types/models";
 
@@ -44,12 +48,11 @@ export default function CharacterManagementPage({
     }
   }, [data]);
 
-
   const handleBasicInfoUpdate = (updates: CharacterBasicInfoUpdate) => {
     setPendingUpdates(
       (prev): Partial<FullCharacterData> => ({
         ...prev,
-        info: { ...(prev.info || {}), ...updates },
+        info: prev.info ? { ...prev.info, ...updates } : undefined,
       }),
     );
     setLocalCharacterData((prevData) => {
@@ -97,7 +100,7 @@ export default function CharacterManagementPage({
           promises.push(
             api.put(`/characterattributes/${attribute.id}`, {
               valueBase: attribute.valueBase,
-            })
+            }),
           );
         }
       }

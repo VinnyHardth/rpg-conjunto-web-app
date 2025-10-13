@@ -9,6 +9,13 @@ import {
   CreateStatusDTO,
   ArchetypeDTO,
   AttributesDTO,
+  CampaignDTO,
+  CreateCampaignDTO,
+  CampaignMemberDTO,
+  CreateCampaignMemberDTO,
+  CampaignMemberWithUserDTO,
+  CharacterPerCampaignWithCharacterDTO,
+  CreateCharacterPerCampaignDTO,
 } from "@rpg/shared";
 
 export {
@@ -23,6 +30,8 @@ export {
   CharacterType,
   ComponentType,
   OperationType,
+  CampaignMemberRole,
+  CampaignCharacterRole,
 } from "@rpg/shared";
 
 export interface CreateFullCharacter {
@@ -48,6 +57,14 @@ export type CreateCharacterAttribute = CreateCharacterAttributeDTO;
 export type Status = StatusDTO;
 export type Attributes = AttributesDTO;
 export type Archetype = ArchetypeDTO;
+export type Campaign = CampaignDTO;
+export type CreateCampaign = CreateCampaignDTO;
+export type CampaignMember = CampaignMemberDTO;
+export type CreateCampaignMember = CreateCampaignMemberDTO;
+export type CampaignMemberWithUser = CampaignMemberWithUserDTO;
+export type CharacterPerCampaignWithCharacter =
+  CharacterPerCampaignWithCharacterDTO;
+export type CreateCharacterPerCampaign = CreateCharacterPerCampaignDTO;
 
 export type AttributeKey = // Chave de Atributo
 

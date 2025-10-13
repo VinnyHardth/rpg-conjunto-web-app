@@ -8,6 +8,9 @@ import archetypeRouter from "../resources/archetype/archetype.router";
 import characterRouter from "../resources/character/character.router";
 import characterAttributeRouter from "../resources/characterAttribute/characterAttribute.router";
 import characterHasItemRouter from "../resources/characterHasItem/characterHasItem.router";
+import campaignRouter from "../resources/campaign/campaign.router";
+import characterPerCampaignRouter from "../resources/characterPerCampaign/characterPerCampaign.router";
+import campaignMemberRouter from "../resources/campaignMember/campaignMember.router";
 
 import abilitiesRouter from "../resources/abilities/abilities.router";
 import abilityEffectRouter from "../resources/abilityEffect/abilityEffect.router";
@@ -48,6 +51,24 @@ router.use(
   "/characters",
   // #swagger.tags = ['Characters']
   characterRouter,
+);
+
+router.use(
+  "/campaigns",
+  // #swagger.tags = ['Campaigns']
+  campaignRouter,
+);
+
+router.use(
+  "/characterpercampaigns",
+  // #swagger.tags = ['CharacterPerCampaign']
+  characterPerCampaignRouter,
+);
+
+router.use(
+  "/campaignmembers",
+  // #swagger.tags = ['CampaignMembers']
+  campaignMemberRouter,
 );
 
 router.use(

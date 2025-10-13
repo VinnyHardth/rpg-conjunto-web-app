@@ -47,6 +47,13 @@ export interface DeleteCharacterDTO {
   id: string;
 }
 
+export type CharacterBasicInfoUpdate = Partial<
+  Pick<
+    CharacterDTO,
+    "name" | "race" | "age" | "height" | "gender" | "annotations"
+  >
+>;
+
 export type FullCharacterData = {
   info: CharacterDTO;
   archetype: ArchetypeDTO | null;

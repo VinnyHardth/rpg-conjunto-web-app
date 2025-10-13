@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCharacters } from "@/hooks/useCharacters";
 import CharacterCard from "@/components/CharacterCard"; // Mantido o CharacterCard
 import FloatingCreateButton from "@/components/FloatingCreateButton";
+import CampaignListModel from "@/components/CampaignListModel";
 
 // Componente Placeholder para o estado de Loading (Melhoria UI)
 const LoadingCharactersPlaceholder = () => (
@@ -18,7 +19,7 @@ const LoadingCharactersPlaceholder = () => (
 );
 
 // Componente Placeholder para o estado Vazio (Melhoria UX/UI)
-const NoCharactersPlaceholder = () => (
+const NoCharactersPlaceholder = ({ userId }: { userId: string }) => (
   <div className="flex flex-col items-center justify-center p-12 bg-white border-2 border-dashed border-blue-300 rounded-xl shadow-lg w-full max-w-lg mx-auto">
     <span className="text-6xl mb-4" role="img" aria-label="Lupa e Pergaminho">
       📜🔍
@@ -30,7 +31,7 @@ const NoCharactersPlaceholder = () => (
       Parece que sua jornada ainda não começou! Crie seu primeiro herói para
       iniciar a aventura.
     </p>
-    <FloatingCreateButton userId={""} />
+    <FloatingCreateButton userId={userId} />
   </div>
 );
 
@@ -72,7 +73,7 @@ export default function HomePage() {
         {isDataLoading ? (
           <LoadingCharactersPlaceholder />
         ) : characters.length === 0 ? (
-          <NoCharactersPlaceholder />
+          <NoCharactersPlaceholder userId={user.id} />
         ) : (
           // --- 4. MELHORIA UI: Layout de Grid para Cards ---
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
@@ -87,6 +88,19 @@ export default function HomePage() {
           </div>
         )}
       </div>
+
+      <section className="mt-12 space-y-6">
+        <header className="border-b pb-2">
+          <h2 className="text-xl font-semibold text-gray-700">
+            Suas Campanhas
+          </h2>
+          <p className="text-sm text-gray-500">
+            Crie aventuras ou participe das campanhas dos seus mestres.
+          </p>
+        </header>
+
+        <CampaignListModel userId={user.id} />
+      </section>
 
       {/* Botão flutuante mantido para criação rápida (MELHORIA UX) */}
       <FloatingCreateButton userId={user.id} />
