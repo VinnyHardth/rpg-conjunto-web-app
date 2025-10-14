@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 import {
   CharacterPerCampaignDTO,
+  CharacterPerCampaignWithCharacterDTO,
   CreateCharacterPerCampaignDTO,
   UpdateCharacterPerCampaignDTO,
 } from "./characterPerCampaign.types";
@@ -11,6 +12,23 @@ const prisma = new PrismaClient();
 export const createCharacterPerCampaign = async (
   data: CreateCharacterPerCampaignDTO,
 ): Promise<CharacterPerCampaignDTO> => {
+  const existing = await prisma.characterPerCampaign.findFirst({
+    where: {
+      campaignId: data.campaignId,
+      characterId: data.characterId,
+    },
+  });
+
+  if (existing) {
+    return prisma.characterPerCampaign.update({
+      where: { id: existing.id },
+      data: {
+        role: data.role ?? existing.role,
+        deletedAt: null,
+      },
+    });
+  }
+
   return prisma.characterPerCampaign.create({ data });
 };
 
@@ -52,4 +70,15 @@ export const deleteCharacterPerCampaign = async (
     where: { id },
     data: { deletedAt: new Date() },
   });
+};
+
+export const getCharacterPerCampaignWithCharacterById = async (
+  id: string,
+): Promise<CharacterPerCampaignWithCharacterDTO | null> => {
+  return prisma.characterPerCampaign.findUnique({
+    where: { id },
+    include: {
+      character: true,
+    },
+  }) as unknown as CharacterPerCampaignWithCharacterDTO | null;
 };

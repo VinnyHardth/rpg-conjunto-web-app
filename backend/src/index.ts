@@ -59,7 +59,15 @@ app.use(
 
 // Cria o servidor HTTP e instancia o Socket.io
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: "*" } });
+const allowedOrigins = (process.env.FRONTEND_ORIGINS || "http://localhost:4000")
+  .split(",")
+  .map((origin) => origin.trim());
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigins,
+    credentials: true,
+  },
+});
 
 // Middleware para injetar io nas rotas
 app.use((req: Request, res: Response, next: NextFunction) => {

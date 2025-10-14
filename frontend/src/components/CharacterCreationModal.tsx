@@ -27,6 +27,7 @@ import StepTwo from "./character-creation/steps/StepTwo";
 import StepThree from "./character-creation/steps/StepThree";
 
 import { useCharacters } from "@/hooks/useCharacters";
+import type { AxiosError } from "axios";
 
 // Constants
 export const STEP_NAMES = [
@@ -112,9 +113,8 @@ export default function CharacterCreationModal({
   const [attributes, setAttributes] = useState<Attributes[]>([]);
   const [expertises, setExpertises] = useState<Attributes[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false); // ← Novo estado para submit
 
-  const { addCharacter, refreshCharacters } = useCharacters(userId);
+  const { addCharacter } = useCharacters(userId);
 
   // ATTRIBUTE_KEYS será definido dinamicamente com base no fetch
   const [attributeKeys, setAttributeKeys] = useState<string[]>([]);
@@ -322,12 +322,70 @@ export default function CharacterCreationModal({
     }
   };
 
+  const validateCharacterInfo = (): string | null => {
+    const trimmedName = characterData.info.name?.trim() ?? "";
+    if (trimmedName.length < 2) {
+      return "Defina um nome com pelo menos 2 caracteres.";
+    }
+
+    const trimmedRace = characterData.info.race?.trim() ?? "";
+    if (trimmedRace.length < 2) {
+      return "Informe uma raça com pelo menos 2 caracteres.";
+    }
+
+    if (!characterData.info.gender) {
+      return "Selecione um gênero para o personagem.";
+    }
+
+    if (
+      characterData.info.age === undefined ||
+      characterData.info.age === null ||
+      characterData.info.age < 0
+    ) {
+      return "Defina uma idade válida (zero ou maior).";
+    }
+
+    if (
+      characterData.info.height === undefined ||
+      characterData.info.height === null ||
+      characterData.info.height < 0
+    ) {
+      return "Defina uma altura válida (zero ou maior).";
+    }
+
+    if (!characterData.archetype.id) {
+      return "Selecione um arquétipo para continuar.";
+    }
+
+    if (!characterData.info.userId && !userId) {
+      return "Não foi possível localizar o usuário. Refaça o login e tente novamente.";
+    }
+
+    return null;
+  };
+
   const handleFinish = async () => {
-    setIsSubmitting(true);
-    characterData.info.userId = userId;
+    const validationError = validateCharacterInfo();
+    if (validationError) {
+      alert(validationError);
+      return;
+    }
+
+    const baseInfo = {
+      ...characterData.info,
+      name: characterData.info.name.trim(),
+      race: characterData.info.race?.trim() ?? null,
+      annotations: characterData.info.annotations?.trim() || undefined,
+      gender: characterData.info.gender.trim(),
+      userId,
+      archetypeId: characterData.archetype.id,
+      money: characterData.info.money ?? 0,
+      type: characterData.info.type ?? CharacterType.PC,
+    };
+
     try {
       const createdCharacter = await addCharacter(
-        characterData.info, // dados básicos
+        baseInfo, // dados básicos
         characterData.archetype, // arquétipo selecionado
         characterData.attributes, // atributos do personagem
         expertises, // perícias do banco
@@ -340,9 +398,15 @@ export default function CharacterCreationModal({
       onClose();
     } catch (error) {
       console.error("Erro ao criar personagem:", error);
-      alert("Erro ao criar personagem. Verifique o console.");
-    } finally {
-      setIsSubmitting(false);
+      const axiosError = error as AxiosError<{
+        message?: string;
+        error?: string;
+      }>;
+      const serverMessage =
+        axiosError.response?.data?.message ??
+        axiosError.response?.data?.error ??
+        "Erro ao criar personagem. Verifique os dados e tente novamente.";
+      alert(serverMessage);
     }
   };
 

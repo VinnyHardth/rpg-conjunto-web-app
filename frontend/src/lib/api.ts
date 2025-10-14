@@ -14,7 +14,14 @@ import type {
   CreateCharacterPerCampaign,
 } from "@/types/models";
 
-import { CharacterHasItemDTO, SkillDTO, FullCharacterData } from "@rpg/shared";
+import {
+  CharacterHasItemDTO,
+  SkillDTO,
+  FullCharacterData,
+  EffectDTO,
+  CreateAppliedEffectDTO,
+  AppliedEffectDTO,
+} from "@rpg/shared";
 
 import { Archetype } from "@/types/models";
 
@@ -73,6 +80,21 @@ export const fetchCharacterStatus = async (
   characterId: string,
 ): Promise<Status[]> => {
   const { data } = await api.get(`/status/character/${characterId}`);
+  return data;
+};
+
+export type UpdateStatusPayload = Partial<
+  Pick<
+    Status,
+    "characterId" | "name" | "valueMax" | "valueBonus" | "valueActual"
+  >
+>;
+
+export const updateStatus = async (
+  statusId: string,
+  payload: UpdateStatusPayload,
+): Promise<Status> => {
+  const { data } = await api.put(`/status/${statusId}`, payload);
   return data;
 };
 
@@ -184,5 +206,72 @@ export const addCharacterToCampaign = async (
   payload: CreateCharacterPerCampaign,
 ): Promise<CharacterPerCampaignWithCharacter> => {
   const { data } = await api.post("/characterpercampaigns", payload);
+  return data;
+};
+
+export const removeCharacterFromCampaign = async (
+  relationId: string,
+): Promise<CharacterPerCampaignWithCharacter> => {
+  const { data } = await api.delete(`/characterpercampaigns/${relationId}`);
+  return data;
+};
+
+export interface RollDifficultyPayload {
+  campaignId: string;
+  characterId: string;
+  attributeName: string;
+  attributeAbbreviation: string;
+  diceCount: number;
+  difficulty: "Fácil" | "Médio" | "Difícil";
+}
+
+export interface RollDifficultyResponse extends RollDifficultyPayload {
+  expression: string;
+  renderedExpression: string;
+  total: number;
+  successes: number;
+  failures: number;
+  rolls: number[];
+  threshold: number;
+}
+
+export const rollDifficulty = async (
+  payload: RollDifficultyPayload,
+): Promise<RollDifficultyResponse> => {
+  const { data } = await api.post("/dice/difficulty", payload);
+  return data;
+};
+
+export interface RollCustomResponse {
+  expression: string;
+  renderedExpression: string;
+  total: number;
+  successes: number;
+  failures: number;
+  rolls: number[];
+}
+
+export const rollCustom = async (
+  expression: string,
+): Promise<RollCustomResponse> => {
+  const { data } = await api.post("/dice/custom", { expression });
+  return data;
+};
+
+export const clearDiceRolls = async (campaignId: string): Promise<void> => {
+  await api.post("/dice/clear", { campaignId });
+};
+
+// effects --------------------------------------------------------------------
+
+export const fetchEffects = async (): Promise<EffectDTO[]> => {
+  const { data } = await api.get("/effects");
+  return data;
+};
+
+export const createAppliedEffect = async (
+  payload: CreateAppliedEffectDTO,
+): Promise<AppliedEffectDTO> => {
+  const { data } = await api.post("/appliedeffects", payload);
   return data;
 };

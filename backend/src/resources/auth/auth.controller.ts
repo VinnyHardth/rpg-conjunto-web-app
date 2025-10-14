@@ -3,7 +3,7 @@ import { ReasonPhrases, StatusCodes } from "http-status-codes";
 
 import { CreateUserDTO } from "../user/user.types";
 import { createUser, getUserById, getUserByEmail } from "../user/user.services";
-import { verifyCredentials } from "./auth.services";
+import { verifyCredentials, logout as logoutService } from "./auth.services";
 
 const register = async (req: Request, res: Response): Promise<void> => {
   /*
@@ -109,15 +109,21 @@ const logout = async (req: Request, res: Response): Promise<void> => {
         #swagger.responses[500] = { description: 'Internal Server Error' }
     */
 
-  if (req.session.userId) {
-    req.session.destroy(() => {
-      res.status(StatusCodes.OK).json({
-        message: ReasonPhrases.OK,
-      });
-    });
-  } else {
+  if (!req.session.userId) {
     res.status(StatusCodes.UNAUTHORIZED).json({
       message: ReasonPhrases.UNAUTHORIZED,
+    });
+    return;
+  }
+
+  try {
+    await logoutService(req.session);
+    res.status(StatusCodes.OK).json({
+      message: ReasonPhrases.OK,
+    });
+  } catch (_) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: ReasonPhrases.INTERNAL_SERVER_ERROR,
     });
   }
 };

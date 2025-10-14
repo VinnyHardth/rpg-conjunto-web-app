@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+
 import React from "react";
 
 interface StatusProps {
@@ -8,6 +10,10 @@ interface StatusProps {
   tpCurrent: number;
   tpMax: number;
   avatarUrl: string;
+  rollSummary?: {
+    label: string;
+    successes: number;
+  };
 }
 
 const StatusCard: React.FC<StatusProps> = ({
@@ -18,10 +24,18 @@ const StatusCard: React.FC<StatusProps> = ({
   tpCurrent,
   tpMax,
   avatarUrl,
+  rollSummary,
 }) => {
-  const hpPercent = Math.min(100, (hpCurrent / hpMax) * 100);
-  const mpPercent = Math.min(100, (mpCurrent / mpMax) * 100);
-  const tpPercent = Math.min(100, (tpCurrent / tpMax) * 100);
+  const computePercent = (current: number, max: number): number => {
+    if (max <= 0) return 0;
+    const raw = (current / max) * 100;
+    if (!Number.isFinite(raw)) return 0;
+    return Math.min(100, Math.max(0, raw));
+  };
+
+  const hpPercent = computePercent(hpCurrent, hpMax);
+  const mpPercent = computePercent(mpCurrent, mpMax);
+  const tpPercent = computePercent(tpCurrent, tpMax);
 
   const hpDisplay = Math.round(hpCurrent);
   const mpDisplay = Math.round(mpCurrent);
@@ -36,6 +50,16 @@ const StatusCard: React.FC<StatusProps> = ({
           alt="Avatar do Jogador"
           className="player-avatar"
         />
+        {rollSummary && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/70 text-center text-white">
+            <span className="text-3xl font-black leading-6 text-emerald-300">
+              {rollSummary.successes}
+            </span>
+            <span className="mt-0.5 rounded bg-white/10 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-widest">
+              {rollSummary.label}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Barras de Status */}

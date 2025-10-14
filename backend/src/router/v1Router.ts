@@ -26,6 +26,7 @@ import appliedEffectRouter from "../resources/appliedEffect/appliedEffect.router
 import itemsRouter from "../resources/items/items.router";
 import itemSkillsRouter from "../resources/itemSkills/itemSkills.router";
 import itemHasEffectRouter from "../resources/itemHasEffect/itemHasEffect.router";
+import diceRouter from "../resources/dice/dice.router";
 
 const router = Router();
 
@@ -147,6 +148,12 @@ router.use(
   "/status",
   // #swagger.tags = ['Status']
   statusRouter,
+);
+
+router.use(
+  "/dice",
+  // #swagger.tags = ['Dice']
+  diceRouter,
 );
 
 export default router;
