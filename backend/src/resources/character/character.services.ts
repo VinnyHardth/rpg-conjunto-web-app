@@ -3,30 +3,30 @@ import {
   FullCharacterData,
   CreateCharacterDTO,
   UpdateCharacterDTO,
-  CharacterDTO,
+  CharacterDTO
 } from "./character.types";
 
 const prisma = new PrismaClient();
 
 // CRUD operations -------------------------------------------------------------
 const createCharacter = async (
-  data: CreateCharacterDTO,
+  data: CreateCharacterDTO
 ): Promise<CharacterDTO> => {
   return prisma.character.create({
-    data,
+    data
   });
 };
 
 const getCharacterById = async (id: string): Promise<CharacterDTO | null> => {
   return prisma.character.findUnique({
-    where: { id },
+    where: { id }
   });
 };
 
 const getFullCharacterData = async (id: string): Promise<FullCharacterData> => {
   // 1️⃣ Buscar personagem base
   const character = await prisma.character.findUnique({
-    where: { id },
+    where: { id }
   });
 
   if (!character) {
@@ -36,20 +36,20 @@ const getFullCharacterData = async (id: string): Promise<FullCharacterData> => {
   // 2️⃣ Rodar todas as queries em paralelo
   const [attributes, status, inventory, skills, archetype] = await Promise.all([
     prisma.characterAttribute.findMany({
-      where: { characterId: id },
+      where: { characterId: id }
     }),
     prisma.status.findMany({
-      where: { characterId: id },
+      where: { characterId: id }
     }),
     prisma.characterHasItem.findMany({
-      where: { characterId: id },
+      where: { characterId: id }
     }),
     prisma.skill.findMany({
-      where: { characterId: id },
+      where: { characterId: id }
     }),
     prisma.archetype.findUnique({
-      where: { id: character.archetypeId ?? "" },
-    }),
+      where: { id: character.archetypeId ?? "" }
+    })
   ]);
 
   console.log("📊 Perícias encontradas:", attributes);
@@ -61,36 +61,36 @@ const getFullCharacterData = async (id: string): Promise<FullCharacterData> => {
     status,
     inventory,
     skills,
-    archetype,
+    archetype
   };
 };
 
 const getUserCharacters = async (userId: string): Promise<CharacterDTO[]> => {
   return prisma.character.findMany({
-    where: { userId, deletedAt: null },
+    where: { userId, deletedAt: null }
   });
 };
 
 const getCharacters = async (): Promise<CharacterDTO[]> => {
   return prisma.character.findMany({
-    where: { deletedAt: null },
+    where: { deletedAt: null }
   });
 };
 
 const updateCharacter = async (
   id: string,
-  data: UpdateCharacterDTO,
+  data: UpdateCharacterDTO
 ): Promise<CharacterDTO> => {
   return prisma.character.update({
     where: { id },
-    data,
+    data
   });
 };
 
 const deleteCharacter = async (id: string): Promise<CharacterDTO> => {
   return prisma.character.update({
     where: { id },
-    data: { deletedAt: new Date() },
+    data: { deletedAt: new Date() }
   });
 };
 
@@ -103,5 +103,5 @@ export {
   getUserCharacters,
   getCharacters,
   updateCharacter,
-  deleteCharacter,
+  deleteCharacter
 };

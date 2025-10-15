@@ -14,12 +14,12 @@ router.get("/character/:characterId", statusController.getByCharacterId);
 router.post(
   "/",
   validateRequestBody(statusSchemas.createStatusSchema),
-  statusController.create,
+  statusController.create
 );
 router.put(
   "/:id",
   validateRequestBody(statusSchemas.updateStatusSchema),
-  statusController.update,
+  statusController.update
 );
 
 // delete methods -------------------------------------------------------------

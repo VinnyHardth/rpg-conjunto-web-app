@@ -15,13 +15,13 @@ router.get("/full/:id", characterController.getFullCharacterData);
 router.post(
   "/",
   validateRequestBody(characterSchemas.createCharacterSchema),
-  characterController.create,
+  characterController.create
 );
 
 router.put(
   "/:id",
   validateRequestBody(characterSchemas.updateCharacterSchema),
-  characterController.update,
+  characterController.update
 );
 
 // delete methods -------------------------------------------------------------

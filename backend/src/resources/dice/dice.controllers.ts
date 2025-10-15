@@ -16,13 +16,13 @@ type RollDifficultyRequestBody = {
 const handleServerError = (res: Response, error: unknown): void => {
   console.error("Dice roll error:", error);
   res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-    error: ReasonPhrases.INTERNAL_SERVER_ERROR,
+    error: ReasonPhrases.INTERNAL_SERVER_ERROR
   });
 };
 
 export const rollByDifficulty = async (
   req: Request<unknown, unknown, RollDifficultyRequestBody>,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   try {
     const {
@@ -31,7 +31,7 @@ export const rollByDifficulty = async (
       attributeName,
       attributeAbbreviation,
       diceCount,
-      difficulty,
+      difficulty
     } = req.body;
 
     const result = rollDifficulty({ diceCount, difficulty });
@@ -40,7 +40,7 @@ export const rollByDifficulty = async (
       campaignId,
       characterId,
       attributeName,
-      attributeAbbreviation,
+      attributeAbbreviation
     };
     res.status(StatusCodes.OK).json(payload);
     if (req.io) {
@@ -50,7 +50,7 @@ export const rollByDifficulty = async (
   } catch (error) {
     if (error instanceof Error && error.message.includes("diceCount")) {
       res.status(StatusCodes.BAD_REQUEST).json({
-        error: error.message,
+        error: error.message
       });
       return;
     }
@@ -61,7 +61,7 @@ export const rollByDifficulty = async (
 
 export const rollByExpression = async (
   req: Request<unknown, unknown, { expression: string }>,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   try {
     const result = rollCustom(req.body.expression);
@@ -73,13 +73,13 @@ export const rollByExpression = async (
 
 export const clearDiceRolls = async (
   req: Request<unknown, unknown, { campaignId: string }>,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   const { campaignId } = req.body;
 
   if (!campaignId) {
     res.status(StatusCodes.BAD_REQUEST).json({
-      error: "campaignId is required.",
+      error: "campaignId is required."
     });
     return;
   }

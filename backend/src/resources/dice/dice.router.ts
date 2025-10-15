@@ -4,12 +4,12 @@ import validateRequestBody from "../../middlewares/validateRequestBody";
 import {
   rollDifficultySchema,
   rollCustomSchema,
-  clearDiceSchema,
+  clearDiceSchema
 } from "./dice.schemas";
 import {
   rollByDifficulty,
   rollByExpression,
-  clearDiceRolls,
+  clearDiceRolls
 } from "./dice.controllers";
 
 const router = Router();
@@ -39,7 +39,7 @@ router.post(
     #swagger.responses[500] = { description: 'Erro interno.' }
   */
   validateRequestBody(rollDifficultySchema),
-  rollByDifficulty,
+  rollByDifficulty
 );
 
 router.post(
@@ -63,7 +63,7 @@ router.post(
     }
   */
   validateRequestBody(rollCustomSchema),
-  rollByExpression,
+  rollByExpression
 );
 
 router.post("/clear", validateRequestBody(clearDiceSchema), clearDiceRolls);

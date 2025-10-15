@@ -1,7 +1,7 @@
 import Joi from "joi";
 import {
   CreateCharacterAttributeDTO,
-  UpdateCharacterAttributeDTO,
+  UpdateCharacterAttributeDTO
 } from "./characterAttribute.types";
 
 export const createCharacterAttributeSchema =
@@ -10,7 +10,7 @@ export const createCharacterAttributeSchema =
     attributeId: Joi.string().uuid().required(),
     valueBase: Joi.number().default(0).required(),
     valueInv: Joi.number().default(0).required(),
-    valueExtra: Joi.number().default(0).required(),
+    valueExtra: Joi.number().default(0).required()
   });
 
 export const updateCharacterAttributeSchema =
@@ -19,5 +19,5 @@ export const updateCharacterAttributeSchema =
     attributeId: Joi.string().uuid(),
     valueBase: Joi.number(),
     valueInv: Joi.number(),
-    valueExtra: Joi.number(),
+    valueExtra: Joi.number()
   }).min(1);

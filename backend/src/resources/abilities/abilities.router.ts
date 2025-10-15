@@ -14,12 +14,12 @@ router.get("/:id", abilitiesController.getById);
 router.post(
   "/",
   validateRequestBody(abilitiesSchemas.createAbilitiesSchema),
-  abilitiesController.create,
+  abilitiesController.create
 );
 router.put(
   "/:id",
   validateRequestBody(abilitiesSchemas.updateAbilitiesSchema),
-  abilitiesController.update,
+  abilitiesController.update
 );
 
 // delete methods -------------------------------------------------------------

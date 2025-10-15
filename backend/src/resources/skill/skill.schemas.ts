@@ -9,12 +9,12 @@ export const createSkillSchema = Joi.object<CreateSkillDTO>({
   cooldown: Joi.number().integer().required(),
   useType: Joi.string()
     .valid(...Object.values(SkillUseType))
-    .required(),
+    .required()
 });
 
 export const updateSkillSchema = Joi.object<UpdateSkillDTO>({
   characterId: Joi.string().uuid(),
   abilityId: Joi.string().uuid(),
   cooldown: Joi.number().integer(),
-  useType: Joi.string().valid(...Object.values(SkillUseType)),
+  useType: Joi.string().valid(...Object.values(SkillUseType))
 }).min(1);

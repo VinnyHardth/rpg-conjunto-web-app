@@ -11,8 +11,8 @@ export const seedExpertises = async () => {
       { name: "Inspiração", kind: AttributeKind.EXPERTISE },
       { name: "Determinação", kind: AttributeKind.EXPERTISE },
       { name: "Lábia", kind: AttributeKind.EXPERTISE },
-      { name: "Reflexos", kind: AttributeKind.EXPERTISE },
+      { name: "Reflexos", kind: AttributeKind.EXPERTISE }
     ],
-    skipDuplicates: true,
+    skipDuplicates: true
   });
 };

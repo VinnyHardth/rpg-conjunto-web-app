@@ -3,10 +3,10 @@ const prisma = new PrismaClient();
 export const seedCharacterHasItem = async () => {
   const char = await prisma.character.findFirst();
   const sword = await prisma.items.findFirst({
-    where: { name: "Espada de Ferro" },
+    where: { name: "Espada de Ferro" }
   });
   const potion = await prisma.items.findFirst({
-    where: { name: "Poção de Cura" },
+    where: { name: "Poção de Cura" }
   });
   if (!char || !sword || !potion) return;
   await prisma.characterHasItem.createMany({
@@ -16,16 +16,16 @@ export const seedCharacterHasItem = async () => {
         itemId: sword.id,
         quantity: 1,
         is_equipped: true,
-        equipped_slot: EquipSlot.HAND,
+        equipped_slot: EquipSlot.HAND
       },
       {
         characterId: char.id,
         itemId: potion.id,
         quantity: 2,
         is_equipped: false,
-        equipped_slot: EquipSlot.NONE,
-      },
+        equipped_slot: EquipSlot.NONE
+      }
     ],
-    skipDuplicates: true,
+    skipDuplicates: true
   });
 };

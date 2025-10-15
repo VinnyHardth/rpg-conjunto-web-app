@@ -14,7 +14,7 @@ import {
   DamageType,
   StackingPolicy,
   CampaignCharacterRole,
-  CampaignMemberRole,
+  CampaignMemberRole
 } from "@prisma/client";
 
 dotenv.config();
@@ -23,19 +23,19 @@ const doc = {
   info: {
     title: "RPG Conjunto API",
     description:
-      "API for managing users, characters, and campaigns in the RPG Conjunto application.",
+      "API for managing users, characters, and campaigns in the RPG Conjunto application."
   },
   servers: [
     {
       url: `http://${process.env.HOST || "localhost"}:${process.env.PORT || 3000}`,
-      description: "Local server",
-    },
+      description: "Local server"
+    }
   ],
   definitions: {
     // User definitions
     LoginUserDTO: {
       email: "user@example.com",
-      password: "securePassword123",
+      password: "securePassword123"
     },
     UserDTO: {
       id: "uuid",
@@ -45,22 +45,22 @@ const doc = {
 
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
-      deletedAt: null,
+      deletedAt: null
     },
     CreateUserDTO: {
       email: "user@example.com",
       nickname: "johnd",
       password: "securePassword123",
-      imageUrl: "http://example.com/images/user.png",
+      imageUrl: "http://example.com/images/user.png"
     },
     UpdateUserDTO: {
       email: "new_email@example.com",
       nickname: "new_nickname",
       password: "newSecurePassword456",
-      imageUrl: "http://example.com/images/new_user.png",
+      imageUrl: "http://example.com/images/new_user.png"
     },
     DeleteUserDTO: {
-      id: "uuid",
+      id: "uuid"
     },
 
     // Character definitions
@@ -81,7 +81,7 @@ const doc = {
 
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
-      deletedAt: null,
+      deletedAt: null
     },
     CreateCharacterDTO: {
       name: "Leena Timestar",
@@ -95,7 +95,7 @@ const doc = {
       type: Object.values(charaterType)[0],
 
       userId: "uuid",
-      archetypeId: "uuid",
+      archetypeId: "uuid"
     },
     UpdateCharacterDTO: {
       name: "Updated Name",
@@ -107,10 +107,10 @@ const doc = {
       generation: 2,
       type: Object.values(charaterType)[1],
 
-      imageUrl: "http://example.com/images/updated_leena.png",
+      imageUrl: "http://example.com/images/updated_leena.png"
     },
     DeleteCharacterDTO: {
-      id: "uuid",
+      id: "uuid"
     },
 
     // Campaign definitions
@@ -123,23 +123,23 @@ const doc = {
       creatorId: "uuid",
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
-      deletedAt: null,
+      deletedAt: null
     },
     CreateCampaignDTO: {
       name: "Campanha das Sombras",
       description: "Uma aventura épica nas terras de Eldoria.",
       imageUrl: "https://example.com/campaign.png",
       isFinished: false,
-      creatorId: "uuid",
+      creatorId: "uuid"
     },
     UpdateCampaignDTO: {
       name: "Campanha revisada",
       description: "Atualização na história",
       imageUrl: "https://example.com/new-campaign.png",
-      isFinished: true,
+      isFinished: true
     },
     DeleteCampaignDTO: {
-      id: "uuid",
+      id: "uuid"
     },
 
     CharacterPerCampaignDTO: {
@@ -149,18 +149,18 @@ const doc = {
       role: Object.values(CampaignCharacterRole)[1],
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
-      deletedAt: null,
+      deletedAt: null
     },
     CreateCharacterPerCampaignDTO: {
       campaignId: "uuid",
       characterId: "uuid",
-      role: Object.values(CampaignCharacterRole)[0],
+      role: Object.values(CampaignCharacterRole)[0]
     },
     UpdateCharacterPerCampaignDTO: {
-      role: Object.values(CampaignCharacterRole)[2],
+      role: Object.values(CampaignCharacterRole)[2]
     },
     DeleteCharacterPerCampaignDTO: {
-      id: "uuid",
+      id: "uuid"
     },
 
     CampaignMemberDTO: {
@@ -171,20 +171,20 @@ const doc = {
       userId: "uuid",
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
-      deletedAt: null,
+      deletedAt: null
     },
     CreateCampaignMemberDTO: {
       status: "Ativo",
       role: Object.values(CampaignMemberRole)[1],
       campaignId: "uuid",
-      userId: "uuid",
+      userId: "uuid"
     },
     UpdateCampaignMemberDTO: {
       status: "Suspenso",
-      role: Object.values(CampaignMemberRole)[0],
+      role: Object.values(CampaignMemberRole)[0]
     },
     DeleteCampaignMemberDTO: {
-      id: "uuid",
+      id: "uuid"
     },
 
     // characterHasItem definitions
@@ -198,7 +198,7 @@ const doc = {
       equipped_slot: Object.values(EquipSlot)[7],
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
-      deletedAt: null,
+      deletedAt: null
     },
     CreateCharacterHasItemDTO: {
       characterId: "uuid",
@@ -206,7 +206,7 @@ const doc = {
       quantity: 1,
       value: 100,
       is_equipped: false,
-      equipped_slot: Object.values(EquipSlot)[7],
+      equipped_slot: Object.values(EquipSlot)[7]
     },
     UpdateCharacterHasItemDTO: {
       characterId: "uuid",
@@ -214,10 +214,10 @@ const doc = {
       quantity: 2,
       value: 200,
       is_equipped: true,
-      equipped_slot: Object.values(EquipSlot)[0],
+      equipped_slot: Object.values(EquipSlot)[0]
     },
     DeleteCharacterHasItemDTO: {
-      id: "uuid",
+      id: "uuid"
     },
 
     // Archetype definitions
@@ -229,19 +229,19 @@ const doc = {
       tp: 20,
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
-      deletedAt: null,
+      deletedAt: null
     },
     CreateArchetypeDTO: {
       name: "Warrior",
       hp: 100,
       mp: 50,
-      tp: 20,
+      tp: 20
     },
     UpdateArchetypeDTO: {
-      name: "Mage",
+      name: "Mage"
     },
     DeleteArchetypeDTO: {
-      id: "uuid",
+      id: "uuid"
     },
 
     // Abilities definitions
@@ -258,7 +258,7 @@ const doc = {
       cooldown_value: 5,
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
-      deletedAt: null,
+      deletedAt: null
     },
     CreateAbilitiesDTO: {
       name: "Fireball",
@@ -268,7 +268,7 @@ const doc = {
       mp_cost: 20,
       tp_cost: 0,
       hp_cost: 0,
-      cooldown_value: 5,
+      cooldown_value: 5
     },
     UpdateAbilitiesDTO: {
       name: "Devastating Blow",
@@ -278,10 +278,10 @@ const doc = {
       mp_cost: 0,
       hp_cost: 10,
       tp_cost: 10,
-      cooldown_value: 3,
+      cooldown_value: 3
     },
     DeleteAbilitiesDTO: {
-      id: "uuid",
+      id: "uuid"
     },
 
     // AbilityEffect  definitions
@@ -292,20 +292,20 @@ const doc = {
       formula: "2d6+WPN",
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
-      deletedAt: null,
+      deletedAt: null
     },
     CreateAbilityEffectDTO: {
       abilityId: "uuid",
       formula: "2d6+WPN",
-      effectId: "uuid",
+      effectId: "uuid"
     },
     UpdateAbilityEffectDTO: {
       abilityId: "uuid",
       formula: "2d6+WPN",
-      effectId: "uuid",
+      effectId: "uuid"
     },
     DeleteAbilityEffectDTO: {
-      id: "uuid",
+      id: "uuid"
     },
 
     // Attributes definitions
@@ -315,18 +315,18 @@ const doc = {
       kind: Object.values(AttributeKind)[0],
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
-      deletedAt: null,
+      deletedAt: null
     },
     CreateAttributesDTO: {
       name: "Strength",
-      kind: Object.values(AttributeKind)[0],
+      kind: Object.values(AttributeKind)[0]
     },
     UpdateAttributesDTO: {
       name: "Dexterity",
-      kind: Object.values(AttributeKind)[1],
+      kind: Object.values(AttributeKind)[1]
     },
     DeleteAttributesDTO: {
-      id: "uuid",
+      id: "uuid"
     },
 
     // Items definitions
@@ -339,24 +339,24 @@ const doc = {
       itemType: Object.values(itemType)[0],
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
-      deletedAt: null,
+      deletedAt: null
     },
     CreateItemsDTO: {
       name: "Health Potion",
       description: "Restores 50 HP.",
       imageURL: "http://example.com/images/health_potion.png",
       value: 50,
-      itemType: Object.values(itemType)[0],
+      itemType: Object.values(itemType)[0]
     },
     UpdateItemsDTO: {
       name: "Mana Potion",
       description: "Restores 30 MP.",
       imageURL: "http://example.com/images/mana_potion.png",
       value: 30,
-      itemType: Object.values(itemType)[1],
+      itemType: Object.values(itemType)[1]
     },
     DeleteItemsDTO: {
-      id: "uuid",
+      id: "uuid"
     },
 
     // ItemSkill definitions
@@ -366,20 +366,20 @@ const doc = {
       skillId: "uuid",
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
-      deletedAt: null,
+      deletedAt: null
     },
     CreateItemSkillsDTO: {
       itemId: "uuid",
       skillId: "uuid",
-      cooldown: 0,
+      cooldown: 0
     },
     UpdateItemSkillsDTO: {
       itemId: "new-uuid",
       skillId: "new-uuid",
-      cooldown: 5,
+      cooldown: 5
     },
     DeleteItemSkillsDTO: {
-      id: "uuid",
+      id: "uuid"
     },
 
     // Item Effects definitions
@@ -390,20 +390,20 @@ const doc = {
       formula: "2d6",
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
-      deletedAt: null,
+      deletedAt: null
     },
     CreateItemHasEffectDTO: {
       itemId: "uuid",
       effectsId: "uuid",
-      formula: "2d6",
+      formula: "2d6"
     },
     UpdateItemHasEffectDTO: {
       itemId: "new-uuid",
       effectId: "new-uuid",
-      formula: "2d6",
+      formula: "2d6"
     },
     DeleteItemHasEffectDTO: {
-      id: "uuid",
+      id: "uuid"
     },
 
     // Effect definitions
@@ -419,7 +419,7 @@ const doc = {
 
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
-      deletedAt: null,
+      deletedAt: null
     },
     CreateEffectDTO: {
       name: "Poison",
@@ -427,7 +427,7 @@ const doc = {
       imgUrl: "http://example.com/images/poison.png",
       removableBy: "Item",
       damageType: Object.values(DamageType)[0],
-      stackingPolicy: Object.values(StackingPolicy)[0],
+      stackingPolicy: Object.values(StackingPolicy)[0]
     },
     UpdateEffectDTO: {
       name: "Bleeding",
@@ -435,10 +435,10 @@ const doc = {
       imgUrl: "http://example.com/images/bleeding.png",
       removableBy: "Item",
       damageType: Object.values(DamageType)[1],
-      stackingPolicy: Object.values(StackingPolicy)[1],
+      stackingPolicy: Object.values(StackingPolicy)[1]
     },
     DeleteEffectDTO: {
-      id: "uuid",
+      id: "uuid"
     },
 
     // Skill definitions
@@ -450,22 +450,22 @@ const doc = {
       useType: Object.values(SkillUseType)[0],
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
-      deletedAt: null,
+      deletedAt: null
     },
     CreateSkillDTO: {
       characterId: "uuid",
       abilityId: "uuid",
       cooldown: 5,
-      useType: Object.values(SkillUseType)[0],
+      useType: Object.values(SkillUseType)[0]
     },
     UpdateSkillDTO: {
       characterId: "new-uuid",
       abilityId: "new-uuid",
       cooldown: 3,
-      useType: Object.values(SkillUseType)[1],
+      useType: Object.values(SkillUseType)[1]
     },
     DeleteSkillDTO: {
-      id: "uuid",
+      id: "uuid"
     },
 
     // EffectModifier definitions
@@ -477,22 +477,22 @@ const doc = {
       operationType: Object.values(OperationType)[0],
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
-      deletedAt: null,
+      deletedAt: null
     },
     CreateEffectModifierDTO: {
       effectId: "uuid",
       componentName: "Strength",
       componentType: Object.values(ComponentType)[0],
-      operationType: Object.values(OperationType)[0],
+      operationType: Object.values(OperationType)[0]
     },
     UpdateEffectModifierDTO: {
       effectId: "new-uuid",
       componentName: "Agility",
       componentType: Object.values(ComponentType)[1],
-      operationType: Object.values(OperationType)[1],
+      operationType: Object.values(OperationType)[1]
     },
     DeleteEffectModifierDTO: {
-      id: "uuid",
+      id: "uuid"
     },
 
     // CharacterAttribute definitions
@@ -505,24 +505,24 @@ const doc = {
       valueExtra: 0,
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
-      deletedAt: null,
+      deletedAt: null
     },
     CreateCharacterAttributeDTO: {
       characterId: "uuid",
       attributeId: "uuid",
       valueBase: 10,
       valueInv: 5,
-      valueExtra: 0,
+      valueExtra: 0
     },
     UpdateCharacterAttributeDTO: {
       characterId: "new-uuid",
       attributeId: "new-uuid",
       valueBase: 15,
       valueInv: 7,
-      valueExtra: 2,
+      valueExtra: 2
     },
     DeleteCharacterAttributeDTO: {
-      id: "uuid",
+      id: "uuid"
     },
 
     // AppliedEffect definitions
@@ -537,7 +537,7 @@ const doc = {
       stacks: 1,
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
-      deletedAt: null,
+      deletedAt: null
     },
 
     CreateAppliedEffectDTO: {
@@ -547,7 +547,7 @@ const doc = {
       duration: 10,
       startedAt: 5,
       expiresAt: 0,
-      stacks: 1,
+      stacks: 1
     },
     UpdateAppliedEffectDTO: {
       characterId: "new-uuid",
@@ -556,10 +556,10 @@ const doc = {
       duration: 15,
       startedAt: 7,
       expiresAt: 0,
-      stacks: 2,
+      stacks: 2
     },
     DeleteAppliedEffectDTO: {
-      id: "uuid",
+      id: "uuid"
     },
 
     // Status definitions
@@ -572,26 +572,26 @@ const doc = {
       valueActual: 100,
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
-      deletedAt: null,
+      deletedAt: null
     },
     CreateStatusDTO: {
       characterId: "uuid",
       name: "Health",
       valueMax: 100,
       valueBonus: 0,
-      valueActual: 100,
+      valueActual: 100
     },
     UpdateStatusDTO: {
       characterId: "new-uuid",
       name: "Mana",
       valueMax: 50,
       valueBonus: 0,
-      valueActual: 50,
+      valueActual: 50
     },
     DeleteStatusDTO: {
-      id: "uuid",
-    },
-  },
+      id: "uuid"
+    }
+  }
 };
 
 const outputFile = "./swagger-output.json";
@@ -600,5 +600,5 @@ const endpointsFiles = ["./src/router/v1Router.ts"];
 swaggerAutogen({ openapi: "3.0.0" })(outputFile, endpointsFiles, doc).then(
   () => {
     console.log("Swagger documentation generated successfully.");
-  },
+  }
 );

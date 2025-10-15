@@ -2,24 +2,24 @@ import {
   PrismaClient,
   SourceType,
   StackingPolicy,
-  DamageType,
+  DamageType
 } from "@prisma/client";
 import {
   CreateAppliedEffectDTO,
   UpdateAppliedEffectDTO,
-  AppliedEffectDTO,
+  AppliedEffectDTO
 } from "./appliedEffect.types";
 
 const prisma = new PrismaClient();
 
 export const createAppliedEffect = async (
-  data: CreateAppliedEffectDTO,
+  data: CreateAppliedEffectDTO
 ): Promise<AppliedEffectDTO> => {
   return prisma.appliedEffect.create({ data });
 };
 
 export const getAppliedEffectById = async (
-  id: string,
+  id: string
 ): Promise<AppliedEffectDTO | null> => {
   return prisma.appliedEffect.findUnique({ where: { id } });
 };
@@ -30,17 +30,17 @@ export const getAppliedEffects = async (): Promise<AppliedEffectDTO[]> => {
 
 export const updateAppliedEffect = async (
   id: string,
-  data: UpdateAppliedEffectDTO,
+  data: UpdateAppliedEffectDTO
 ): Promise<AppliedEffectDTO> => {
   return prisma.appliedEffect.update({ where: { id }, data });
 };
 
 export const deleteAppliedEffect = async (
-  id: string,
+  id: string
 ): Promise<AppliedEffectDTO> => {
   return prisma.appliedEffect.update({
     where: { id },
-    data: { deletedAt: new Date() },
+    data: { deletedAt: new Date() }
   });
 };
 
@@ -62,13 +62,13 @@ export async function applyEffectTurn(p: ApplyParams) {
     currentTurn,
     duration,
     stacksDelta = 1,
-    valuePerStack = 0,
+    valuePerStack = 0
   } = p;
 
   return prisma.$transaction(async (tx) => {
     const effect = await tx.effect.findUnique({
       where: { id: effectId },
-      include: { targets: true }, // EffectModifier[]
+      include: { targets: true } // EffectModifier[]
     });
     if (!effect) throw new Error("Effect not found");
 
@@ -79,7 +79,7 @@ export async function applyEffectTurn(p: ApplyParams) {
         effectId,
         damageType: effect.damageType,
         targets: effect.targets,
-        sourceType,
+        sourceType
       };
       return { applied: null, immediate: payload };
     }
@@ -91,7 +91,7 @@ export async function applyEffectTurn(p: ApplyParams) {
         effectId,
         damageType: effect.damageType,
         targets: effect.targets,
-        sourceType,
+        sourceType
       };
       return { applied: null, immediate: payload };
     }
@@ -104,8 +104,8 @@ export async function applyEffectTurn(p: ApplyParams) {
         effectId,
         sourceType,
         deletedAt: null,
-        expiresAt: { gte: currentTurn },
-      },
+        expiresAt: { gte: currentTurn }
+      }
     });
 
     if (!existing) {
@@ -119,8 +119,8 @@ export async function applyEffectTurn(p: ApplyParams) {
           startedAt: currentTurn,
           expiresAt: currentTurn + duration,
           stacks,
-          value: stacks * valuePerStack,
-        },
+          value: stacks * valuePerStack
+        }
       });
 
       return { applied, immediate: null };
@@ -140,8 +140,8 @@ export async function applyEffectTurn(p: ApplyParams) {
           data: {
             duration,
             expiresAt: currentTurn + duration,
-            value: existing.stacks * valuePerStack,
-          },
+            value: existing.stacks * valuePerStack
+          }
         });
         break;
 
@@ -150,7 +150,7 @@ export async function applyEffectTurn(p: ApplyParams) {
         const expiresAt = Math.max(existing.expiresAt, currentTurn + duration);
         applied = await tx.appliedEffect.update({
           where: { id: existing.id },
-          data: { stacks, duration, expiresAt, value: stacks * valuePerStack },
+          data: { stacks, duration, expiresAt, value: stacks * valuePerStack }
         });
         break;
       }
@@ -165,8 +165,8 @@ export async function applyEffectTurn(p: ApplyParams) {
             duration,
             startedAt: currentTurn,
             expiresAt: currentTurn + duration,
-            value: stacks * valuePerStack,
-          },
+            value: stacks * valuePerStack
+          }
         });
         break;
       }
@@ -181,7 +181,7 @@ export async function advanceTurn(characterId: string, nextTurn: number) {
   // opcional: soft-delete os expirados para limpeza
   await prisma.appliedEffect.updateMany({
     where: { characterId, deletedAt: null, expiresAt: { lt: nextTurn } },
-    data: { deletedAt: new Date() },
+    data: { deletedAt: new Date() }
   });
 }
 
@@ -196,14 +196,14 @@ function applyOp(base: number, op: string, delta: number) {
 
 export async function getCharacterComputed(
   characterId: string,
-  currentTurn: number,
+  currentTurn: number
 ) {
   const [ch, apps] = await Promise.all([
     prisma.character.findUnique({ where: { id: characterId } }),
     prisma.appliedEffect.findMany({
       where: { characterId, deletedAt: null, expiresAt: { gte: currentTurn } },
-      include: { effect: { include: { targets: true } } }, // EffectModifier[]
-    }),
+      include: { effect: { include: { targets: true } } } // EffectModifier[]
+    })
   ]);
   if (!ch) throw new Error("Character not found");
 
@@ -233,7 +233,7 @@ export async function getCharacterComputed(
         ? (ch as any).defense + (modBucket["defense"] ?? 0)
         : undefined,
     // adicione outras chaves conforme seu Character
-    _mods: modBucket,
+    _mods: modBucket
   };
 
   return computed;

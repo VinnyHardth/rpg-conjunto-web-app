@@ -6,13 +6,13 @@ import {
   getCharacterHasItemById,
   getCharacterHasItems,
   updateCharacterHasItem,
-  deleteCharacterHasItem,
+  deleteCharacterHasItem
 } from "./characterHasItem.services";
 
 const handleError = (res: Response, err: any, context: string): void => {
   console.error(`${context}:`, err);
   res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-    error: ReasonPhrases.INTERNAL_SERVER_ERROR,
+    error: ReasonPhrases.INTERNAL_SERVER_ERROR
   });
 };
 
@@ -161,7 +161,7 @@ const update = async (req: Request, res: Response): Promise<void> => {
   try {
     const updatedCharacterHasItem = await updateCharacterHasItem(
       id,
-      updateData,
+      updateData
     );
     res.status(StatusCodes.OK).json(updatedCharacterHasItem);
   } catch (err) {

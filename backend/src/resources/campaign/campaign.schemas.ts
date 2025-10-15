@@ -7,7 +7,7 @@ export const createCampaignSchema = Joi.object<CreateCampaignDTO>({
   description: Joi.string().allow(null, "").max(2000).optional(),
   imageUrl: Joi.string().uri().allow(null, "").max(191).optional(),
   isFinished: Joi.boolean().optional(),
-  creatorId: Joi.string().uuid().required(),
+  creatorId: Joi.string().uuid().required()
 });
 
 export const updateCampaignSchema = Joi.object<UpdateCampaignDTO>({
@@ -15,5 +15,5 @@ export const updateCampaignSchema = Joi.object<UpdateCampaignDTO>({
   description: Joi.string().allow(null, "").max(2000),
   imageUrl: Joi.string().uri().allow(null, "").max(191),
   isFinished: Joi.boolean(),
-  creatorId: Joi.string().uuid(),
+  creatorId: Joi.string().uuid()
 }).min(1);

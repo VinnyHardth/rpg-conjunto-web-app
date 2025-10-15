@@ -9,8 +9,8 @@ export const seedAttributes = async () => {
       { name: "Sabedoria", kind: AttributeKind.ATTRIBUTE },
       { name: "Constituição", kind: AttributeKind.ATTRIBUTE },
       { name: "Carisma", kind: AttributeKind.ATTRIBUTE },
-      { name: "Destino", kind: AttributeKind.ATTRIBUTE },
+      { name: "Destino", kind: AttributeKind.ATTRIBUTE }
     ],
-    skipDuplicates: true,
+    skipDuplicates: true
   });
 };

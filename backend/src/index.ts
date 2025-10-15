@@ -33,8 +33,8 @@ const PORT = process.env.PORT || 3000;
 app.use(
   cors({
     origin: "http://localhost:4000", // frontend que está fazendo a requisição
-    credentials: true, // importante para cookies
-  }),
+    credentials: true // importante para cookies
+  })
 );
 app.use(cookieParser());
 app.use(express.json());
@@ -53,8 +53,8 @@ app.use(
   session({
     secret: process.env.SESSION_SECRET || "secret",
     resave: true,
-    saveUninitialized: true,
-  }),
+    saveUninitialized: true
+  })
 );
 
 // Cria o servidor HTTP e instancia o Socket.io
@@ -65,8 +65,8 @@ const allowedOrigins = (process.env.FRONTEND_ORIGINS || "http://localhost:4000")
 const io = new Server(server, {
   cors: {
     origin: allowedOrigins,
-    credentials: true,
-  },
+    credentials: true
+  }
 });
 
 // Middleware para injetar io nas rotas

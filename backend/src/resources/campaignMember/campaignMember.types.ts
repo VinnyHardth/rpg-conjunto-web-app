@@ -3,5 +3,5 @@ export type {
   CampaignMemberWithUserDTO,
   CreateCampaignMemberDTO,
   UpdateCampaignMemberDTO,
-  DeleteCampaignMemberDTO,
+  DeleteCampaignMemberDTO
 } from "@rpg/shared";

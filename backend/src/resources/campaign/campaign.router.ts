@@ -13,13 +13,13 @@ router.get("/:id", campaignController.getById);
 router.post(
   "/",
   validateRequestBody(campaignSchemas.createCampaignSchema),
-  campaignController.create,
+  campaignController.create
 );
 
 router.put(
   "/:id",
   validateRequestBody(campaignSchemas.updateCampaignSchema),
-  campaignController.update,
+  campaignController.update
 );
 
 router.delete("/:id", campaignController.remove);

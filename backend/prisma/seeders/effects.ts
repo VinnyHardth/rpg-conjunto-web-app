@@ -7,45 +7,45 @@ export const seedEffects = async () => {
         name: "Regeneração",
         damageType: DamageType.NONE,
         stackingPolicy: StackingPolicy.REFRESH,
-        description: "Cura por turno",
+        description: "Cura por turno"
       },
       {
         name: "Veneno",
         damageType: DamageType.TRUE,
         stackingPolicy: StackingPolicy.STACK,
-        description: "Dano por turno",
+        description: "Dano por turno"
       },
       {
         name: "Dano Físico",
         damageType: DamageType.PHISICAL,
         stackingPolicy: StackingPolicy.NONE,
-        description: "Dano físico direto",
+        description: "Dano físico direto"
       },
       {
         name: "Dano Mágico",
         damageType: DamageType.MAGIC,
         stackingPolicy: StackingPolicy.NONE,
-        description: "Dano mágico direto",
+        description: "Dano mágico direto"
       },
       {
         name: "Cura",
         damageType: DamageType.NONE,
         stackingPolicy: StackingPolicy.NONE,
-        description: "Recupera pontos de vida imediatamente",
+        description: "Recupera pontos de vida imediatamente"
       },
       {
         name: "Reduz Mana",
         damageType: DamageType.NONE,
         stackingPolicy: StackingPolicy.NONE,
-        description: "Reduz a quantidade atual de mana",
+        description: "Reduz a quantidade atual de mana"
       },
       {
         name: "Reduz Técnica",
         damageType: DamageType.NONE,
         stackingPolicy: StackingPolicy.NONE,
-        description: "Reduz a quantidade atual de técnica",
-      },
+        description: "Reduz a quantidade atual de técnica"
+      }
     ],
-    skipDuplicates: true,
+    skipDuplicates: true
   });
 };

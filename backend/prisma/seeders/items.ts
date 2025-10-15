@@ -4,8 +4,8 @@ export const seedItems = async () => {
   await prisma.items.createMany({
     data: [
       { name: "Espada de Ferro", value: 100, itemType: itemType.EQUIPPABLE },
-      { name: "Poção de Cura", value: 20, itemType: itemType.CONSUMABLE },
+      { name: "Poção de Cura", value: 20, itemType: itemType.CONSUMABLE }
     ],
-    skipDuplicates: true,
+    skipDuplicates: true
   });
 };

@@ -14,12 +14,12 @@ router.get("/character/:characterId", skillController.getByCharacterId);
 router.post(
   "/",
   validateRequestBody(skillSchemas.createSkillSchema),
-  skillController.create,
+  skillController.create
 );
 router.put(
   "/:id",
   validateRequestBody(skillSchemas.updateSkillSchema),
-  skillController.update,
+  skillController.update
 );
 
 // delete methods -------------------------------------------------------------

@@ -2,23 +2,23 @@ import { PrismaClient, ComponentType, OperationType } from "@prisma/client";
 const prisma = new PrismaClient();
 export const seedEffectModifiers = async () => {
   const regen = await prisma.effect.findFirst({
-    where: { name: "Regeneração" },
+    where: { name: "Regeneração" }
   });
   const poison = await prisma.effect.findFirst({ where: { name: "Veneno" } });
   const physicalDamage = await prisma.effect.findFirst({
-    where: { name: "Dano Físico" },
+    where: { name: "Dano Físico" }
   });
   const magicalDamage = await prisma.effect.findFirst({
-    where: { name: "Dano Mágico" },
+    where: { name: "Dano Mágico" }
   });
   const healing = await prisma.effect.findFirst({
-    where: { name: "Cura" },
+    where: { name: "Cura" }
   });
   const reduceMana = await prisma.effect.findFirst({
-    where: { name: "Reduz Mana" },
+    where: { name: "Reduz Mana" }
   });
   const reduceTechnique = await prisma.effect.findFirst({
-    where: { name: "Reduz Técnica" },
+    where: { name: "Reduz Técnica" }
   });
   if (regen) {
     await prisma.effectModifier.createMany({
@@ -27,10 +27,10 @@ export const seedEffectModifiers = async () => {
           effectId: regen.id,
           componentName: "HP",
           componentType: ComponentType.STATUS,
-          operationType: OperationType.ADD,
-        },
+          operationType: OperationType.ADD
+        }
       ],
-      skipDuplicates: true,
+      skipDuplicates: true
     });
   }
   if (physicalDamage) {
@@ -40,10 +40,10 @@ export const seedEffectModifiers = async () => {
           effectId: physicalDamage.id,
           componentName: "HP",
           componentType: ComponentType.STATUS,
-          operationType: OperationType.ADD,
-        },
+          operationType: OperationType.ADD
+        }
       ],
-      skipDuplicates: true,
+      skipDuplicates: true
     });
   }
   if (magicalDamage) {
@@ -53,10 +53,10 @@ export const seedEffectModifiers = async () => {
           effectId: magicalDamage.id,
           componentName: "HP",
           componentType: ComponentType.STATUS,
-          operationType: OperationType.ADD,
-        },
+          operationType: OperationType.ADD
+        }
       ],
-      skipDuplicates: true,
+      skipDuplicates: true
     });
   }
   if (healing) {
@@ -66,10 +66,10 @@ export const seedEffectModifiers = async () => {
           effectId: healing.id,
           componentName: "HP",
           componentType: ComponentType.STATUS,
-          operationType: OperationType.ADD,
-        },
+          operationType: OperationType.ADD
+        }
       ],
-      skipDuplicates: true,
+      skipDuplicates: true
     });
   }
   if (reduceMana) {
@@ -79,10 +79,10 @@ export const seedEffectModifiers = async () => {
           effectId: reduceMana.id,
           componentName: "MP",
           componentType: ComponentType.STATUS,
-          operationType: OperationType.ADD,
-        },
+          operationType: OperationType.ADD
+        }
       ],
-      skipDuplicates: true,
+      skipDuplicates: true
     });
   }
   if (reduceTechnique) {
@@ -92,10 +92,10 @@ export const seedEffectModifiers = async () => {
           effectId: reduceTechnique.id,
           componentName: "TP",
           componentType: ComponentType.STATUS,
-          operationType: OperationType.ADD,
-        },
+          operationType: OperationType.ADD
+        }
       ],
-      skipDuplicates: true,
+      skipDuplicates: true
     });
   }
   if (poison) {
@@ -105,10 +105,10 @@ export const seedEffectModifiers = async () => {
           effectId: poison.id,
           componentName: "HP",
           componentType: ComponentType.STATUS,
-          operationType: OperationType.ADD,
-        },
+          operationType: OperationType.ADD
+        }
       ],
-      skipDuplicates: true,
+      skipDuplicates: true
     });
   }
 };

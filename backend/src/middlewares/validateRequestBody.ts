@@ -8,7 +8,7 @@ const validateRequestBody = (schema: Schema) => {
     if (error) {
       return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
         message: "Validation error",
-        details: error.details.map((detail) => detail.message),
+        details: error.details.map((detail) => detail.message)
       });
     }
     next();

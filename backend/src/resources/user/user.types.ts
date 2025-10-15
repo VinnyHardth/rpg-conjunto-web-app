@@ -2,5 +2,5 @@ export type {
   CreateUserDTO,
   UpdateUserDTO,
   DeleteUserDTO,
-  UserDTO,
+  UserDTO
 } from "@rpg/shared";

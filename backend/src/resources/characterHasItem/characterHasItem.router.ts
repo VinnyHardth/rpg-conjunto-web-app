@@ -10,19 +10,19 @@ router.get("/", characterhasitemController.getAll);
 router.get("/:id", characterhasitemController.getById);
 router.get(
   "/character/:characterId",
-  characterhasitemController.getByCharacterId,
+  characterhasitemController.getByCharacterId
 );
 
 // write methods --------------------------------------------------------------
 router.post(
   "/",
   validateRequestBody(characterhasitemSchemas.createCharacterHasItemSchema),
-  characterhasitemController.create,
+  characterhasitemController.create
 );
 router.put(
   "/:id",
   validateRequestBody(characterhasitemSchemas.updateCharacterHasItemSchema),
-  characterhasitemController.update,
+  characterhasitemController.update
 );
 
 // delete methods -------------------------------------------------------------

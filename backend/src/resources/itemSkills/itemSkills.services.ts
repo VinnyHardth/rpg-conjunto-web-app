@@ -2,19 +2,19 @@ import { PrismaClient } from "@prisma/client";
 import {
   CreateItemSkillsDTO,
   UpdateItemSkillsDTO,
-  ItemSkillsDTO,
+  ItemSkillsDTO
 } from "./itemSkills.types";
 
 const prisma = new PrismaClient();
 
 export const createItemSkills = async (
-  data: CreateItemSkillsDTO,
+  data: CreateItemSkillsDTO
 ): Promise<ItemSkillsDTO> => {
   return prisma.itemSkills.create({ data });
 };
 
 export const getItemSkillsById = async (
-  id: string,
+  id: string
 ): Promise<ItemSkillsDTO | null> => {
   return prisma.itemSkills.findUnique({ where: { id } });
 };
@@ -25,7 +25,7 @@ export const getItemSkillss = async (): Promise<ItemSkillsDTO[]> => {
 
 export const updateItemSkills = async (
   id: string,
-  data: UpdateItemSkillsDTO,
+  data: UpdateItemSkillsDTO
 ): Promise<ItemSkillsDTO> => {
   return prisma.itemSkills.update({ where: { id }, data });
 };
@@ -33,6 +33,6 @@ export const updateItemSkills = async (
 export const deleteItemSkills = async (id: string): Promise<ItemSkillsDTO> => {
   return prisma.itemSkills.update({
     where: { id },
-    data: { deletedAt: new Date() },
+    data: { deletedAt: new Date() }
   });
 };

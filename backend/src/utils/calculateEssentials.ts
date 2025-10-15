@@ -48,11 +48,11 @@ const expertiseFormulas: Record<
   inspiration: (s) => Math.floor((s.destiny + s.charisma) / 2),
   determination: (s) => Math.floor((s.constitution + s.destiny) / 2),
   bluff: (s) => Math.floor((s.charisma + s.intelligence) / 2),
-  reflexes: (s) => Math.floor((s.dexterity + s.constitution) / 2),
+  reflexes: (s) => Math.floor((s.dexterity + s.constitution) / 2)
 };
 
 export const computeExpertises = async (
-  characterId: string,
+  characterId: string
 ): Promise<Expertises> => {
   // busca atributos do personagem
   const characterAttributes =
@@ -64,48 +64,48 @@ export const computeExpertises = async (
     strength:
       characterAttributes.find(
         (ca) =>
-          ca.attributeId === attributes.find((a) => a.name === "Strength")?.id,
+          ca.attributeId === attributes.find((a) => a.name === "Strength")?.id
       )?.valueBase || 0,
     dexterity:
       characterAttributes.find(
         (ca) =>
-          ca.attributeId === attributes.find((a) => a.name === "Dexterity")?.id,
+          ca.attributeId === attributes.find((a) => a.name === "Dexterity")?.id
       )?.valueBase || 0,
     intelligence:
       characterAttributes.find(
         (ca) =>
           ca.attributeId ===
-          attributes.find((a) => a.name === "Intelligence")?.id,
+          attributes.find((a) => a.name === "Intelligence")?.id
       )?.valueBase || 0,
     constitution:
       characterAttributes.find(
         (ca) =>
           ca.attributeId ===
-          attributes.find((a) => a.name === "Constitution")?.id,
+          attributes.find((a) => a.name === "Constitution")?.id
       )?.valueBase || 0,
     wisdom:
       characterAttributes.find(
         (ca) =>
-          ca.attributeId === attributes.find((a) => a.name === "Wisdom")?.id,
+          ca.attributeId === attributes.find((a) => a.name === "Wisdom")?.id
       )?.valueBase || 0,
     charisma:
       characterAttributes.find(
         (ca) =>
-          ca.attributeId === attributes.find((a) => a.name === "Charisma")?.id,
+          ca.attributeId === attributes.find((a) => a.name === "Charisma")?.id
       )?.valueBase || 0,
     destiny:
       characterAttributes.find(
         (ca) =>
-          ca.attributeId === attributes.find((a) => a.name === "Destiny")?.id,
-      )?.valueBase || 0,
+          ca.attributeId === attributes.find((a) => a.name === "Destiny")?.id
+      )?.valueBase || 0
   };
 
   // aplica todas as fórmulas
   const result = Object.fromEntries(
     Object.entries(expertiseFormulas).map(([key, formula]) => [
       key,
-      formula(stats),
-    ]),
+      formula(stats)
+    ])
   ) as Expertises;
 
   console.log(result);
@@ -121,17 +121,17 @@ const statusFormulas: Record<
   hp: (s, a) =>
     Math.ceil(
       10 +
-        (s.constitution + 0.25 * s.strength + 0.25 * s.intelligence) * a.hp_mod,
+        (s.constitution + 0.25 * s.strength + 0.25 * s.intelligence) * a.hp_mod
     ),
   // mp = 10 + Math.ceil(((int + wis) / 2)) * multiplier;
   mp: (s, a) => 10 + Math.ceil((s.intelligence + s.wisdom) / 2) * a.mp_mod,
   // tp = 10 + Math.ceil(((dex + str) / 2)) * multiplier;
-  tp: (s, a) => 10 + Math.ceil((s.dexterity + s.strength) / 2) * a.tp_mod,
+  tp: (s, a) => 10 + Math.ceil((s.dexterity + s.strength) / 2) * a.tp_mod
 };
 
 export const computeStatus = async (
   characterId: string,
-  archetypeId: string,
+  archetypeId: string
 ): Promise<CharacterStatus> => {
   // busca atributos do personagem
   const characterAttributes =
@@ -143,40 +143,40 @@ export const computeStatus = async (
     strength:
       characterAttributes.find(
         (ca) =>
-          ca.attributeId === attributes.find((a) => a.name === "Strength")?.id,
+          ca.attributeId === attributes.find((a) => a.name === "Strength")?.id
       )?.valueBase || 0,
     dexterity:
       characterAttributes.find(
         (ca) =>
-          ca.attributeId === attributes.find((a) => a.name === "Dexterity")?.id,
+          ca.attributeId === attributes.find((a) => a.name === "Dexterity")?.id
       )?.valueBase || 0,
     intelligence:
       characterAttributes.find(
         (ca) =>
           ca.attributeId ===
-          attributes.find((a) => a.name === "Intelligence")?.id,
+          attributes.find((a) => a.name === "Intelligence")?.id
       )?.valueBase || 0,
     constitution:
       characterAttributes.find(
         (ca) =>
           ca.attributeId ===
-          attributes.find((a) => a.name === "Constitution")?.id,
+          attributes.find((a) => a.name === "Constitution")?.id
       )?.valueBase || 0,
     wisdom:
       characterAttributes.find(
         (ca) =>
-          ca.attributeId === attributes.find((a) => a.name === "Wisdom")?.id,
+          ca.attributeId === attributes.find((a) => a.name === "Wisdom")?.id
       )?.valueBase || 0,
     charisma:
       characterAttributes.find(
         (ca) =>
-          ca.attributeId === attributes.find((a) => a.name === "Charisma")?.id,
+          ca.attributeId === attributes.find((a) => a.name === "Charisma")?.id
       )?.valueBase || 0,
     destiny:
       characterAttributes.find(
         (ca) =>
-          ca.attributeId === attributes.find((a) => a.name === "Destiny")?.id,
-      )?.valueBase || 0,
+          ca.attributeId === attributes.find((a) => a.name === "Destiny")?.id
+      )?.valueBase || 0
   };
 
   const archetype = await getArchetypeById(archetypeId);
@@ -185,7 +185,7 @@ export const computeStatus = async (
     ? {
         hp_mod: archetype.hp ?? 0,
         mp_mod: archetype.mp ?? 0,
-        tp_mod: archetype.tp ?? 0,
+        tp_mod: archetype.tp ?? 0
       }
     : { hp_mod: 0, mp_mod: 0, tp_mod: 0 };
 
@@ -193,8 +193,8 @@ export const computeStatus = async (
   const result = Object.fromEntries(
     Object.entries(statusFormulas).map(([key, formula]) => [
       key,
-      formula(stats, archetypeMod),
-    ]),
+      formula(stats, archetypeMod)
+    ])
   ) as CharacterStatus;
 
   return result;

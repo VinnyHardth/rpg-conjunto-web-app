@@ -2,10 +2,10 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 export const seedCharacter = async () => {
   const user = await prisma.user.findFirst({
-    where: { email: "player1@example.com" },
+    where: { email: "player1@example.com" }
   });
   const archetype = await prisma.archetype.findFirst({
-    where: { name: "Guerreiro" },
+    where: { name: "Guerreiro" }
   });
   if (!user) return;
   await prisma.character.createMany({
@@ -14,15 +14,15 @@ export const seedCharacter = async () => {
         name: "Tharion",
         gender: "M",
         userId: user.id,
-        archetypeId: archetype?.id || null,
+        archetypeId: archetype?.id || null
       },
       {
         name: "Lyra",
         gender: "F",
         userId: user.id,
-        archetypeId: archetype?.id || null,
-      },
+        archetypeId: archetype?.id || null
+      }
     ],
-    skipDuplicates: true,
+    skipDuplicates: true
   });
 };

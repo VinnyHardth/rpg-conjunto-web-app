@@ -2,5 +2,5 @@ export type {
   CreateCharacterHasItemDTO,
   UpdateCharacterHasItemDTO,
   CharacterHasItemDTO,
-  DeleteCharacterHasItemDTO,
+  DeleteCharacterHasItemDTO
 } from "@rpg/shared";

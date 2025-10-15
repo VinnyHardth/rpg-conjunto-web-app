@@ -7,13 +7,13 @@ import {
   getStatus,
   updateStatus,
   deleteStatus,
-  getCampaignIdsByCharacterId,
+  getCampaignIdsByCharacterId
 } from "./status.services";
 
 const handleError = (res: Response, err: any, context: string): void => {
   console.error(`${context}:`, err);
   res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-    error: ReasonPhrases.INTERNAL_SERVER_ERROR,
+    error: ReasonPhrases.INTERNAL_SERVER_ERROR
   });
 };
 
@@ -168,7 +168,7 @@ const update = async (req: Request, res: Response): Promise<void> => {
       try {
         const [campaignIds, statuses] = await Promise.all([
           getCampaignIdsByCharacterId(updatedStatus.characterId),
-          getStatusByCharacterId(updatedStatus.characterId),
+          getStatusByCharacterId(updatedStatus.characterId)
         ]);
 
         campaignIds.forEach((campaignId) => {
@@ -176,7 +176,7 @@ const update = async (req: Request, res: Response): Promise<void> => {
             campaignId,
             characterId: updatedStatus.characterId,
             status: updatedStatus,
-            statuses,
+            statuses
           });
         });
       } catch (socketError) {

@@ -6,14 +6,14 @@ import {
   FullCharacterData,
   CreateCharacterDTO,
   UpdateCharacterDTO,
-  CharacterDTO,
+  CharacterDTO
 } from "./character.types";
 import * as characterServices from "./character.services";
 
 const handleError = (res: Response, err: any, context: string): void => {
   console.error(`${context}:`, err);
   res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-    error: ReasonPhrases.INTERNAL_SERVER_ERROR,
+    error: ReasonPhrases.INTERNAL_SERVER_ERROR
   });
 };
 
@@ -53,7 +53,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
 
 const getFullCharacterData = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   /*
     #swagger.summary = 'Get full character data by ID'
@@ -113,7 +113,7 @@ const getById = async (req: Request, res: Response): Promise<void> => {
 
     if (!character) {
       res.status(StatusCodes.NOT_FOUND).json({
-        message: "Character not found",
+        message: "Character not found"
       });
       return;
     }
@@ -125,7 +125,7 @@ const getById = async (req: Request, res: Response): Promise<void> => {
 
 const getUserCharacters = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   /*
     #swagger.summary = 'Get characters by user ID'
@@ -273,5 +273,5 @@ export default {
   getUserCharacters,
   getAll,
   update,
-  remove,
+  remove
 };

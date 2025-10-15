@@ -3,19 +3,19 @@ import { AttributeKind } from "@prisma/client";
 import {
   CreateAttributesDTO,
   UpdateAttributesDTO,
-  AttributesDTO,
+  AttributesDTO
 } from "./attributes.types";
 
 const prisma = new PrismaClient();
 
 export const createAttributes = async (
-  data: CreateAttributesDTO,
+  data: CreateAttributesDTO
 ): Promise<AttributesDTO> => {
   return prisma.attributes.create({ data });
 };
 
 export const getAttributesById = async (
-  id: string,
+  id: string
 ): Promise<AttributesDTO | null> => {
   return prisma.attributes.findUnique({ where: { id } });
 };
@@ -25,14 +25,14 @@ export const getAttributes = async (): Promise<AttributesDTO[]> => {
 };
 
 export const getAttributesByKind = async (
-  kind: AttributeKind,
+  kind: AttributeKind
 ): Promise<AttributesDTO[]> => {
   return prisma.attributes.findMany({ where: { kind } });
 };
 
 export const updateAttributes = async (
   id: string,
-  data: UpdateAttributesDTO,
+  data: UpdateAttributesDTO
 ): Promise<AttributesDTO> => {
   return prisma.attributes.update({ where: { id }, data });
 };

@@ -9,8 +9,8 @@ export default [
       parser: eslintParserTs,
       parserOptions: {
         project: "./tsconfig.json",
-        sourceType: "module",
-      },
+        sourceType: "module"
+      }
     },
     plugins: { "@typescript-eslint": eslintPluginTs },
     rules: {
@@ -20,10 +20,10 @@ export default [
         {
           argsIgnorePattern: "^_",
           varsIgnorePattern: "^_",
-          caughtErrorsIgnorePattern: "^_",
-        },
-      ],
-    },
+          caughtErrorsIgnorePattern: "^_"
+        }
+      ]
+    }
   },
-  prettier,
+  prettier
 ];

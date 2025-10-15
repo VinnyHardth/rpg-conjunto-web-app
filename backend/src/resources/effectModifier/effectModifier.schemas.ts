@@ -3,7 +3,7 @@ import Joi from "joi";
 import { ComponentType, OperationType } from "@prisma/client";
 import {
   CreateEffectModifierDTO,
-  UpdateEffectModifierDTO,
+  UpdateEffectModifierDTO
 } from "./effectModifier.types";
 
 export const createEffectTargetSchema = Joi.object<CreateEffectModifierDTO>({
@@ -14,12 +14,12 @@ export const createEffectTargetSchema = Joi.object<CreateEffectModifierDTO>({
   componentName: Joi.string().required(),
   operationType: Joi.string()
     .valid(...Object.values(OperationType))
-    .required(),
+    .required()
 });
 
 export const updateEffectTargetSchema = Joi.object<UpdateEffectModifierDTO>({
   effectId: Joi.string().uuid(),
   componentType: Joi.string().valid(...Object.values(ComponentType)),
   componentName: Joi.string(),
-  operationType: Joi.string().valid(...Object.values(OperationType)),
+  operationType: Joi.string().valid(...Object.values(OperationType))
 }).min(1);

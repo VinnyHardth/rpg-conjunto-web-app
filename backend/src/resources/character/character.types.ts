@@ -4,5 +4,5 @@ export type {
   UpdateFullCharacterDTO,
   UpdateCharacterDTO,
   DeleteCharacterDTO,
-  CharacterDTO,
+  CharacterDTO
 } from "@rpg/shared";

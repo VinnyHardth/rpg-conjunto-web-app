@@ -2,5 +2,5 @@ export type {
   CreateItemHasEffectDTO,
   UpdateItemHasEffectDTO,
   ItemHasEffectDTO,
-  DeleteItemHasEffectDTO,
+  DeleteItemHasEffectDTO
 } from "@rpg/shared";
