@@ -102,7 +102,7 @@ const getByKind = async (req: Request, res: Response): Promise<void> => {
     #swagger.responses[500] = { description: 'Internal Server Error' }
   */
 
-  const { kind } = req.query;
+  const { kind } = req.params;
 
   try {
     const attributes = await getAttributesByKind(kind as AttributeKind);
