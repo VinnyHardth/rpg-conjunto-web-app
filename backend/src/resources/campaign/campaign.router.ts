@@ -9,6 +9,7 @@ const router = Router();
 router.get("/", campaignController.getAll);
 router.get("/creator/:creatorId", campaignController.getByCreatorId);
 router.get("/:id", campaignController.getById);
+router.get("/:id/members", campaignController.getMembers);
 
 router.post(
   "/",

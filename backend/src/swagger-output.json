@@ -956,6 +956,65 @@
         }
       }
     },
+    "/characters/campaign/{campaignId}": {
+      "get": {
+        "tags": ["Characters"],
+        "summary": "Get characters by campaign ID",
+        "description": "Endpoint to retrieve characters linked to a specific campaign.",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the campaign to retrieve characters for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Characters retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/CharacterDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/CharacterDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/campaigns/": {
       "get": {
         "tags": ["Campaigns"],
@@ -1199,6 +1258,65 @@
               "application/xml": {
                 "schema": {
                   "$ref": "#/components/schemas/CampaignDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/campaigns/{id}/members": {
+      "get": {
+        "tags": ["Campaigns"],
+        "summary": "Get campaign members",
+        "description": "Endpoint to retrieve members of a specific campaign.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the campaign to retrieve members for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Campaign members retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/UserDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/UserDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
                 }
               }
             }
@@ -2704,7 +2822,7 @@
         }
       }
     },
-    "/attributes/kind/{kind}": {
+    "/attributes/kind": {
       "get": {
         "tags": ["Attributes"],
         "summary": "Get attributes by kind",
@@ -2712,12 +2830,91 @@
         "parameters": [
           {
             "name": "kind",
+            "in": "query",
+            "description": "Kind of the attributes to retrieve",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "schema",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Attributes retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/AttributesDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/AttributesDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Attributes not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/attributes/character/{characterId}": {
+      "get": {
+        "tags": ["Attributes"],
+        "summary": "Get attributes by character ID",
+        "description": "Endpoint to retrieve attributes for a specific character by ID.",
+        "parameters": [
+          {
+            "name": "characterId",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string"
             },
-            "description": "Kind of the attributes to retrieve"
+            "description": "ID of the character to retrieve attributes for"
           }
         ],
         "responses": {
@@ -3214,81 +3411,27 @@
     "/appliedeffects/": {
       "get": {
         "tags": ["AppliedEffects"],
-        "summary": "Get all appliedeffects",
-        "description": "Endpoint to retrieve all appliedeffects.",
+        "summary": "Lista todos os AppliedEffects",
+        "description": "",
         "responses": {
           "200": {
-            "description": "AppliedEffects retrieved successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "example": "array"
-                    },
-                    "items": {
-                      "$ref": "#/components/schemas/AppliedEffectDTO"
-                    }
-                  },
-                  "xml": {
-                    "name": "main"
-                  }
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "example": "array"
-                    },
-                    "items": {
-                      "$ref": "#/components/schemas/AppliedEffectDTO"
-                    }
-                  },
-                  "xml": {
-                    "name": "main"
-                  }
-                }
-              }
-            }
+            "description": "Lista retornada com sucesso."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Erro interno do servidor."
           }
         }
       },
       "post": {
         "tags": ["AppliedEffects"],
-        "summary": "Create a new appliedeffect",
-        "description": "Endpoint to create a new appliedeffect.",
+        "summary": "Cria um novo AppliedEffect",
+        "description": "",
         "responses": {
           "201": {
-            "description": "AppliedEffect created successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AppliedEffectDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/AppliedEffectDTO"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "422": {
-            "description": "Unprocessable Entity"
+            "description": "AppliedEffect criado com sucesso."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Erro interno do servidor."
           }
         },
         "requestBody": {
@@ -3296,7 +3439,40 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateAppliedEffectDTO"
+                "type": "object",
+                "properties": {
+                  "characterId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "effectId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "sourceType": {
+                    "type": "string",
+                    "enum": ["ITEM", "SKILL", "OTHER"]
+                  },
+                  "currentTurn": {
+                    "type": "integer"
+                  },
+                  "duration": {
+                    "type": "integer"
+                  },
+                  "stacks": {
+                    "type": "integer"
+                  },
+                  "valuePerStack": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "characterId",
+                  "effectId",
+                  "sourceType",
+                  "currentTurn",
+                  "duration"
+                ]
               }
             }
           }
@@ -3306,8 +3482,8 @@
     "/appliedeffects/{id}": {
       "get": {
         "tags": ["AppliedEffects"],
-        "summary": "Get appliedeffect by ID",
-        "description": "Endpoint to retrieve a appliedeffect by ID.",
+        "summary": "Obtém um AppliedEffect pelo ID",
+        "description": "",
         "parameters": [
           {
             "name": "id",
@@ -3316,37 +3492,25 @@
             "schema": {
               "type": "string"
             },
-            "description": "ID of the appliedeffect to retrieve"
+            "description": "UUID do AppliedEffect"
           }
         ],
         "responses": {
           "200": {
-            "description": "AppliedEffect retrieved successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AppliedEffectDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/AppliedEffectDTO"
-                }
-              }
-            }
+            "description": "AppliedEffect encontrado."
           },
           "404": {
-            "description": "AppliedEffect not found"
+            "description": "AppliedEffect não encontrado."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Erro interno do servidor."
           }
         }
       },
       "put": {
         "tags": ["AppliedEffects"],
-        "summary": "Update a appliedeffect",
-        "description": "Endpoint to update an existing appliedeffect.",
+        "summary": "Atualiza um AppliedEffect existente",
+        "description": "",
         "parameters": [
           {
             "name": "id",
@@ -3355,30 +3519,15 @@
             "schema": {
               "type": "string"
             },
-            "description": "ID of the appliedeffect to update"
+            "description": "UUID do AppliedEffect"
           }
         ],
         "responses": {
           "200": {
-            "description": "AppliedEffect updated successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AppliedEffectDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/AppliedEffectDTO"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "AppliedEffect not found"
+            "description": "AppliedEffect atualizado com sucesso."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Erro interno do servidor."
           }
         },
         "requestBody": {
@@ -3386,7 +3535,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateAppliedEffectDTO"
+                "$ref": "#/components/schemas/AppliedEffectUpdate"
               }
             }
           }
@@ -3394,8 +3543,8 @@
       },
       "delete": {
         "tags": ["AppliedEffects"],
-        "summary": "Delete a appliedeffect",
-        "description": "Endpoint to delete a appliedeffect.",
+        "summary": "Remove um AppliedEffect pelo ID",
+        "description": "",
         "parameters": [
           {
             "name": "id",
@@ -3404,30 +3553,80 @@
             "schema": {
               "type": "string"
             },
-            "description": "ID of the appliedeffect to delete"
+            "description": "UUID do AppliedEffect"
           }
         ],
         "responses": {
           "200": {
-            "description": "AppliedEffect deleted successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AppliedEffectDTO"
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "$ref": "#/components/schemas/AppliedEffectDTO"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "AppliedEffect not found"
+            "description": "AppliedEffect removido com sucesso."
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Erro interno do servidor."
+          }
+        }
+      }
+    },
+    "/appliedeffects/turn": {
+      "post": {
+        "tags": ["AppliedEffects"],
+        "summary": "Aplica um efeito em um personagem no turno atual",
+        "description": "Resolve buffs, debuffs e efeitos instantâneos (HP/MP/etc).",
+        "responses": {
+          "200": {
+            "description": "Efeito aplicado com sucesso."
+          },
+          "400": {
+            "description": "Campos obrigatórios ausentes."
+          },
+          "500": {
+            "description": "Erro interno do servidor."
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "characterId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "effectId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "sourceType": {
+                    "type": "string",
+                    "enum": ["ITEM", "SKILL", "OTHER"]
+                  },
+                  "currentTurn": {
+                    "type": "integer",
+                    "example": 5
+                  },
+                  "duration": {
+                    "type": "integer",
+                    "example": 3
+                  },
+                  "stacksDelta": {
+                    "type": "integer",
+                    "example": 1
+                  },
+                  "valuePerStack": {
+                    "type": "number",
+                    "example": 10
+                  }
+                },
+                "required": [
+                  "characterId",
+                  "effectId",
+                  "sourceType",
+                  "currentTurn",
+                  "duration"
+                ]
+              }
+            }
           }
         }
       }

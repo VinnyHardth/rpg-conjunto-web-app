@@ -72,32 +72,59 @@ export async function applyEffectTurn(p: ApplyParams) {
     });
     if (!effect) throw new Error("Effect not found");
 
-    // ----------- EFEITO INSTANTÂNEO -----------
-    // duração <= 0 → não persiste, apenas retorna payload imediato
+    // ----------- EFEITO INSTANTÂNEO ----------- //
     if (duration <= 0) {
-      const payload = {
-        effectId,
-        damageType: effect.damageType,
-        targets: effect.targets,
-        sourceType
+      // Aplicação imediata em STATUS, se houver targets
+      for (const t of effect.targets) {
+        if (t.componentType !== "STATUS") continue;
+        const targetName = t.componentName.toUpperCase();
+        const status = await tx.status.findUnique({
+          where: { characterId_name: { characterId, name: targetName } }
+        });
+        if (!status) continue;
+
+        const delta = valuePerStack * stacksDelta;
+        const op = t.operationType;
+
+        let newValue = status.valueActual;
+        if (op === "ADD") newValue += delta;
+        else if (op === "MULT") newValue *= delta;
+        else if (op === "SET") newValue = delta;
+
+        const max = status.valueMax + status.valueBonus;
+        newValue = Math.min(Math.max(0, newValue), max);
+
+        await tx.status.update({
+          where: { id: status.id },
+          data: { valueActual: newValue }
+        });
+      }
+
+      return {
+        applied: null,
+        immediate: {
+          effectId,
+          damageType: effect.damageType,
+          targets: effect.targets,
+          sourceType
+        }
       };
-      return { applied: null, immediate: payload };
     }
 
-    // ----------- DANO IMEDIATO -----------
-    // TRUE/PHYSICAL/MAGIC → resolver na engine de combate
-    if (effect.damageType !== ("NONE" as DamageType)) {
-      const payload = {
-        effectId,
-        damageType: effect.damageType,
-        targets: effect.targets,
-        sourceType
+    // ----------- DANO IMEDIATO (True/Physical/Magic) ----------- //
+    if (effect.damageType !== DamageType.NONE) {
+      return {
+        applied: null,
+        immediate: {
+          effectId,
+          damageType: effect.damageType,
+          targets: effect.targets,
+          sourceType
+        }
       };
-      return { applied: null, immediate: payload };
     }
 
-    // ----------- BUFF / DEBUFF (damageType = NONE) -----------
-    // cria ou atualiza instância com duração
+    // ----------- BUFF/DEBUFF (damageType = NONE) ----------- //
     const existing = await tx.appliedEffect.findFirst({
       where: {
         characterId,
@@ -108,9 +135,11 @@ export async function applyEffectTurn(p: ApplyParams) {
       }
     });
 
+    let applied = existing;
+
     if (!existing) {
       const stacks = Math.max(1, stacksDelta);
-      const applied = await tx.appliedEffect.create({
+      applied = await tx.appliedEffect.create({
         data: {
           characterId,
           effectId,
@@ -122,119 +151,79 @@ export async function applyEffectTurn(p: ApplyParams) {
           value: stacks * valuePerStack
         }
       });
-
-      return { applied, immediate: null };
+    } else {
+      switch (effect.stackingPolicy) {
+        case StackingPolicy.REFRESH:
+          applied = await tx.appliedEffect.update({
+            where: { id: existing.id },
+            data: {
+              duration,
+              expiresAt: currentTurn + duration,
+              value: existing.stacks * valuePerStack
+            }
+          });
+          break;
+        case StackingPolicy.STACK:
+          const stacks = existing.stacks + stacksDelta;
+          applied = await tx.appliedEffect.update({
+            where: { id: existing.id },
+            data: {
+              stacks,
+              duration,
+              expiresAt: Math.max(existing.expiresAt, currentTurn + duration),
+              value: stacks * valuePerStack
+            }
+          });
+          break;
+        case StackingPolicy.REPLACE:
+        default:
+          applied = await tx.appliedEffect.update({
+            where: { id: existing.id },
+            data: {
+              stacks: Math.max(1, stacksDelta),
+              duration,
+              startedAt: currentTurn,
+              expiresAt: currentTurn + duration,
+              value: stacksDelta * valuePerStack
+            }
+          });
+          break;
+      }
     }
 
-    // ----------- POLÍTICAS DE REAPLICAÇÃO -----------
-    let applied = existing;
+    // Aplicar efeitos acumulativos em STATUS, se aplicável
+    for (const t of effect.targets) {
+      if (t.componentType !== "STATUS") continue;
+      const targetName = t.componentName.toUpperCase();
+      const status = await tx.status.findUnique({
+        where: { characterId_name: { characterId, name: targetName } }
+      });
+      if (!status) continue;
 
-    switch (effect.stackingPolicy as StackingPolicy) {
-      case "NONE":
-        applied = existing;
-        break;
+      const delta = valuePerStack * applied.stacks;
+      let newValue = status.valueActual;
 
-      case "REFRESH":
-        applied = await tx.appliedEffect.update({
-          where: { id: existing.id },
-          data: {
-            duration,
-            expiresAt: currentTurn + duration,
-            value: existing.stacks * valuePerStack
-          }
-        });
-        break;
+      if (t.operationType === "ADD") newValue += delta;
+      else if (t.operationType === "MULT") newValue *= delta;
+      else if (t.operationType === "SET") newValue = delta;
 
-      case "STACK": {
-        const stacks = existing.stacks + stacksDelta;
-        const expiresAt = Math.max(existing.expiresAt, currentTurn + duration);
-        applied = await tx.appliedEffect.update({
-          where: { id: existing.id },
-          data: { stacks, duration, expiresAt, value: stacks * valuePerStack }
-        });
-        break;
-      }
+      const max = status.valueMax + status.valueBonus;
+      newValue = Math.min(Math.max(0, newValue), max);
 
-      case "REPLACE":
-      default: {
-        const stacks = Math.max(1, stacksDelta);
-        applied = await tx.appliedEffect.update({
-          where: { id: existing.id },
-          data: {
-            stacks,
-            duration,
-            startedAt: currentTurn,
-            expiresAt: currentTurn + duration,
-            value: stacks * valuePerStack
-          }
-        });
-        break;
-      }
+      await tx.status.update({
+        where: { id: status.id },
+        data: { valueActual: newValue }
+      });
     }
 
     return { applied, immediate: null };
   });
 }
 
-export async function advanceTurn(characterId: string, nextTurn: number) {
-  // nada a decrementar no schema; apenas deixe expirar por filtro de turno
-  // opcional: soft-delete os expirados para limpeza
-  await prisma.appliedEffect.updateMany({
-    where: { characterId, deletedAt: null, expiresAt: { lt: nextTurn } },
-    data: { deletedAt: new Date() }
+export const getAppliedEffectsByCharacterId = async (
+  characterId: string
+): Promise<AppliedEffectDTO[]> => {
+  return prisma.appliedEffect.findMany({
+    where: { characterId, deletedAt: null }
   });
-}
-
-type Mods = Record<string, number>;
-
-function applyOp(base: number, op: string, delta: number) {
-  if (op === "ADD") return base + delta;
-  if (op === "MULTIPLY") return Math.floor(base * delta);
-  if (op === "SET") return delta;
-  return base;
-}
-
-export async function getCharacterComputed(
-  characterId: string,
-  currentTurn: number
-) {
-  const [ch, apps] = await Promise.all([
-    prisma.character.findUnique({ where: { id: characterId } }),
-    prisma.appliedEffect.findMany({
-      where: { characterId, deletedAt: null, expiresAt: { gte: currentTurn } },
-      include: { effect: { include: { targets: true } } } // EffectModifier[]
-    })
-  ]);
-  if (!ch) throw new Error("Character not found");
-
-  // agregue modificadores
-  const modBucket: Mods = {}; // por componentName
-  for (const a of apps) {
-    if (a.effect.damageType !== "NONE") continue; // buffs/debuffs apenas
-    const stacks = a.stacks;
-    for (const t of a.effect.targets) {
-      const key = t.componentName; // ex: "strength"
-      const perStack = a.value || 0; // ou derive de EffectModifier se houver campo
-      const delta = perStack * stacks; // regra simples; ajuste se EffectModifier carrega valor próprio
-      modBucket[key] = applyOp(modBucket[key] ?? 0, t.operationType, delta);
-    }
-  }
-
-  // exemplo: aplicar no objeto retornado (não persiste)
-  const computed = {
-    ...ch,
-    // aplique apenas para chaves que existem no Character
-    strength:
-      (ch as any).strength != null
-        ? (ch as any).strength + (modBucket["strength"] ?? 0)
-        : undefined,
-    defense:
-      (ch as any).defense != null
-        ? (ch as any).defense + (modBucket["defense"] ?? 0)
-        : undefined,
-    // adicione outras chaves conforme seu Character
-    _mods: modBucket
-  };
-
-  return computed;
-}
+};

@@ -21,6 +21,12 @@ router.put(
   appliedeffectController.update
 );
 
+// combat engine method -------------------------------------------------------
+router.post(
+  "/turn",
+  appliedeffectController.applyTurn // nova rota para aplicar efeitos por turno
+);
+
 // delete methods -------------------------------------------------------------
 router.delete("/:id", appliedeffectController.remove);
 

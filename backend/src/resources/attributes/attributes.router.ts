@@ -8,7 +8,8 @@ const router = Router();
 // read methods ---------------------------------------------------------------
 router.get("/", attributesController.getAll);
 router.get("/:id", attributesController.getById);
-router.get("/kind/:kind", attributesController.getByKind);
+router.get("/kind", attributesController.getByKind);
+router.get("/character/:characterId", attributesController.getByCharacterId);
 
 // write methods --------------------------------------------------------------
 router.post(

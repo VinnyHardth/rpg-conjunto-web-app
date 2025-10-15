@@ -11,6 +11,7 @@ router.get("/", characterController.getAll);
 router.get("/:id", characterController.getById);
 router.get("/user/:userId", characterController.getUserCharacters);
 router.get("/full/:id", characterController.getFullCharacterData);
+router.get("/campaign/:campaignId", characterController.getByCampaignId);
 // write methods ---------------------------------------------------------------
 router.post(
   "/",
