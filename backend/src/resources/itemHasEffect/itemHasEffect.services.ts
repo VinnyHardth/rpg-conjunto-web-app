@@ -2,19 +2,19 @@ import { PrismaClient } from "@prisma/client";
 import {
   CreateItemHasEffectDTO,
   UpdateItemHasEffectDTO,
-  ItemHasEffectDTO,
+  ItemHasEffectDTO
 } from "./itemHasEffect.types";
 
 const prisma = new PrismaClient();
 
 export const createItemHasEffect = async (
-  data: CreateItemHasEffectDTO,
+  data: CreateItemHasEffectDTO
 ): Promise<ItemHasEffectDTO> => {
   return prisma.itemHasEffect.create({ data });
 };
 
 export const getItemHasEffectById = async (
-  id: string,
+  id: string
 ): Promise<ItemHasEffectDTO | null> => {
   return prisma.itemHasEffect.findUnique({ where: { id } });
 };
@@ -25,16 +25,16 @@ export const getItemHasEffects = async (): Promise<ItemHasEffectDTO[]> => {
 
 export const updateItemHasEffect = async (
   id: string,
-  data: UpdateItemHasEffectDTO,
+  data: UpdateItemHasEffectDTO
 ): Promise<ItemHasEffectDTO> => {
   return prisma.itemHasEffect.update({ where: { id }, data });
 };
 
 export const deleteItemHasEffect = async (
-  id: string,
+  id: string
 ): Promise<ItemHasEffectDTO> => {
   return prisma.itemHasEffect.update({
     where: { id },
-    data: { deletedAt: new Date() },
+    data: { deletedAt: new Date() }
   });
 };

@@ -13,12 +13,12 @@ router.get("/:id", itemsController.getById);
 router.post(
   "/",
   validateRequestBody(itemsSchemas.createItemsSchema),
-  itemsController.create,
+  itemsController.create
 );
 router.put(
   "/:id",
   validateRequestBody(itemsSchemas.updateItemsSchema),
-  itemsController.update,
+  itemsController.update
 );
 
 // delete methods -------------------------------------------------------------

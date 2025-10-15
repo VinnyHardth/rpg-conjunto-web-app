@@ -14,12 +14,12 @@ router.get("/", archetypeController.getAll);
 router.post(
   "/",
   validateRequestBody(archetypeSchemas.createArchetypeSchema),
-  archetypeController.create,
+  archetypeController.create
 );
 router.put(
   "/:id",
   validateRequestBody(archetypeSchemas.updateArchetypeSchema),
-  archetypeController.update,
+  archetypeController.update
 );
 
 // delete methods -------------------------------------------------------------

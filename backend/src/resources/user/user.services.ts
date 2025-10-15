@@ -5,7 +5,7 @@ import {
   CreateUserDTO,
   UpdateUserDTO,
   DeleteUserDTO,
-  UserDTO,
+  UserDTO
 } from "./user.types";
 
 const prisma = new PrismaClient();
@@ -20,7 +20,7 @@ const createUser = async (data: CreateUserDTO): Promise<UserDTO> => {
   const hashedPassword = await hash(data.password, salt);
 
   const user = await prisma.user.create({
-    data: { ...data, password: hashedPassword },
+    data: { ...data, password: hashedPassword }
   });
 
   return toUserDTO(user);
@@ -28,7 +28,7 @@ const createUser = async (data: CreateUserDTO): Promise<UserDTO> => {
 
 const getUserById = async (id: string): Promise<UserDTO | null> => {
   const user = await prisma.user.findUnique({
-    where: { id },
+    where: { id }
   });
 
   return user ? toUserDTO(user) : null;
@@ -36,7 +36,7 @@ const getUserById = async (id: string): Promise<UserDTO | null> => {
 
 const getUserByEmail = async (email: string): Promise<UserDTO | null> => {
   const user = await prisma.user.findUnique({
-    where: { email },
+    where: { email }
   });
 
   return user ? toUserDTO(user) : null;
@@ -44,7 +44,7 @@ const getUserByEmail = async (email: string): Promise<UserDTO | null> => {
 
 const getUsers = async (): Promise<UserDTO[]> => {
   const users = await prisma.user.findMany({
-    where: { deletedAt: null },
+    where: { deletedAt: null }
   });
 
   return users.map(toUserDTO);
@@ -52,7 +52,7 @@ const getUsers = async (): Promise<UserDTO[]> => {
 
 const updateUser = async (
   id: string,
-  data: UpdateUserDTO,
+  data: UpdateUserDTO
 ): Promise<UserDTO> => {
   if (data.password) {
     const salt = await genSalt(10);
@@ -61,7 +61,7 @@ const updateUser = async (
 
   const user = await prisma.user.update({
     where: { id },
-    data,
+    data
   });
 
   return toUserDTO(user);
@@ -70,7 +70,7 @@ const updateUser = async (
 const deleteUser = async (data: DeleteUserDTO): Promise<UserDTO> => {
   const user = await prisma.user.update({
     where: { id: data.id },
-    data: { deletedAt: new Date() },
+    data: { deletedAt: new Date() }
   });
 
   return toUserDTO(user);
@@ -82,5 +82,5 @@ export {
   getUserByEmail,
   getUsers,
   updateUser,
-  deleteUser,
+  deleteUser
 };

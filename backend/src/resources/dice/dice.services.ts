@@ -3,7 +3,7 @@ import {
   rollDifficulty as rollDifficultyInternal,
   RollOutcome,
   DifficultyRollOutcome,
-  DifficultyLabel,
+  DifficultyLabel
 } from "../../utils/rollDice";
 
 export type DifficultyRollOptions = {
@@ -13,7 +13,7 @@ export type DifficultyRollOptions = {
 
 export const rollDifficulty = ({
   diceCount,
-  difficulty,
+  difficulty
 }: DifficultyRollOptions): DifficultyRollOutcome => {
   return rollDifficultyInternal(diceCount, difficulty);
 };

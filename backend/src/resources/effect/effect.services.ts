@@ -4,7 +4,7 @@ import { CreateEffectDTO, UpdateEffectDTO, EffectDTO } from "./effect.types";
 const prisma = new PrismaClient();
 
 export const createEffect = async (
-  data: CreateEffectDTO,
+  data: CreateEffectDTO
 ): Promise<EffectDTO> => {
   return prisma.effect.create({ data });
 };
@@ -19,7 +19,7 @@ export const getEffects = async (): Promise<EffectDTO[]> => {
 
 export const updateEffect = async (
   id: string,
-  data: UpdateEffectDTO,
+  data: UpdateEffectDTO
 ): Promise<EffectDTO> => {
   return prisma.effect.update({ where: { id }, data });
 };
@@ -27,6 +27,6 @@ export const updateEffect = async (
 export const deleteEffect = async (id: string): Promise<EffectDTO> => {
   return prisma.effect.update({
     where: { id },
-    data: { deletedAt: new Date() },
+    data: { deletedAt: new Date() }
   });
 };

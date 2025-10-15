@@ -13,7 +13,7 @@ export const createAbilitiesSchema = Joi.object<CreateAbilitiesDTO>({
   mp_cost: Joi.number().integer().min(0).required(),
   tp_cost: Joi.number().integer().min(0).required(),
   hp_cost: Joi.number().integer().min(0).required(),
-  cooldown_value: Joi.number().integer().min(0).required(),
+  cooldown_value: Joi.number().integer().min(0).required()
 });
 
 export const updateAbilitiesSchema = Joi.object<UpdateAbilitiesDTO>({
@@ -24,5 +24,5 @@ export const updateAbilitiesSchema = Joi.object<UpdateAbilitiesDTO>({
   mp_cost: Joi.number().integer().min(0),
   tp_cost: Joi.number().integer().min(0),
   hp_cost: Joi.number().integer().min(0),
-  cooldown_value: Joi.number().integer().min(0),
+  cooldown_value: Joi.number().integer().min(0)
 }).min(1);

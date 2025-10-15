@@ -2,5 +2,5 @@ export type {
   CreateArchetypeDTO,
   UpdateArchetypeDTO,
   DeleteArchetypeDTO,
-  ArchetypeDTO,
+  ArchetypeDTO
 } from "@rpg/shared";

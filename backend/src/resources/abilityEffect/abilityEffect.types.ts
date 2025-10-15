@@ -2,5 +2,5 @@ export type {
   CreateAbilityEffectDTO,
   UpdateAbilityEffectDTO,
   AbilityEffectDTO,
-  DeleteAbilityEffectDTO,
+  DeleteAbilityEffectDTO
 } from "@rpg/shared";

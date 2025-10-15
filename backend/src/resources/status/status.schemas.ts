@@ -6,7 +6,7 @@ export const createStatusSchema = Joi.object<CreateStatusDTO>({
   name: Joi.string().required(),
   valueMax: Joi.number().required(),
   valueBonus: Joi.number().required(),
-  valueActual: Joi.number().required(),
+  valueActual: Joi.number().required()
 });
 
 export const updateStatusSchema = Joi.object<UpdateStatusDTO>({
@@ -14,5 +14,5 @@ export const updateStatusSchema = Joi.object<UpdateStatusDTO>({
   name: Joi.string(),
   valueMax: Joi.number(),
   valueBonus: Joi.number(),
-  valueActual: Joi.number(),
+  valueActual: Joi.number()
 }).min(1);

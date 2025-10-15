@@ -4,7 +4,7 @@ import { ReasonPhrases, StatusCodes } from "http-status-codes";
 export const isAuthenticated = (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   if (req.session.userId) {
     next();

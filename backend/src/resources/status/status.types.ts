@@ -2,5 +2,5 @@ export type {
   CreateStatusDTO,
   UpdateStatusDTO,
   StatusDTO,
-  DeleteStatusDTO,
+  DeleteStatusDTO
 } from "@rpg/shared";

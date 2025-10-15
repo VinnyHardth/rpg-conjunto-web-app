@@ -2,5 +2,5 @@ export type {
   CreateItemSkillsDTO,
   UpdateItemSkillsDTO,
   ItemSkillsDTO,
-  DeleteItemSkillsDTO,
+  DeleteItemSkillsDTO
 } from "@rpg/shared";

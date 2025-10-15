@@ -8,10 +8,10 @@ import { LoginUserDTO } from "./auth.types";
 const prisma = new PrismaClient();
 
 const verifyCredentials = async (
-  login: LoginUserDTO,
+  login: LoginUserDTO
 ): Promise<UserDTO | null> => {
   const userRecord = await prisma.user.findUnique({
-    where: { email: login.email },
+    where: { email: login.email }
   });
 
   if (!userRecord) return null;
@@ -31,7 +31,7 @@ const verifyCredentials = async (
     passwordHash = await hash(login.password, salt);
     await prisma.user.update({
       where: { id: userRecord.id },
-      data: { password: passwordHash },
+      data: { password: passwordHash }
     });
     isPasswordValid = true;
   }
@@ -40,7 +40,7 @@ const verifyCredentials = async (
 
   const { password: _password, ...userWithoutPassword } = {
     ...userRecord,
-    password: passwordHash,
+    password: passwordHash
   };
 
   return userWithoutPassword as UserDTO;

@@ -13,12 +13,12 @@ router.get("/:id", appliedeffectController.getById);
 router.post(
   "/",
   validateRequestBody(appliedeffectSchemas.createAppliedEffectSchema),
-  appliedeffectController.create,
+  appliedeffectController.create
 );
 router.put(
   "/:id",
   validateRequestBody(appliedeffectSchemas.updateAppliedEffectSchema),
-  appliedeffectController.update,
+  appliedeffectController.update
 );
 
 // delete methods -------------------------------------------------------------

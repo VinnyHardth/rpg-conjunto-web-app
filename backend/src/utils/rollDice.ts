@@ -20,7 +20,7 @@ export type DifficultyRollOutcome = RollOutcome & {
 const DIFFICULTY_THRESHOLDS: Record<DifficultyLabel, number> = {
   Fácil: 2,
   Médio: 3,
-  Difícil: 4,
+  Difícil: 4
 };
 
 const dice = new Dice();
@@ -55,7 +55,7 @@ export const rollExpression = (expression: string): RollOutcome => {
     total: result.total,
     successes: result.successes,
     failures: result.failures,
-    rolls: extractRollValues(result),
+    rolls: extractRollValues(result)
   };
 };
 
@@ -70,7 +70,7 @@ const normalizeDifficulty = (difficulty: DifficultyLabel): DifficultyLabel => {
 
 export const rollDifficulty = (
   diceCount: number,
-  difficulty: DifficultyLabel,
+  difficulty: DifficultyLabel
 ): DifficultyRollOutcome => {
   const sanitizedDifficulty = normalizeDifficulty(difficulty);
   const threshold = DIFFICULTY_THRESHOLDS[sanitizedDifficulty];
@@ -87,6 +87,6 @@ export const rollDifficulty = (
     ...outcome,
     diceCount: normalizedCount,
     threshold,
-    difficulty: sanitizedDifficulty,
+    difficulty: sanitizedDifficulty
   };
 };

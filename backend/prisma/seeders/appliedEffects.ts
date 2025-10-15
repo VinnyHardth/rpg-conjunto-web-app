@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 export const seedAppliedEffects = async () => {
   const char = await prisma.character.findFirst();
   const regen = await prisma.effect.findFirst({
-    where: { name: "Regeneração" },
+    where: { name: "Regeneração" }
   });
   if (!char || !regen) return;
   await prisma.appliedEffect.createMany({
@@ -16,9 +16,9 @@ export const seedAppliedEffects = async () => {
         startedAt: 0,
         expiresAt: 3,
         stacks: 1,
-        value: 5,
-      },
+        value: 5
+      }
     ],
-    skipDuplicates: true,
+    skipDuplicates: true
   });
 };

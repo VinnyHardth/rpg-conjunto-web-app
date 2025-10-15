@@ -10,7 +10,7 @@ export const createItemsSchema = Joi.object<CreateItemsDTO>({
   value: Joi.number().integer().min(0).required(),
   itemType: Joi.string()
     .valid(...Object.values(itemType))
-    .required(),
+    .required()
 });
 
 export const updateItemsSchema = Joi.object<UpdateItemsDTO>({
@@ -18,5 +18,5 @@ export const updateItemsSchema = Joi.object<UpdateItemsDTO>({
   description: Joi.string().max(1000),
   imageURL: Joi.string().uri(),
   value: Joi.number().integer().min(0),
-  itemType: Joi.string().valid(...Object.values(itemType)),
+  itemType: Joi.string().valid(...Object.values(itemType))
 }).min(1);

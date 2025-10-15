@@ -4,7 +4,7 @@ import { CreateStatusDTO, UpdateStatusDTO, StatusDTO } from "./status.types";
 const prisma = new PrismaClient();
 
 export const createStatus = async (
-  data: CreateStatusDTO,
+  data: CreateStatusDTO
 ): Promise<StatusDTO> => {
   return prisma.status.create({ data });
 };
@@ -18,24 +18,24 @@ export const getStatus = async (): Promise<StatusDTO[]> => {
 };
 
 export const getStatusByCharacterId = async (
-  characterId: string,
+  characterId: string
 ): Promise<StatusDTO[]> => {
   return prisma.status.findMany({ where: { characterId } });
 };
 
 export const getCampaignIdsByCharacterId = async (
-  characterId: string,
+  characterId: string
 ): Promise<string[]> => {
   const links = await prisma.characterPerCampaign.findMany({
     where: { characterId, deletedAt: null },
-    select: { campaignId: true },
+    select: { campaignId: true }
   });
   return links.map((link) => link.campaignId);
 };
 
 export const updateStatus = async (
   id: string,
-  data: UpdateStatusDTO,
+  data: UpdateStatusDTO
 ): Promise<StatusDTO> => {
   return prisma.status.update({ where: { id }, data });
 };
@@ -43,6 +43,6 @@ export const updateStatus = async (
 export const deleteStatus = async (id: string): Promise<StatusDTO> => {
   return prisma.status.update({
     where: { id },
-    data: { deletedAt: new Date() },
+    data: { deletedAt: new Date() }
   });
 };

@@ -17,7 +17,7 @@ export const getItemss = async (): Promise<ItemsDTO[]> => {
 
 export const updateItems = async (
   id: string,
-  data: UpdateItemsDTO,
+  data: UpdateItemsDTO
 ): Promise<ItemsDTO> => {
   return prisma.items.update({ where: { id }, data });
 };
@@ -25,6 +25,6 @@ export const updateItems = async (
 export const deleteItems = async (id: string): Promise<ItemsDTO> => {
   return prisma.items.update({
     where: { id },
-    data: { deletedAt: new Date() },
+    data: { deletedAt: new Date() }
   });
 };

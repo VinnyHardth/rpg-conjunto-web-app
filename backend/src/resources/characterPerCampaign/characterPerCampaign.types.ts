@@ -3,5 +3,5 @@ export type {
   CharacterPerCampaignWithCharacterDTO,
   CreateCharacterPerCampaignDTO,
   UpdateCharacterPerCampaignDTO,
-  DeleteCharacterPerCampaignDTO,
+  DeleteCharacterPerCampaignDTO
 } from "@rpg/shared";

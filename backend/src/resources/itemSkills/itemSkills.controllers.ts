@@ -5,13 +5,13 @@ import {
   getItemSkillsById,
   getItemSkillss,
   updateItemSkills,
-  deleteItemSkills,
+  deleteItemSkills
 } from "./itemSkills.services";
 
 const handleError = (res: Response, err: any, context: string): void => {
   console.error(`${context}:`, err);
   res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-    error: ReasonPhrases.INTERNAL_SERVER_ERROR,
+    error: ReasonPhrases.INTERNAL_SERVER_ERROR
   });
 };
 

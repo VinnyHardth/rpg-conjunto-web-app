@@ -7,9 +7,9 @@ export const seedStatus = async () => {
       data: [
         { characterId: ch.id, name: "HP", valueMax: 100, valueActual: 100 },
         { characterId: ch.id, name: "MP", valueMax: 50, valueActual: 50 },
-        { characterId: ch.id, name: "TP", valueMax: 10, valueActual: 10 },
+        { characterId: ch.id, name: "TP", valueMax: 10, valueActual: 10 }
       ],
-      skipDuplicates: true,
+      skipDuplicates: true
     });
   }
 };

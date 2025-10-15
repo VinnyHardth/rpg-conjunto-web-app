@@ -2,19 +2,19 @@ import { PrismaClient } from "@prisma/client";
 import {
   CreateAbilityEffectDTO,
   UpdateAbilityEffectDTO,
-  AbilityEffectDTO,
+  AbilityEffectDTO
 } from "./abilityEffect.types";
 
 const prisma = new PrismaClient();
 
 export const createAbilityEffect = async (
-  data: CreateAbilityEffectDTO,
+  data: CreateAbilityEffectDTO
 ): Promise<AbilityEffectDTO> => {
   return prisma.abilityEffect.create({ data });
 };
 
 export const getAbilityEffectById = async (
-  id: string,
+  id: string
 ): Promise<AbilityEffectDTO | null> => {
   return prisma.abilityEffect.findUnique({ where: { id } });
 };
@@ -25,16 +25,16 @@ export const getAbilityEffects = async (): Promise<AbilityEffectDTO[]> => {
 
 export const updateAbilityEffect = async (
   id: string,
-  data: UpdateAbilityEffectDTO,
+  data: UpdateAbilityEffectDTO
 ): Promise<AbilityEffectDTO> => {
   return prisma.abilityEffect.update({ where: { id }, data });
 };
 
 export const deleteAbilityEffect = async (
-  id: string,
+  id: string
 ): Promise<AbilityEffectDTO> => {
   return prisma.abilityEffect.update({
     where: { id },
-    data: { deletedAt: new Date() },
+    data: { deletedAt: new Date() }
   });
 };

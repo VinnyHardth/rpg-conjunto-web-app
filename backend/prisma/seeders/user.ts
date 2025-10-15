@@ -9,8 +9,8 @@ export const seedUser = async () => {
     {
       nickname: "Player1",
       email: "player1@example.com",
-      password: "player1",
-    },
+      password: "player1"
+    }
   ];
 
   const hashedUsers = await Promise.all(
@@ -18,7 +18,7 @@ export const seedUser = async () => {
       const salt = await genSalt(10);
       const hashedPassword = await hash(user.password, salt);
       return { ...user, password: hashedPassword };
-    }),
+    })
   );
 
   await Promise.all(
@@ -26,8 +26,8 @@ export const seedUser = async () => {
       await prisma.user.upsert({
         where: { email: user.email },
         update: {},
-        create: user,
+        create: user
       });
-    }),
+    })
   );
 };

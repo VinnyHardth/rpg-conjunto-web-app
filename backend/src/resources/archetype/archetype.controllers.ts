@@ -4,7 +4,7 @@ import {
   getArchetypeById,
   getArchetypes,
   updateArchetype,
-  deleteArchetype,
+  deleteArchetype
 } from "./archetype.services";
 
 const create = async (req: Request, res: Response) => {

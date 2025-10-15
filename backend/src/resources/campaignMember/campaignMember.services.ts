@@ -4,19 +4,19 @@ import {
   CampaignMemberDTO,
   CampaignMemberWithUserDTO,
   CreateCampaignMemberDTO,
-  UpdateCampaignMemberDTO,
+  UpdateCampaignMemberDTO
 } from "./campaignMember.types";
 
 const prisma = new PrismaClient();
 
 export const createCampaignMember = async (
-  data: CreateCampaignMemberDTO,
+  data: CreateCampaignMemberDTO
 ): Promise<CampaignMemberDTO> => {
   return prisma.campaignMember.create({ data });
 };
 
 export const getCampaignMemberById = async (
-  id: string,
+  id: string
 ): Promise<CampaignMemberDTO | null> => {
   return prisma.campaignMember.findUnique({ where: { id } });
 };
@@ -26,10 +26,10 @@ export const getCampaignMembers = async (): Promise<CampaignMemberDTO[]> => {
 };
 
 export const getCampaignMembersByCampaignId = async (
-  campaignId: string,
+  campaignId: string
 ): Promise<CampaignMemberWithUserDTO[]> => {
   const members = await prisma.campaignMember.findMany({
-    where: { campaignId },
+    where: { campaignId }
   });
 
   if (members.length === 0) {
@@ -45,36 +45,36 @@ export const getCampaignMembersByCampaignId = async (
       imageUrl: true,
       createdAt: true,
       updatedAt: true,
-      deletedAt: true,
-    },
+      deletedAt: true
+    }
   });
 
   const userMap = new Map(users.map((user) => [user.id, user]));
 
   return members.map((member) => ({
     ...member,
-    user: userMap.get(member.userId) ?? null,
+    user: userMap.get(member.userId) ?? null
   }));
 };
 
 export const getCampaignMembersByUserId = async (
-  userId: string,
+  userId: string
 ): Promise<CampaignMemberDTO[]> => {
   return prisma.campaignMember.findMany({ where: { userId } });
 };
 
 export const updateCampaignMember = async (
   id: string,
-  data: UpdateCampaignMemberDTO,
+  data: UpdateCampaignMemberDTO
 ): Promise<CampaignMemberDTO> => {
   return prisma.campaignMember.update({ where: { id }, data });
 };
 
 export const deleteCampaignMember = async (
-  id: string,
+  id: string
 ): Promise<CampaignMemberDTO> => {
   return prisma.campaignMember.update({
     where: { id },
-    data: { deletedAt: new Date() },
+    data: { deletedAt: new Date() }
   });
 };

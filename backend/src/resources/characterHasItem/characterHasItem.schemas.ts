@@ -3,7 +3,7 @@ import Joi from "joi";
 import { EquipSlot } from "@prisma/client";
 import {
   CreateCharacterHasItemDTO,
-  UpdateCharacterHasItemDTO,
+  UpdateCharacterHasItemDTO
 } from "./characterHasItem.types";
 
 export const createCharacterHasItemSchema =
@@ -15,7 +15,7 @@ export const createCharacterHasItemSchema =
     is_equipped: Joi.boolean().required(),
     equipped_slot: Joi.string()
       .valid(...Object.values(EquipSlot))
-      .required(),
+      .required()
   });
 
 export const updateCharacterHasItemSchema =
@@ -25,5 +25,5 @@ export const updateCharacterHasItemSchema =
     quantity: Joi.number().integer().min(0),
     value: Joi.number().integer().min(0),
     is_equipped: Joi.boolean(),
-    equipped_slot: Joi.string().valid(...Object.values(EquipSlot)),
+    equipped_slot: Joi.string().valid(...Object.values(EquipSlot))
   }).min(1);

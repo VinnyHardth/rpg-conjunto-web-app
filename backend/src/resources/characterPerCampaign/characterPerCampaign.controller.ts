@@ -9,13 +9,13 @@ import {
   getCharacterPerCampaignsByCharacterId,
   updateCharacterPerCampaign,
   deleteCharacterPerCampaign,
-  getCharacterPerCampaignWithCharacterById,
+  getCharacterPerCampaignWithCharacterById
 } from "./characterPerCampaign.services";
 
 const handleError = (res: Response, err: unknown, context: string): void => {
   console.error(`${context}:`, err);
   res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-    error: ReasonPhrases.INTERNAL_SERVER_ERROR,
+    error: ReasonPhrases.INTERNAL_SERVER_ERROR
   });
 };
 
@@ -42,7 +42,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
     if (req.io) {
       const payload = {
         campaignId: relation.campaignId,
-        relation: enrichedRelation,
+        relation: enrichedRelation
       };
       req.io
         .to(`campaign-${relation.campaignId}`)
@@ -98,7 +98,7 @@ const getByCampaignId = async (req: Request, res: Response): Promise<void> => {
     handleError(
       res,
       err,
-      "Error retrieving character-per-campaign relations for campaign",
+      "Error retrieving character-per-campaign relations for campaign"
     );
   }
 };
@@ -116,7 +116,7 @@ const getByCharacterId = async (req: Request, res: Response): Promise<void> => {
     handleError(
       res,
       err,
-      "Error retrieving character-per-campaign relations for character",
+      "Error retrieving character-per-campaign relations for character"
     );
   }
 };
@@ -149,7 +149,7 @@ const remove = async (req: Request, res: Response): Promise<void> => {
     if (req.io) {
       const payload = {
         campaignId: relation.campaignId,
-        relation: responsePayload,
+        relation: responsePayload
       };
       req.io
         .to(`campaign-${relation.campaignId}`)
@@ -167,5 +167,5 @@ export default {
   getByCampaignId,
   getByCharacterId,
   update,
-  remove,
+  remove
 };

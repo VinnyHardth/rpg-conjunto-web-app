@@ -37,7 +37,7 @@ const register = async (req: Request, res: Response): Promise<void> => {
 
     if (existingUser) {
       res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
-        message: "User already exists",
+        message: "User already exists"
       });
       return;
     }
@@ -46,7 +46,7 @@ const register = async (req: Request, res: Response): Promise<void> => {
     res.status(StatusCodes.CREATED).json(newUser);
   } catch (_) {
     res.status(StatusCodes.BAD_REQUEST).json({
-      message: ReasonPhrases.BAD_REQUEST,
+      message: ReasonPhrases.BAD_REQUEST
     });
   }
 };
@@ -82,7 +82,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
 
     if (!user) {
       res.status(StatusCodes.UNAUTHORIZED).json({
-        message: ReasonPhrases.UNAUTHORIZED,
+        message: ReasonPhrases.UNAUTHORIZED
       });
       return;
     }
@@ -91,7 +91,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
     res.status(StatusCodes.OK).json(user);
   } catch (_) {
     res.status(StatusCodes.BAD_REQUEST).json({
-      message: ReasonPhrases.BAD_REQUEST,
+      message: ReasonPhrases.BAD_REQUEST
     });
   }
 };
@@ -111,7 +111,7 @@ const logout = async (req: Request, res: Response): Promise<void> => {
 
   if (!req.session.userId) {
     res.status(StatusCodes.UNAUTHORIZED).json({
-      message: ReasonPhrases.UNAUTHORIZED,
+      message: ReasonPhrases.UNAUTHORIZED
     });
     return;
   }
@@ -119,11 +119,11 @@ const logout = async (req: Request, res: Response): Promise<void> => {
   try {
     await logoutService(req.session);
     res.status(StatusCodes.OK).json({
-      message: ReasonPhrases.OK,
+      message: ReasonPhrases.OK
     });
   } catch (_) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: ReasonPhrases.INTERNAL_SERVER_ERROR,
+      message: ReasonPhrases.INTERNAL_SERVER_ERROR
     });
   }
 };
@@ -147,7 +147,7 @@ const getProfile = async (req: Request, res: Response): Promise<void> => {
     res.status(StatusCodes.OK).json(user);
   } else {
     res.status(StatusCodes.UNAUTHORIZED).json({
-      message: ReasonPhrases.UNAUTHORIZED,
+      message: ReasonPhrases.UNAUTHORIZED
     });
   }
 };

@@ -8,7 +8,7 @@ export const createSkill = async (data: CreateSkillDTO): Promise<SkillDTO> => {
 };
 
 export const getSkillByCharacterId = async (
-  characterId: string,
+  characterId: string
 ): Promise<SkillDTO[]> => {
   return prisma.skill.findMany({ where: { characterId } });
 };
@@ -23,7 +23,7 @@ export const getSkills = async (): Promise<SkillDTO[]> => {
 
 export const updateSkill = async (
   id: string,
-  data: UpdateSkillDTO,
+  data: UpdateSkillDTO
 ): Promise<SkillDTO> => {
   return prisma.skill.update({ where: { id }, data });
 };
@@ -31,6 +31,6 @@ export const updateSkill = async (
 export const deleteSkill = async (id: string): Promise<SkillDTO> => {
   return prisma.skill.update({
     where: { id },
-    data: { deletedAt: new Date() },
+    data: { deletedAt: new Date() }
   });
 };

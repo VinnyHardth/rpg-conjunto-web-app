@@ -2,25 +2,25 @@ import { PrismaClient } from "@prisma/client";
 import {
   CreateCharacterAttributeDTO,
   UpdateCharacterAttributeDTO,
-  CharacterAttributeDTO,
+  CharacterAttributeDTO
 } from "./characterAttribute.types";
 
 const prisma = new PrismaClient();
 
 export const createCharacterAttribute = async (
-  data: CreateCharacterAttributeDTO,
+  data: CreateCharacterAttributeDTO
 ): Promise<CharacterAttributeDTO> => {
   return prisma.characterAttribute.create({ data });
 };
 
 export const getCharacterAttributeById = async (
-  id: string,
+  id: string
 ): Promise<CharacterAttributeDTO | null> => {
   return prisma.characterAttribute.findUnique({ where: { id } });
 };
 
 export const getCharacterAttributesByCharacterId = async (
-  characterId: string,
+  characterId: string
 ): Promise<CharacterAttributeDTO[]> => {
   return prisma.characterAttribute.findMany({ where: { characterId } });
 };
@@ -33,16 +33,16 @@ export const getCharacterAttributes = async (): Promise<
 
 export const updateCharacterAttribute = async (
   id: string,
-  data: UpdateCharacterAttributeDTO,
+  data: UpdateCharacterAttributeDTO
 ): Promise<CharacterAttributeDTO> => {
   return prisma.characterAttribute.update({ where: { id }, data });
 };
 
 export const deleteCharacterAttribute = async (
-  id: string,
+  id: string
 ): Promise<CharacterAttributeDTO> => {
   return prisma.characterAttribute.update({
     where: { id },
-    data: { deletedAt: new Date() },
+    data: { deletedAt: new Date() }
   });
 };

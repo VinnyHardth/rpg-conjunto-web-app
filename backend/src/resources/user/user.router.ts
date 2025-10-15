@@ -15,12 +15,12 @@ router.get("/email/:email", userController.getByEmail);
 router.post(
   "/",
   validateRequestBody(userSchemas.createUserSchema),
-  userController.create,
+  userController.create
 );
 router.put(
   "/:id",
   validateRequestBody(userSchemas.updateUserSchema),
-  userController.update,
+  userController.update
 );
 
 // delete methods -------------------------------------------------------------

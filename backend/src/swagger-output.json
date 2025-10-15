@@ -915,6 +915,563 @@
         }
       }
     },
+    "/characters/full/{id}": {
+      "get": {
+        "tags": ["Characters"],
+        "summary": "Get full character data by ID",
+        "description": "Endpoint to retrieve full character data by character ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the character to retrieve full character data for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full character data retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FullCharacterData"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/FullCharacterData"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Character not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/campaigns/": {
+      "get": {
+        "tags": ["Campaigns"],
+        "summary": "Get all campaigns",
+        "description": "Endpoint to retrieve all campaigns.",
+        "responses": {
+          "200": {
+            "description": "Campaigns retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/CampaignDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/CampaignDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Campaigns"],
+        "summary": "Create a new campaign",
+        "description": "Endpoint to create a new campaign.",
+        "responses": {
+          "201": {
+            "description": "Campaign created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignDTO"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCampaignDTO"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/campaigns/creator/{creatorId}": {
+      "get": {
+        "tags": ["Campaigns"],
+        "summary": "Get campaigns by creator ID",
+        "description": "Endpoint to retrieve campaigns created by a specific user.",
+        "parameters": [
+          {
+            "name": "creatorId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Creator ID used to filter campaigns"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Campaigns retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/CampaignDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/CampaignDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/campaigns/{id}": {
+      "get": {
+        "tags": ["Campaigns"],
+        "summary": "Get campaign by ID",
+        "description": "Endpoint to retrieve a campaign by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the campaign to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Campaign retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignDTO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Campaigns"],
+        "summary": "Update a campaign",
+        "description": "Endpoint to update an existing campaign.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the campaign to update"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Campaign updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignDTO"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCampaignDTO"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Campaigns"],
+        "summary": "Delete a campaign",
+        "description": "Endpoint to soft delete a campaign.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the campaign to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Campaign deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/characterpercampaigns/": {
+      "get": {
+        "tags": ["CharacterPerCampaign"],
+        "summary": "Get all character-campaign relations",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "tags": ["CharacterPerCampaign"],
+        "summary": "Create a character-campaign relation",
+        "description": "Link a character to a campaign.",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCharacterPerCampaignDTO"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/characterpercampaigns/campaign/{campaignId}": {
+      "get": {
+        "tags": ["CharacterPerCampaign"],
+        "summary": "Get character-campaign relations by campaign ID",
+        "description": "",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/characterpercampaigns/character/{characterId}": {
+      "get": {
+        "tags": ["CharacterPerCampaign"],
+        "summary": "Get character-campaign relations by character ID",
+        "description": "",
+        "parameters": [
+          {
+            "name": "characterId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/characterpercampaigns/{id}": {
+      "get": {
+        "tags": ["CharacterPerCampaign"],
+        "summary": "Get character-campaign relation by ID",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "put": {
+        "tags": ["CharacterPerCampaign"],
+        "summary": "Update a character-campaign relation",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": ["CharacterPerCampaign"],
+        "summary": "Delete a character-campaign relation",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/campaignmembers/": {
+      "get": {
+        "tags": ["CampaignMembers"],
+        "summary": "Get all campaign members",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "tags": ["CampaignMembers"],
+        "summary": "Add a member to a campaign",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/campaignmembers/campaign/{campaignId}": {
+      "get": {
+        "tags": ["CampaignMembers"],
+        "summary": "Get campaign members by campaign ID",
+        "description": "",
+        "parameters": [
+          {
+            "name": "campaignId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/campaignmembers/user/{userId}": {
+      "get": {
+        "tags": ["CampaignMembers"],
+        "summary": "Get campaigns for a user",
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/campaignmembers/{id}": {
+      "get": {
+        "tags": ["CampaignMembers"],
+        "summary": "Get campaign member by ID",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "put": {
+        "tags": ["CampaignMembers"],
+        "summary": "Update campaign member",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": ["CampaignMembers"],
+        "summary": "Delete campaign member",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/characterattributes/": {
       "get": {
         "tags": ["CharacterAttributes"],
@@ -1415,6 +1972,68 @@
           },
           "404": {
             "description": "CharacterHasItem not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/characterhasitems/character/{characterId}": {
+      "get": {
+        "tags": ["CharacterHasItems"],
+        "summary": "Get all characterhasitems by character ID",
+        "description": "Endpoint to retrieve all characterhasitems by character ID.",
+        "parameters": [
+          {
+            "name": "characterId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the character to retrieve characterhasitems for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CharacterHasItems retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/CharacterHasItemDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/CharacterHasItemDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
           },
           "500": {
             "description": "Internal Server Error"
@@ -3697,6 +4316,79 @@
         }
       }
     },
+    "/skills/character/{characterId}": {
+      "get": {
+        "tags": ["Skills"],
+        "summary": "Get skills by character ID",
+        "description": "Endpoint to retrieve skills by character ID.",
+        "parameters": [
+          {
+            "name": "characterId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the character to retrieve skills for",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Skills retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/SkillDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "$ref": "#/components/schemas/SkillDTO"
+                    }
+                  },
+                  "xml": {
+                    "name": "main"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Character not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/status/": {
       "get": {
         "tags": ["Status"],
@@ -3914,6 +4606,125 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/status/character/{characterId}": {
+      "get": {
+        "tags": ["Status"],
+        "summary": "Get status by character ID",
+        "description": "Endpoint to retrieve a status by character ID.",
+        "parameters": [
+          {
+            "name": "characterId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the character to retrieve status for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusDTO"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Status not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/dice/difficulty": {
+      "post": {
+        "tags": ["Dice"],
+        "summary": "Roll dice based on difficulty level",
+        "description": "Executes a dice roll using Xd6 with thresholds tied to the provided difficulty.",
+        "responses": {
+          "200": {
+            "description": "Rolagem executada com sucesso."
+          },
+          "400": {
+            "description": "Parâmetros inválidos."
+          },
+          "500": {
+            "description": "Erro interno."
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "diceCount": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "difficulty": {
+                    "type": "string",
+                    "enum": ["Fácil", "Médio", "Difícil"]
+                  }
+                },
+                "required": ["diceCount", "difficulty"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dice/custom": {
+      "post": {
+        "tags": ["Dice"],
+        "summary": "Roll dice based on a custom expression",
+        "description": "Executes a dice roll using the provided dice expression.",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "expression": {
+                    "type": "string"
+                  }
+                },
+                "required": ["expression"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dice/clear": {
+      "post": {
+        "tags": ["Dice"],
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
           }
         }
       }
@@ -4189,6 +5000,277 @@
         },
         "xml": {
           "name": "DeleteCharacterDTO"
+        }
+      },
+      "CampaignDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "example": "Campanha das Sombras"
+          },
+          "description": {
+            "type": "string",
+            "example": "Uma aventura épica nas terras de Eldoria."
+          },
+          "imageUrl": {
+            "type": "string",
+            "example": "https://example.com/campaign.png"
+          },
+          "isFinished": {
+            "type": "boolean",
+            "example": false
+          },
+          "creatorId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "deletedAt": {}
+        },
+        "xml": {
+          "name": "CampaignDTO"
+        }
+      },
+      "CreateCampaignDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Campanha das Sombras"
+          },
+          "description": {
+            "type": "string",
+            "example": "Uma aventura épica nas terras de Eldoria."
+          },
+          "imageUrl": {
+            "type": "string",
+            "example": "https://example.com/campaign.png"
+          },
+          "isFinished": {
+            "type": "boolean",
+            "example": false
+          },
+          "creatorId": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "CreateCampaignDTO"
+        }
+      },
+      "UpdateCampaignDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Campanha revisada"
+          },
+          "description": {
+            "type": "string",
+            "example": "Atualização na história"
+          },
+          "imageUrl": {
+            "type": "string",
+            "example": "https://example.com/new-campaign.png"
+          },
+          "isFinished": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "xml": {
+          "name": "UpdateCampaignDTO"
+        }
+      },
+      "DeleteCampaignDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "DeleteCampaignDTO"
+        }
+      },
+      "CharacterPerCampaignDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "campaignId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "characterId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "role": {
+            "type": "string",
+            "example": "CHARACTER"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "deletedAt": {}
+        },
+        "xml": {
+          "name": "CharacterPerCampaignDTO"
+        }
+      },
+      "CreateCharacterPerCampaignDTO": {
+        "type": "object",
+        "properties": {
+          "campaignId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "characterId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "role": {
+            "type": "string",
+            "example": "NPC"
+          }
+        },
+        "xml": {
+          "name": "CreateCharacterPerCampaignDTO"
+        }
+      },
+      "UpdateCharacterPerCampaignDTO": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "example": "ENEMY"
+          }
+        },
+        "xml": {
+          "name": "UpdateCharacterPerCampaignDTO"
+        }
+      },
+      "DeleteCharacterPerCampaignDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "DeleteCharacterPerCampaignDTO"
+        }
+      },
+      "CampaignMemberDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "example": "Ativo"
+          },
+          "role": {
+            "type": "string",
+            "example": "PLAYER"
+          },
+          "campaignId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-10-01T12:00:00Z"
+          },
+          "deletedAt": {}
+        },
+        "xml": {
+          "name": "CampaignMemberDTO"
+        }
+      },
+      "CreateCampaignMemberDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "Ativo"
+          },
+          "role": {
+            "type": "string",
+            "example": "MASTER"
+          },
+          "campaignId": {
+            "type": "string",
+            "example": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "CreateCampaignMemberDTO"
+        }
+      },
+      "UpdateCampaignMemberDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "Suspenso"
+          },
+          "role": {
+            "type": "string",
+            "example": "PLAYER"
+          }
+        },
+        "xml": {
+          "name": "UpdateCampaignMemberDTO"
+        }
+      },
+      "DeleteCampaignMemberDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "uuid"
+          }
+        },
+        "xml": {
+          "name": "DeleteCampaignMemberDTO"
         }
       },
       "CharacterHasItemDTO": {
@@ -4557,6 +5639,10 @@
             "type": "string",
             "example": "uuid"
           },
+          "formula": {
+            "type": "string",
+            "example": "2d6+WPN"
+          },
           "createdAt": {
             "type": "string",
             "example": "2023-10-01T12:00:00Z"
@@ -4578,6 +5664,10 @@
             "type": "string",
             "example": "uuid"
           },
+          "formula": {
+            "type": "string",
+            "example": "2d6+WPN"
+          },
           "effectId": {
             "type": "string",
             "example": "uuid"
@@ -4593,6 +5683,10 @@
           "abilityId": {
             "type": "string",
             "example": "uuid"
+          },
+          "formula": {
+            "type": "string",
+            "example": "2d6+WPN"
           },
           "effectId": {
             "type": "string",
@@ -4893,6 +5987,10 @@
             "type": "string",
             "example": "uuid"
           },
+          "formula": {
+            "type": "string",
+            "example": "2d6"
+          },
           "createdAt": {
             "type": "string",
             "example": "2023-10-01T12:00:00Z"
@@ -4917,6 +6015,10 @@
           "effectsId": {
             "type": "string",
             "example": "uuid"
+          },
+          "formula": {
+            "type": "string",
+            "example": "2d6"
           }
         },
         "xml": {
@@ -4933,6 +6035,10 @@
           "effectId": {
             "type": "string",
             "example": "new-uuid"
+          },
+          "formula": {
+            "type": "string",
+            "example": "2d6"
           }
         },
         "xml": {

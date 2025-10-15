@@ -5,7 +5,7 @@ import {
   CreateUserDTO,
   DeleteUserDTO,
   UpdateUserDTO,
-  UserDTO,
+  UserDTO
 } from "./user.types";
 import * as userServices from "./user.services";
 
@@ -37,12 +37,12 @@ const create = async (req: Request, res: Response): Promise<void> => {
   try {
     // Checa se o usuário já existe
     const existingUserByEmail = await userServices.getUserByEmail(
-      userData.email,
+      userData.email
     );
 
     if (existingUserByEmail) {
       res.status(422).json({
-        message: "User with the provided email already exists",
+        message: "User with the provided email already exists"
       });
       return;
     }
@@ -52,7 +52,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
   } catch (err) {
     console.error("Error creating user:", err);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: ReasonPhrases.INTERNAL_SERVER_ERROR,
+      message: ReasonPhrases.INTERNAL_SERVER_ERROR
     });
   }
 };

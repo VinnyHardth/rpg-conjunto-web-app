@@ -14,12 +14,12 @@ router.get("/kind/:kind", attributesController.getByKind);
 router.post(
   "/",
   validateRequestBody(attributesSchemas.createAttributesSchema),
-  attributesController.create,
+  attributesController.create
 );
 router.put(
   "/:id",
   validateRequestBody(attributesSchemas.updateAttributesSchema),
-  attributesController.update,
+  attributesController.update
 );
 
 // delete methods -------------------------------------------------------------

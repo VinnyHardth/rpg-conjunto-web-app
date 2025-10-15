@@ -4,19 +4,19 @@ import {
   CharacterPerCampaignDTO,
   CharacterPerCampaignWithCharacterDTO,
   CreateCharacterPerCampaignDTO,
-  UpdateCharacterPerCampaignDTO,
+  UpdateCharacterPerCampaignDTO
 } from "./characterPerCampaign.types";
 
 const prisma = new PrismaClient();
 
 export const createCharacterPerCampaign = async (
-  data: CreateCharacterPerCampaignDTO,
+  data: CreateCharacterPerCampaignDTO
 ): Promise<CharacterPerCampaignDTO> => {
   const existing = await prisma.characterPerCampaign.findFirst({
     where: {
       campaignId: data.campaignId,
-      characterId: data.characterId,
-    },
+      characterId: data.characterId
+    }
   });
 
   if (existing) {
@@ -24,8 +24,8 @@ export const createCharacterPerCampaign = async (
       where: { id: existing.id },
       data: {
         role: data.role ?? existing.role,
-        deletedAt: null,
-      },
+        deletedAt: null
+      }
     });
   }
 
@@ -33,7 +33,7 @@ export const createCharacterPerCampaign = async (
 };
 
 export const getCharacterPerCampaignById = async (
-  id: string,
+  id: string
 ): Promise<CharacterPerCampaignDTO | null> => {
   return prisma.characterPerCampaign.findUnique({ where: { id } });
 };
@@ -45,40 +45,40 @@ export const getCharacterPerCampaigns = async (): Promise<
 };
 
 export const getCharacterPerCampaignsByCampaignId = async (
-  campaignId: string,
+  campaignId: string
 ): Promise<CharacterPerCampaignDTO[]> => {
   return prisma.characterPerCampaign.findMany({ where: { campaignId } });
 };
 
 export const getCharacterPerCampaignsByCharacterId = async (
-  characterId: string,
+  characterId: string
 ): Promise<CharacterPerCampaignDTO[]> => {
   return prisma.characterPerCampaign.findMany({ where: { characterId } });
 };
 
 export const updateCharacterPerCampaign = async (
   id: string,
-  data: UpdateCharacterPerCampaignDTO,
+  data: UpdateCharacterPerCampaignDTO
 ): Promise<CharacterPerCampaignDTO> => {
   return prisma.characterPerCampaign.update({ where: { id }, data });
 };
 
 export const deleteCharacterPerCampaign = async (
-  id: string,
+  id: string
 ): Promise<CharacterPerCampaignDTO> => {
   return prisma.characterPerCampaign.update({
     where: { id },
-    data: { deletedAt: new Date() },
+    data: { deletedAt: new Date() }
   });
 };
 
 export const getCharacterPerCampaignWithCharacterById = async (
-  id: string,
+  id: string
 ): Promise<CharacterPerCampaignWithCharacterDTO | null> => {
   return prisma.characterPerCampaign.findUnique({
     where: { id },
     include: {
-      character: true,
-    },
+      character: true
+    }
   }) as unknown as CharacterPerCampaignWithCharacterDTO | null;
 };
