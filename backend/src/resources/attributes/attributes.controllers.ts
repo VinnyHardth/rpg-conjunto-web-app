@@ -8,7 +8,8 @@ import {
   getAttributes,
   getAttributesByKind,
   updateAttributes,
-  deleteAttributes
+  deleteAttributes,
+  getAttributesByCharacterId
 } from "./attributes.services";
 
 const handleError = (res: Response, err: any, context: string): void => {
@@ -88,7 +89,7 @@ const getByKind = async (req: Request, res: Response): Promise<void> => {
     #swagger.summary = 'Get attributes by kind'
     #swagger.description = 'Endpoint to retrieve a attributes by kind.'
     #swagger.parameters['kind'] = {
-      in: 'path',
+      in: 'query',
       description: 'Kind of the attributes to retrieve',
       required: true,
       type: 'string'
@@ -101,7 +102,7 @@ const getByKind = async (req: Request, res: Response): Promise<void> => {
     #swagger.responses[500] = { description: 'Internal Server Error' }
   */
 
-  const { kind } = req.params;
+  const { kind } = req.query;
 
   try {
     const attributes = await getAttributesByKind(kind as AttributeKind);
@@ -201,4 +202,46 @@ const remove = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export default { create, getById, getByKind, getAll, update, remove };
+const getByCharacterId = async (req: Request, res: Response): Promise<void> => {
+  /*
+    #swagger.summary = 'Get attributes by character ID'
+    #swagger.description = 'Endpoint to retrieve attributes for a specific character by ID.'
+    #swagger.parameters['characterId'] = {
+      in: 'path',
+      description: 'ID of the character to retrieve attributes for',
+      required: true,
+      type: 'string'
+    }
+    #swagger.responses[200] = {
+      description: 'Attributes retrieved successfully.',
+      schema: { type: 'array', items: { $ref: '#/definitions/AttributesDTO' } }
+    }
+    #swagger.responses[404] = { description: 'Attributes not found' }
+    #swagger.responses[500] = { description: 'Internal Server Error' }
+  */
+
+  const { characterId } = req.params;
+
+  try {
+    const attributes = await getAttributesByCharacterId(characterId);
+    if (!attributes || attributes.length === 0) {
+      res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "Attributes not found" });
+      return;
+    }
+    res.status(StatusCodes.OK).json(attributes);
+  } catch (err) {
+    handleError(res, err, "Error retrieving attributes by character ID");
+  }
+};
+
+export default {
+  create,
+  getById,
+  getByKind,
+  getAll,
+  update,
+  remove,
+  getByCharacterId
+};

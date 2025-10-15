@@ -9,6 +9,7 @@ import {
   updateCampaign,
   deleteCampaign
 } from "./campaign.services";
+import { getCampaignMembersByCampaignId } from "../campaignMember/campaignMember.services";
 
 const handleError = (res: Response, err: unknown, context: string): void => {
   console.error(`${context}:`, err);
@@ -177,11 +178,38 @@ const remove = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+const getMembers = async (req: Request, res: Response): Promise<void> => {
+  /*
+    #swagger.summary = 'Get campaign members'
+    #swagger.description = 'Endpoint to retrieve members of a specific campaign.'
+    #swagger.parameters['id'] = {
+      in: 'path',
+      description: 'ID of the campaign to retrieve members for',
+      required: true,
+      type: 'string'
+    }
+    #swagger.responses[200] = {
+      description: 'Campaign members retrieved successfully.',
+      schema: { type: 'array', items: { $ref: '#/definitions/UserDTO' } }
+    }
+  */
+
+  const { id } = req.params;
+
+  try {
+    const members = await getCampaignMembersByCampaignId(id);
+    res.status(StatusCodes.OK).json(members);
+  } catch (err) {
+    handleError(res, err, "Error retrieving campaign members");
+  }
+};
+
 export default {
   create,
   getById,
   getByCreatorId,
   getAll,
   update,
-  remove
+  remove,
+  getMembers
 };

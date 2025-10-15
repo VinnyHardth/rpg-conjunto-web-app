@@ -1,5 +1,4 @@
 import Joi from "joi";
-
 import { SourceType } from "@prisma/client";
 import {
   CreateAppliedEffectDTO,
@@ -29,3 +28,16 @@ export const updateAppliedEffectSchema = Joi.object<UpdateAppliedEffectDTO>({
   stacks: Joi.number().integer().min(0),
   value: Joi.number().integer()
 }).min(1);
+
+// 🆕 Novo schema para aplicação dinâmica de efeitos (rota /apply)
+export const applyEffectSchema = Joi.object({
+  campaignId: Joi.string().uuid().required(),
+  characterId: Joi.string().uuid().required(),
+  effectId: Joi.string().uuid().required(),
+  sourceType: Joi.string()
+    .valid(...Object.values(SourceType))
+    .required(),
+  amount: Joi.number().integer().required(),
+  duration: Joi.number().integer().min(0).default(0),
+  stacks: Joi.number().integer().min(0).default(1)
+});

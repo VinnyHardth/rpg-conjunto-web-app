@@ -40,3 +40,14 @@ export const updateAttributes = async (
 export const deleteAttributes = async (id: string): Promise<AttributesDTO> => {
   return prisma.attributes.delete({ where: { id } });
 };
+
+export const getAttributesByCharacterId = async (
+  characterId: string
+): Promise<AttributesDTO[]> => {
+  return prisma.characterAttribute
+    .findMany({
+      where: { characterId },
+      include: { attribute: true }
+    })
+    .then((results) => results.map((item) => item.attribute));
+};

@@ -24,6 +24,33 @@ export const rollByDifficulty = async (
   req: Request<unknown, unknown, RollDifficultyRequestBody>,
   res: Response
 ): Promise<void> => {
+  /*
+    #swagger.tags = ['Dice']
+    #swagger.summary = 'Rola dados com base em um nível de dificuldade'
+    #swagger.description = 'Executa uma rolagem de dados Xd6 com limiares atrelados à dificuldade informada.'
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              campaignId: { type: 'string', format: 'uuid' },
+              characterId: { type: 'string', format: 'uuid' },
+              attributeName: { type: 'string' },
+              attributeAbbreviation: { type: 'string' },
+              diceCount: { type: 'integer', minimum: 1 },
+              difficulty: { type: 'string', enum: ['Fácil','Médio','Difícil'] }
+            },
+            required: ['campaignId','characterId','attributeName','attributeAbbreviation','diceCount','difficulty']
+          }
+        }
+      }
+    }
+    #swagger.responses[200] = { description: 'Rolagem executada com sucesso.' }
+    #swagger.responses[400] = { description: 'Parâmetros inválidos.' }
+    #swagger.responses[500] = { description: 'Erro interno do servidor.' }
+  */
   try {
     const {
       campaignId,
@@ -63,6 +90,27 @@ export const rollByExpression = async (
   req: Request<unknown, unknown, { expression: string }>,
   res: Response
 ): Promise<void> => {
+  /*
+    #swagger.tags = ['Dice']
+    #swagger.summary = 'Rola dados com base em uma expressão personalizada'
+    #swagger.description = 'Permite rolar dados informando expressões como "2d6+3" ou "1d20-1".'
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              expression: { type: 'string', example: '2d6+3' }
+            },
+            required: ['expression']
+          }
+        }
+      }
+    }
+    #swagger.responses[200] = { description: 'Expressão de rolagem executada com sucesso.' }
+    #swagger.responses[500] = { description: 'Erro interno do servidor.' }
+  */
   try {
     const result = rollCustom(req.body.expression);
     res.status(StatusCodes.OK).json(result);
@@ -75,6 +123,28 @@ export const clearDiceRolls = async (
   req: Request<unknown, unknown, { campaignId: string }>,
   res: Response
 ): Promise<void> => {
+  /*
+    #swagger.tags = ['Dice']
+    #swagger.summary = 'Limpa o histórico de rolagens de uma campanha'
+    #swagger.description = 'Remove ou reinicia o histórico de rolagens de uma campanha específica e notifica via WebSocket.'
+    #swagger.requestBody = {
+      required: true,
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              campaignId: { type: 'string', format: 'uuid' }
+            },
+            required: ['campaignId']
+          }
+        }
+      }
+    }
+    #swagger.responses[200] = { description: 'Rolagens limpas com sucesso.' }
+    #swagger.responses[400] = { description: 'O campo campaignId é obrigatório.' }
+    #swagger.responses[500] = { description: 'Erro interno do servidor.' }
+  */
   const { campaignId } = req.body;
 
   if (!campaignId) {

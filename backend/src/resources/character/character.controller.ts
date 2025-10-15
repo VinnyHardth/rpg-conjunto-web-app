@@ -266,6 +266,36 @@ const remove = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+const getByCampaignId = async (req: Request, res: Response): Promise<void> => {
+  /*
+    #swagger.summary = 'Get characters by campaign ID'
+    #swagger.description = 'Endpoint to retrieve characters linked to a specific campaign.'
+    #swagger.parameters['campaignId'] = {
+      in: 'path',
+      description: 'ID of the campaign to retrieve characters for',
+      required: true,
+      type: 'string'
+    }
+    #swagger.responses[200] = {
+      description: 'Characters retrieved successfully.',
+      schema: { type: 'array', items: { $ref: '#/definitions/CharacterDTO' } }
+    }
+  */
+
+  const { campaignId } = req.params;
+
+  try {
+    const characters =
+      await characterServices.getCharactersByCampaignId(campaignId);
+    res.status(StatusCodes.OK).json(characters);
+  } catch (err) {
+    console.error("Error retrieving characters by campaign ID:", err);
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Internal server error" });
+  }
+};
+
 export default {
   create,
   getFullCharacterData,
@@ -273,5 +303,6 @@ export default {
   getUserCharacters,
   getAll,
   update,
-  remove
+  remove,
+  getByCampaignId
 };

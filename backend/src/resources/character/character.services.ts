@@ -94,6 +94,17 @@ const deleteCharacter = async (id: string): Promise<CharacterDTO> => {
   });
 };
 
+const getCharactersByCampaignId = async (
+  campaignId: string
+): Promise<CharacterDTO[]> => {
+  const characterLinks = await prisma.characterPerCampaign.findMany({
+    where: { campaignId },
+    include: { character: true }
+  });
+
+  return characterLinks.map((link) => link.character);
+};
+
 // character actions -------------------------------------------------------------
 
 export {
@@ -103,5 +114,6 @@ export {
   getUserCharacters,
   getCharacters,
   updateCharacter,
-  deleteCharacter
+  deleteCharacter,
+  getCharactersByCampaignId
 };
