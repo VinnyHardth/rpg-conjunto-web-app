@@ -1,11 +1,14 @@
 "use client";
 
+import api from "@/lib/axios";
+
 import { useUser } from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
 import { useCharacters } from "@/hooks/useCharacters";
 import CharacterCard from "@/components/CharacterCard"; // Mantido o CharacterCard
 import FloatingCreateButton from "@/components/FloatingCreateButton";
 import CampaignListModel from "@/components/CampaignListModel";
+
 
 // Componente Placeholder para o estado de Loading (Melhoria UI)
 const LoadingCharactersPlaceholder = () => (
@@ -61,10 +64,17 @@ export default function HomePage() {
     // --- 2. MELHORIA UI: Layout e Container ---
     <div className="relative p-6 md:p-10 min-h-screen bg-gray-50">
       <form
-        action="/api/logout"
-        method="post"
-        className="absolute right-6 top-6"
-      >
+        onSubmit={async (e) => {
+          e.preventDefault();
+          try {
+            await api.delete("/auth/logout");
+            router.push("/login");
+          } catch (error) {
+            console.error("Falha ao fazer logout:", error);
+            alert("Não foi possível sair. Tente novamente.");
+          }
+        }}
+        className="absolute right-6 top-6">
         <button
           type="submit"
           className="rounded-full border border-gray-300 bg-white/90 px-3 py-1 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-white"
