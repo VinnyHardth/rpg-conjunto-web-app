@@ -94,3 +94,10 @@ export const SKILL_NAME_MAPPING: Record<string, string> = {
   bluff: "Lábia",
   reflexes: "Reflexos",
 };
+
+export const STATUS_NAMES: Record<string, string> = {
+  hp: "HP",
+  mp: "MP",
+  tp: "TP",
+  mov: "Movimento",
+};

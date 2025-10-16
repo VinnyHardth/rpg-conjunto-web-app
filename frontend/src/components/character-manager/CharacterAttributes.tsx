@@ -9,14 +9,19 @@ import type {
   CharacterAttribute,
 } from "@/types/models";
 
-import { SKILL_NAME_MAPPING } from "@/types/models";
+import { SKILL_NAME_MAPPING, STATUS_NAMES, Status } from "@/types/models";
 
-import { calculateExpertises } from "@/lib/characterCalculations";
+import {
+  calculateExpertises,
+  calculateStatus,
+} from "@/lib/characterCalculations";
 
 interface CharacterAttributeProps {
   attributes: CharacterAttribute[];
+  status: Status[];
   archetype: Archetype | null;
-  onUpdate: (attributes: CharacterAttribute[]) => void;
+  onAttributesUpdate: (attributes: CharacterAttribute[]) => void;
+  onStatusUpdate: (status: Status[]) => void;
 }
 
 // Mapeamento reverso para encontrar a key pelo nome
@@ -30,10 +35,23 @@ const REVERSE_SKILL_MAPPING: Record<string, string> = Object.entries(
   {} as Record<string, string>,
 );
 
+// Mapeamento reverso para encontrar a key pelo nome
+const REVERSE_STATUS_MAPPING: Record<string, string> = Object.entries(
+  STATUS_NAMES,
+).reduce(
+  (acc, [key, value]) => {
+    acc[value] = key;
+    return acc;
+  },
+  {} as Record<string, string>,
+);
+
 const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
   attributes,
+  status,
   archetype,
-  onUpdate,
+  onAttributesUpdate,
+  onStatusUpdate,
 }) => {
   const { data: attributesData } = useAttributes();
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -132,6 +150,10 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
       const newExpertises = calculateExpertises(attributeRecord);
       console.log("Novas perícias calculadas:", newExpertises);
 
+      // 3.2 Calcular novo status
+      const newStatus = calculateStatus(attributeRecord, archetype);
+      console.log("Novo status calculado:", newStatus);
+
       // 4. Atualizar as perícias com os valores calculados
       const updatedExpertises: CharacterAttribute[] = expertises.map((exp) => {
         const skillKey = REVERSE_SKILL_MAPPING[exp.name];
@@ -163,6 +185,40 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
 
       console.log("Perícias atualizadas:", updatedExpertises);
 
+      // 4.2 Atualizar o status
+      const updatedStatus: Status[] = status.map((s) => {
+        const statusKey = REVERSE_STATUS_MAPPING[s.name];
+
+        if (statusKey && newStatus[statusKey] !== undefined) {
+          const calculatedValue = newStatus[statusKey];
+          const originalStatus = status.find((a) => a.id === s.id);
+
+          return {
+            id: s.id || "",
+            characterId: originalStatus?.characterId || "",
+            name: s.name,
+            valueMax: calculatedValue,
+            valueBonus: originalStatus?.valueBonus || 0,
+            // Lógica corrigida:
+            // 1. Se o status estava no máximo, o valor atual se torna o novo máximo.
+            // 2. Senão, mantém o valor atual, mas o limita ao novo máximo (caso o máximo tenha diminuído).
+            valueActual:
+              (originalStatus?.valueActual ?? 0) >=
+              (originalStatus?.valueMax ?? 0)
+                ? calculatedValue
+                : Math.min(originalStatus?.valueActual ?? 0, calculatedValue),
+            createdAt: originalStatus?.createdAt || new Date(),
+            updatedAt: new Date(),
+            deletedAt: null,
+          };
+        }
+
+        // Se o status não foi recalculado, apenas retorne o original.
+        return s;
+      });
+
+      console.log("Status atualizado:", updatedStatus);
+
       // 5. Combinar todos os atributos
       const finalAttributes: CharacterAttribute[] = [
         ...updatedBaseAttributes.filter((attr) =>
@@ -177,7 +233,8 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
 
       // 6. Atualizar estado local E chamar callback
       setLocalAttributes(finalAttributes);
-      onUpdate(finalAttributes);
+      onAttributesUpdate(finalAttributes);
+      onStatusUpdate(updatedStatus);
     }
     setEditingId(null);
     setEditValue(0);
