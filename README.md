@@ -59,7 +59,7 @@ docker compose up -d --build
 Após a conclusão, os serviços estarão disponíveis nos seguintes endereços (considerando as portas padrão do `.env.example`):
 
 - **Frontend**: http://localhost:4000
-- **Backend**: http://localhost:3333
+- **Backend**: http://localhost:3000
 - **phpMyAdmin**: http://localhost:8080
 
 ## 💻 Desenvolvimento
