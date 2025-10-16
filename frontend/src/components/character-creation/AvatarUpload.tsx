@@ -11,11 +11,13 @@ export default function AvatarUpload({
   onImageUrlChange,
 }: AvatarUploadProps) {
   return (
-    <div className="md:col-span-1 flex flex-col items-center p-4 border border-gray-200 rounded-lg bg-gray-50">
-      <img
+    <div className="flex flex-col items-center rounded-lg border border-gray-200 bg-gray-50 p-4 md:col-span-1">
+      <Image
         src={imageUrl || PLACEHOLDER_IMAGE}
         alt="Avatar do Personagem"
-        className="w-32 h-32 bg-gray-300 rounded-full object-cover flex items-center justify-center text-gray-600 mb-3 text-sm border-2 border-white shadow-md"
+        width={128}
+        height={128}
+        className="mb-3 flex h-32 w-32 items-center justify-center rounded-full border-2 border-white bg-gray-300 object-cover text-sm text-gray-600 shadow-md"
         onError={(e) => {
           e.currentTarget.src = PLACEHOLDER_IMAGE;
         }}
@@ -32,7 +34,7 @@ export default function AvatarUpload({
         value={imageUrl || ""}
         onChange={(e) => onImageUrlChange(e.target.value)}
         placeholder="https://exemplo.com/imagem.png"
-        className="text-sm w-full rounded-md border-gray-300 shadow-sm p-2 border focus:border-blue-500 focus:ring-blue-500"
+        className="w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500"
       />
     </div>
   );
