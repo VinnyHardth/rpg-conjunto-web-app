@@ -62,8 +62,8 @@ export default function CampaignCreateModal({
     const refreshSummary = async () => {
       if (!createdCampaign) return;
       try {
-        const [campaignData, membersData] = await Promise.all([
-          fetchCampaignById(createdCampaign.id),
+        const [membersData] = await Promise.all([
+          // fetchCampaignById(createdCampaign.id), // Not used
           fetchCampaignMembersByCampaign(createdCampaign.id),
         ]);
         setInvitedMembers((prev) =>
