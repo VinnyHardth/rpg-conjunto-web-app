@@ -42,10 +42,11 @@ export const useCampaignSocket = ({
   useEffect(() => {
     if (!campaignId) return;
 
-    const socket = io(socketUrl, {
-      withCredentials: true,
+    const socket = io("/", {
+      path: "/socket.io/",
       transports: ["websocket"],
     });
+
     socketRef.current = socket;
     const room = `campaign-${campaignId}`;
 

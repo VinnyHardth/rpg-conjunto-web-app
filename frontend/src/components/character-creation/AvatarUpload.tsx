@@ -5,7 +5,8 @@ interface AvatarUploadProps {
   onImageUrlChange: (url: string) => void;
 }
 
-const PLACEHOLDER_IMAGE = "https://placehold.co/150x150/e2e8f0/64748b?text=Avatar";
+const PLACEHOLDER_IMAGE =
+  "https://placehold.co/150x150/e2e8f0/64748b?text=Avatar";
 
 export default function AvatarUpload({
   imageUrl,

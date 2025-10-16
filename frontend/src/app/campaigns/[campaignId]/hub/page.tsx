@@ -94,17 +94,7 @@ const resolveAbbreviation = (label: string): string => {
 };
 
 const getSocketUrl = (): string => {
-  if (process.env.NEXT_PUBLIC_SOCKET_URL) {
-    return process.env.NEXT_PUBLIC_SOCKET_URL;
-  }
-  if (process.env.NEXT_PUBLIC_API_URL) {
-    return process.env.NEXT_PUBLIC_API_URL;
-  }
-  if (typeof window !== "undefined") {
-    const { protocol, hostname } = window.location;
-    return `${protocol}//${hostname}:3000`;
-  }
-  return "http://localhost:3000";
+  return "/api/socket.io";
 };
 
 export default function CampaignHubByIdPage() {

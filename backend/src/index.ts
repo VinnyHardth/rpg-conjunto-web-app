@@ -32,7 +32,11 @@ const PORT = process.env.PORT || 3000;
 // Middlewares
 app.use(
   cors({
-    origin: "http://localhost:4000", // frontend que está fazendo a requisição
+    origin: [
+      "http://localhost:4000",
+      "http://187.79.58.27:4000/",
+      "http://192.168.1.7:4000"
+    ], // frontend que está fazendo a requisição
     credentials: true // importante para cookies
   })
 );
@@ -63,6 +67,7 @@ const allowedOrigins = (process.env.FRONTEND_ORIGINS || "http://localhost:4000")
   .split(",")
   .map((origin) => origin.trim());
 const io = new Server(server, {
+  path: "/socket.io/",
   cors: {
     origin: allowedOrigins,
     credentials: true
