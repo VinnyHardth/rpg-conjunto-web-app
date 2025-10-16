@@ -13,7 +13,7 @@ import {
   CharacterDTO,
 } from "@rpg/shared";
 
-import { CharacterAttribute } from "@/types/models";
+import { CharacterAttribute, Status } from "@/types/models";
 
 import api from "@/lib/axios";
 import { AxiosResponse } from "axios";
@@ -80,6 +80,17 @@ export default function CharacterManagementPage({
     });
   };
 
+  const handleStatusUpdate = (updates: Status[]) => {
+    setPendingUpdates((prev) => ({ ...prev, status: updates }));
+    setLocalCharacterData((prevData) => {
+      if (!prevData) return null; // Should not happen, but keeps type safety
+      return {
+        ...prevData,
+        status: updates,
+      };
+    });
+  };
+
   const handleSave = async () => {
     if (!localCharacterData || Object.keys(pendingUpdates).length === 0) return;
 
@@ -100,6 +111,18 @@ export default function CharacterManagementPage({
           promises.push(
             api.put(`/characterattributes/${attribute.id}`, {
               valueBase: attribute.valueBase,
+            }),
+          );
+        }
+      }
+
+      // 3️⃣ Atualiza status
+      if (pendingUpdates.status && pendingUpdates.status.length > 0) {
+        for (const status of pendingUpdates.status) {
+          promises.push(
+            api.put(`/status/${status.id}`, {
+              valueMax: status.valueMax,
+              valueActual: status.valueActual,
             }),
           );
         }
@@ -265,8 +288,10 @@ export default function CharacterManagementPage({
         {activeTab === "attributes" && (
           <CharacterAttributes
             attributes={characterData.attributes}
+            status={characterData.status}
             archetype={characterData.archetype}
-            onUpdate={handleAttributesUpdate}
+            onAttributesUpdate={handleAttributesUpdate}
+            onStatusUpdate={handleStatusUpdate}
           />
         )}
       </div>

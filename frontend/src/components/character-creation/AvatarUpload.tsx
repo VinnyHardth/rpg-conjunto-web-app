@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 interface AvatarUploadProps {
   imageUrl: string | null | undefined;
   onImageUrlChange: (url: string) => void;
