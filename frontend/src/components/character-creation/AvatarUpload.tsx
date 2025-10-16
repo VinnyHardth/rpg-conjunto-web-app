@@ -12,6 +12,7 @@ export default function AvatarUpload({
 }: AvatarUploadProps) {
   return (
     <div className="md:col-span-1 flex flex-col items-center p-4 border border-gray-200 rounded-lg bg-gray-50">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={imageUrl || PLACEHOLDER_IMAGE}
         alt="Avatar do Personagem"

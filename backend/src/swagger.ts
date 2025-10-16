@@ -27,8 +27,8 @@ const doc = {
   },
   servers: [
     {
-      url: `http://${process.env.HOST || "localhost"}:${process.env.PORT || 3000}`,
-      description: "Local server"
+      url: (process.env.PUBLIC_API_URL || "http://localhost:4000") + "/api",
+      description: "Development Server (via Nginx)"
     }
   ],
   definitions: {

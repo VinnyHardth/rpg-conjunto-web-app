@@ -9,6 +9,11 @@ services:
     environment:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - rpg-manager-network
   phpmyadmin:
@@ -38,10 +43,13 @@ services:
     env_file:
       - .env              # ← global (na raiz)
       - ./backend/.env    # ← local (dentro do backend)
+    environment:
+      # Injects the public-facing URL for Swagger and other services to use.
+      - PUBLIC_API_URL=http://localhost:${FRONTEND_PORT}
     stdin_open: true
     tty: true
     depends_on:
-      - mysql
+      mysql: { condition: service_healthy }
     networks:
       - rpg-manager-network
   frontend:
@@ -68,7 +76,7 @@ services:
     container_name: nginx_rpg-manager
     image: nginx:latest
     ports:
-      - "4000:80"
+      - "${FRONTEND_PORT}:80"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
