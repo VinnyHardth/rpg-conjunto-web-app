@@ -9,7 +9,6 @@ import CharacterCard from "@/components/CharacterCard"; // Mantido o CharacterCa
 import FloatingCreateButton from "@/components/FloatingCreateButton";
 import CampaignListModel from "@/components/CampaignListModel";
 
-
 // Componente Placeholder para o estado de Loading (Melhoria UI)
 const LoadingCharactersPlaceholder = () => (
   <div className="flex flex-col items-center justify-center p-12 bg-gray-50 border border-gray-200 rounded-xl shadow-md">
@@ -74,7 +73,8 @@ export default function HomePage() {
             alert("Não foi possível sair. Tente novamente.");
           }
         }}
-        className="absolute right-6 top-6">
+        className="absolute right-6 top-6"
+      >
         <button
           type="submit"
           className="rounded-full border border-gray-300 bg-white/90 px-3 py-1 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-white"

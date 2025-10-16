@@ -31,4 +31,5 @@ COPY frontend/ .
 
 EXPOSE 4000
 
-CMD ["npm", "run", "dev", "--", "--hostname", "0.0.0.0"]
+ENV HOST 0.0.0.0
+CMD ["npm", "run", "dev"]
