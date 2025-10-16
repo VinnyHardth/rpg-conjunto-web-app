@@ -1,42 +1,62 @@
-import { useCampaignHub } from "../contexts/CampaignHubContext";
-import { STATUS_ACTION_OPTIONS, type StatusAction } from "../statusActions";
+import { type RefObject } from "react";
+import type { Character } from "@/types/models";
+import type { RollCustomResponse } from "@/lib/api";
+import type { StatusAction, StatusActionOption } from "../statusActions";
 
 export interface StatusValuePanelProps {
+  isOpen: boolean;
   onClose: () => void;
+  panelRef: RefObject<HTMLDivElement | null>;
+  isMaster: boolean;
+  characters: Character[];
+  selectedTargetId: string | null;
+  onSelectTarget: (id: string | null) => void;
+  selectedAction: StatusAction;
+  onSelectAction: (action: StatusAction) => void;
+  actionOptions: StatusActionOption[];
+  damageFormula: string;
+  onChangeFormula: (value: string) => void;
+  onRoll: () => void;
+  onReset: () => void;
+  onApply: () => void;
+  isRolling: boolean;
+  isApplying: boolean;
+  damageRoll: RollCustomResponse | null;
+  damageError: string | null;
+  damageMessage: string | null;
+  effectsLoading: boolean;
+  effectsError: string | null;
+  effectAvailable: boolean;
   activeRollsContent: React.ReactNode;
 }
 
 const StatusValuePanel = ({
+  isOpen,
   onClose,
+  panelRef,
+  isMaster,
+  characters,
+  selectedTargetId,
+  onSelectTarget,
+  selectedAction,
+  onSelectAction,
+  actionOptions,
+  damageFormula,
+  onChangeFormula,
+  onRoll,
+  onReset,
+  onApply,
+  isRolling,
+  isApplying,
+  damageRoll,
+  damageError,
+  damageMessage,
+  effectsLoading,
+  effectsError,
+  effectAvailable,
   activeRollsContent,
 }: StatusValuePanelProps) => {
-  const {
-    isMaster,
-    effectsLoading,
-    effectsError,
-    useCharacterManagement: { orderedCharacters: characters },
-    useDamagePanel: {
-      selectedTargetId,
-      setSelectedTargetId,
-      selectedAction,
-      setSelectedAction,
-      formula,
-      setFormula,
-      roll,
-      isRolling,
-      isApplying,
-      error,
-      message,
-      effectAvailable,
-      handleRoll,
-      handleReset,
-      handleApply,
-      clearState,
-    },
-    useHubInterface: { isDamageOpen, damagePanelRef: panelRef },
-  } = useCampaignHub();
-
-  if (!isDamageOpen) return null;
+  if (!isOpen) return null;
 
   return (
     <>
@@ -72,9 +92,9 @@ const StatusValuePanel = ({
                     </label>
                     <select
                       value={selectedTargetId ?? ""}
-                      onChange={(e) => {
-                        setSelectedTargetId(e.target.value || null);
-                        clearState();
+                      onChange={(event) => {
+                        const value = event.target.value || null;
+                        onSelectTarget(value);
                       }}
                       className="w-full rounded-lg border border-white/10 bg-slate-900/60 px-3 py-2 text-sm text-white shadow focus:border-rose-400 focus:outline-none focus:ring-2 focus:ring-rose-400"
                     >
@@ -99,13 +119,12 @@ const StatusValuePanel = ({
                     </label>
                     <select
                       value={selectedAction}
-                      onChange={(e) => {
-                        setSelectedAction(e.target.value as StatusAction);
-                        clearState();
-                      }}
+                      onChange={(event) =>
+                        onSelectAction(event.target.value as StatusAction)
+                      }
                       className="w-full rounded-lg border border-white/10 bg-slate-900/60 px-3 py-2 text-sm text-white shadow focus:border-rose-400 focus:outline-none focus:ring-2 focus:ring-rose-400"
                     >
-                      {STATUS_ACTION_OPTIONS.map((option) => (
+                      {actionOptions.map((option) => (
                         <option key={option.value} value={option.value}>
                           {option.label}
                         </option>
@@ -120,10 +139,8 @@ const StatusValuePanel = ({
                   </label>
                   <input
                     type="text"
-                    value={formula}
-                    onChange={(e) => {
-                      setFormula(e.target.value);
-                    }}
+                    value={damageFormula}
+                    onChange={(event) => onChangeFormula(event.target.value)}
                     placeholder="Ex: 2d6+3"
                     className="w-full rounded-lg border border-white/10 bg-slate-900/60 px-3 py-2 text-sm text-white shadow focus:border-rose-400 focus:outline-none focus:ring-2 focus:ring-rose-400"
                   />
@@ -132,7 +149,7 @@ const StatusValuePanel = ({
                 <div className="flex flex-wrap gap-2">
                   <button
                     type="button"
-                    onClick={handleRoll}
+                    onClick={onRoll}
                     disabled={isRolling}
                     className="inline-flex items-center justify-center rounded-lg border border-white/10 bg-rose-700 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-white shadow transition hover:bg-rose-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-300 disabled:cursor-not-allowed disabled:border-white/5 disabled:bg-white/10 disabled:text-slate-400"
                   >
@@ -140,9 +157,12 @@ const StatusValuePanel = ({
                   </button>
                   <button
                     type="button"
-                    onClick={handleReset}
+                    onClick={onReset}
                     disabled={
-                      !roll && !message && !error && formula.length === 0
+                      !damageRoll &&
+                      !damageMessage &&
+                      !damageError &&
+                      damageFormula.length === 0
                     }
                     className="inline-flex items-center justify-center rounded-lg border border-white/10 bg-slate-800 px-3 py-1.5 text-xs font-semibold uppercase tracking-widest text-white shadow transition hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-not-allowed disabled:border-white/5 disabled:bg-white/10 disabled:text-slate-400"
                   >
@@ -169,35 +189,44 @@ const StatusValuePanel = ({
                   </p>
                 )}
 
-                {roll && (
+                {damageRoll && (
                   <div className="rounded-lg border border-white/10 bg-slate-900/60 p-3 text-xs text-slate-200">
                     <p className="font-semibold text-white">
-                      Resultado bruto: {roll.total}
+                      Resultado bruto: {damageRoll.total}
                     </p>
-                    <p>Valor aplicado: {Math.abs(Math.round(roll.total))}</p>
+                    <p>
+                      Valor aplicado: {Math.abs(Math.round(damageRoll.total))}
+                    </p>
                     <p className="text-white/70">
-                      Expressão: {roll.renderedExpression}
+                      Expressão: {damageRoll.renderedExpression}
                     </p>
                     <p>
                       Rolagens:{" "}
-                      {roll.rolls.length > 0 ? roll.rolls.join(", ") : "—"}
+                      {damageRoll.rolls.length > 0
+                        ? damageRoll.rolls.join(", ")
+                        : "—"}
                     </p>
                   </div>
                 )}
 
-                {error && <p className="text-xs text-red-300">{error}</p>}
+                {damageError && (
+                  <p className="text-xs text-red-300">{damageError}</p>
+                )}
 
-                {message && (
-                  <p className="text-xs text-emerald-300">{message}</p>
+                {damageMessage && (
+                  <p className="text-xs text-emerald-300">{damageMessage}</p>
                 )}
               </div>
 
               <div className="mt-auto space-y-3">
                 <button
                   type="button"
-                  onClick={handleApply}
+                  onClick={onApply}
                   disabled={
-                    isApplying || !roll || !selectedTargetId || !effectAvailable
+                    isApplying ||
+                    !damageRoll ||
+                    !selectedTargetId ||
+                    !effectAvailable
                   }
                   className="inline-flex w-full items-center justify-center rounded-lg border border-white/10 bg-emerald-600 px-3 py-2 text-sm font-semibold text-white shadow transition hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 disabled:cursor-not-allowed disabled:border-white/5 disabled:bg-white/10 disabled:text-slate-400"
                 >
