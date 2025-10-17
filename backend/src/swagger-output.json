@@ -7,8 +7,8 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000",
-      "description": "Local server"
+      "url": "http://localhost:4000/api",
+      "description": "Development Server (via Nginx)"
     }
   ],
   "paths": {
@@ -2822,7 +2822,7 @@
         }
       }
     },
-    "/attributes/kind": {
+    "/attributes/kind/{kind}": {
       "get": {
         "tags": ["Attributes"],
         "summary": "Get attributes by kind",
@@ -2831,25 +2831,11 @@
           {
             "name": "kind",
             "in": "query",
-            "description": "Kind of the attributes to retrieve",
             "required": true,
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "description",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "schema",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
+            },
+            "description": "Kind of the attributes to retrieve"
           }
         ],
         "responses": {
