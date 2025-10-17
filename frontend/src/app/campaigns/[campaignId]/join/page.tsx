@@ -43,31 +43,16 @@ export default function CampaignJoinPage({ params }: PageProps) {
       setIsLoading(true);
       setError(null);
       try {
-        const [campaignData, memberList] = await Promise.all([
-          fetchCampaignById(campaignId),
+        const campaignData = await fetchCampaignById(campaignId);
+        setCampaign(campaignData);
+
+        const [memberList, creatorData] = await Promise.all([
           fetchCampaignMembersByCampaign(campaignId),
+          fetchUserById(campaignData.creatorId), // Esta chamada retorna o UserDTO
         ]);
 
-        setCampaign(campaignData);
         setMembers(memberList);
-
-        const creatorMember = memberList.find(
-          (member) => member.userId === campaignData.creatorId,
-        );
-
-        if (creatorMember?.user) {
-          setCreatorUser(creatorMember.user);
-        } else {
-          try {
-            const creator = await fetchUserById(campaignData.creatorId);
-            setCreatorUser(creator);
-          } catch (fetchError) {
-            console.error(
-              "Não foi possível carregar o mestre da campanha:",
-              fetchError,
-            );
-          }
-        }
+        setCreatorUser(creatorData);
       } catch (err) {
         console.error("Erro ao carregar campanha:", err);
         setError("Não foi possível carregar os dados da campanha.");

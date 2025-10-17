@@ -196,19 +196,15 @@ export function useDamagePanel({
 
   // Efeito para sincronizar o alvo selecionado
   useEffect(() => {
-    const targetExists = characters.some((c) => c.id === selectedTargetId);
-    if (targetExists) return;
-
-    if (
-      focusedCharacterId &&
-      characters.some((c) => c.id === focusedCharacterId)
-    ) {
-      setSelectedTargetId(focusedCharacterId);
-    } else if (characters.length > 0) {
-      setSelectedTargetId(characters[0].id);
-    } else {
-      setSelectedTargetId(null);
+    const targetInList = characters.find((c) => c.id === selectedTargetId);
+    if (targetInList) {
+      return; // O alvo selecionado ainda é válido, não faz nada.
     }
+
+    // Se o alvo selecionado não for mais válido, tenta definir um novo.
+    const focusedInList = characters.find((c) => c.id === focusedCharacterId);
+    const newTargetId = focusedInList?.id ?? characters[0]?.id ?? null;
+    setSelectedTargetId(newTargetId);
   }, [focusedCharacterId, characters, selectedTargetId]);
 
   return {

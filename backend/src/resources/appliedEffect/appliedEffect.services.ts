@@ -1,9 +1,4 @@
-import {
-  PrismaClient,
-  SourceType,
-  StackingPolicy,
-  DamageType
-} from "@prisma/client";
+import { PrismaClient, SourceType, StackingPolicy } from "@prisma/client";
 import {
   CreateAppliedEffectDTO,
   UpdateAppliedEffectDTO,
@@ -122,7 +117,11 @@ export async function applyEffectTurn(p: ApplyParams) {
         else if (op === "SET") newValue = delta;
 
         const max = status.valueMax + status.valueBonus;
-        newValue = Math.min(Math.max(0, newValue), max);
+        if (targetName === "HP") {
+          newValue = Math.min(newValue, max); // HP pode ser negativo
+        } else {
+          newValue = Math.min(Math.max(0, newValue), max); // Outros status não
+        }
 
         await tx.status.update({
           where: { id: status.id },
@@ -142,19 +141,6 @@ export async function applyEffectTurn(p: ApplyParams) {
         immediate: {
           ...p,
           results: immediateResults
-        }
-      };
-    }
-
-    // ----------- DANO IMEDIATO (True/Physical/Magic) ----------- //
-    if (effect.damageType !== DamageType.NONE) {
-      return {
-        applied: null,
-        immediate: {
-          effectId,
-          damageType: effect.damageType,
-          targets: effect.targets,
-          sourceType
         }
       };
     }
@@ -243,7 +229,11 @@ export async function applyEffectTurn(p: ApplyParams) {
       else if (t.operationType === "SET") newValue = delta;
 
       const max = status.valueMax + status.valueBonus;
-      newValue = Math.min(Math.max(0, newValue), max);
+      if (targetName === "HP") {
+        newValue = Math.min(newValue, max); // HP pode ser negativo
+      } else {
+        newValue = Math.min(Math.max(0, newValue), max); // Outros status não
+      }
 
       await tx.status.update({
         where: { id: status.id },
