@@ -157,7 +157,6 @@ export function useDamagePanel({
       const finalAmount = result.immediate?.results?.[0]?.delta
         ? Math.abs(result.immediate.results[0].delta)
         : amount;
-
       let amountMessage: string;
       const damageType = effect.damageType;
 

@@ -14,7 +14,9 @@
   "paths": {
     "/auth/profile": {
       "get": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "summary": "Get user profile",
         "description": "Endpoint to retrieve the profile of the logged-in user.",
         "responses": {
@@ -44,7 +46,9 @@
     },
     "/auth/register": {
       "post": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "summary": "Register a new user",
         "description": "Endpoint to register a new user.",
         "responses": {
@@ -87,7 +91,9 @@
     },
     "/auth/login": {
       "put": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "summary": "Login a user",
         "description": "Endpoint to login a user.",
         "responses": {
@@ -130,7 +136,9 @@
     },
     "/auth/logout": {
       "delete": {
-        "tags": ["Auth"],
+        "tags": [
+          "Auth"
+        ],
         "summary": "Logout a user",
         "description": "Endpoint to logout a user.",
         "responses": {
@@ -157,7 +165,9 @@
     },
     "/users/": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Get all users",
         "description": "Endpoint to retrieve all users.",
         "responses": {
@@ -206,7 +216,9 @@
         }
       },
       "post": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Create a new user",
         "description": "Endpoint to create a new user.",
         "responses": {
@@ -249,7 +261,9 @@
     },
     "/users/{id}": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Get user by ID",
         "description": "Endpoint to retrieve a user by their ID.",
         "parameters": [
@@ -288,7 +302,9 @@
         }
       },
       "put": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Update a user",
         "description": "Endpoint to update an existing user.",
         "parameters": [
@@ -340,7 +356,9 @@
         }
       },
       "delete": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Delete a user",
         "description": "Endpoint to delete a user.",
         "parameters": [
@@ -381,7 +399,9 @@
     },
     "/users/email/{email}": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Get user by email",
         "description": "Endpoint to retrieve a user by their email.",
         "parameters": [
@@ -422,7 +442,9 @@
     },
     "/archetypes/{id}": {
       "get": {
-        "tags": ["Archetypes"],
+        "tags": [
+          "Archetypes"
+        ],
         "summary": "Get archetype by ID",
         "description": "Endpoint to retrieve an archetype by its ID.",
         "parameters": [
@@ -464,7 +486,9 @@
         }
       },
       "put": {
-        "tags": ["Archetypes"],
+        "tags": [
+          "Archetypes"
+        ],
         "summary": "Update an archetype",
         "description": "Endpoint to update an existing archetype.",
         "parameters": [
@@ -519,7 +543,9 @@
         }
       },
       "delete": {
-        "tags": ["Archetypes"],
+        "tags": [
+          "Archetypes"
+        ],
         "summary": "Delete an archetype",
         "description": "Endpoint to delete an existing archetype.",
         "parameters": [
@@ -563,7 +589,9 @@
     },
     "/archetypes/": {
       "get": {
-        "tags": ["Archetypes"],
+        "tags": [
+          "Archetypes"
+        ],
         "summary": "Get all archetypes",
         "description": "Endpoint to retrieve all archetypes.",
         "responses": {
@@ -588,7 +616,9 @@
         }
       },
       "post": {
-        "tags": ["Archetypes"],
+        "tags": [
+          "Archetypes"
+        ],
         "summary": "Create a new archetype",
         "description": "Endpoint to create a new archetype.",
         "responses": {
@@ -631,7 +661,9 @@
     },
     "/characters/": {
       "get": {
-        "tags": ["Characters"],
+        "tags": [
+          "Characters"
+        ],
         "summary": "Get all characters",
         "description": "Endpoint to retrieve all characters.",
         "responses": {
@@ -680,7 +712,9 @@
         }
       },
       "post": {
-        "tags": ["Characters"],
+        "tags": [
+          "Characters"
+        ],
         "summary": "Create a new character",
         "description": "Endpoint to create a new character.",
         "responses": {
@@ -723,7 +757,9 @@
     },
     "/characters/{id}": {
       "get": {
-        "tags": ["Characters"],
+        "tags": [
+          "Characters"
+        ],
         "summary": "Get character by ID",
         "description": "Endpoint to retrieve a character by their ID.",
         "parameters": [
@@ -762,7 +798,9 @@
         }
       },
       "put": {
-        "tags": ["Characters"],
+        "tags": [
+          "Characters"
+        ],
         "summary": "Update a character",
         "description": "Endpoint to update an existing character.",
         "parameters": [
@@ -814,7 +852,9 @@
         }
       },
       "delete": {
-        "tags": ["Characters"],
+        "tags": [
+          "Characters"
+        ],
         "summary": "Delete a character",
         "description": "Endpoint to delete a character by their ID.",
         "parameters": [
@@ -855,7 +895,9 @@
     },
     "/characters/user/{userId}": {
       "get": {
-        "tags": ["Characters"],
+        "tags": [
+          "Characters"
+        ],
         "summary": "Get characters by user ID",
         "description": "Endpoint to retrieve all characters for a specific user.",
         "parameters": [
@@ -917,7 +959,9 @@
     },
     "/characters/full/{id}": {
       "get": {
-        "tags": ["Characters"],
+        "tags": [
+          "Characters"
+        ],
         "summary": "Get full character data by ID",
         "description": "Endpoint to retrieve full character data by character ID.",
         "parameters": [
@@ -958,7 +1002,9 @@
     },
     "/characters/campaign/{campaignId}": {
       "get": {
-        "tags": ["Characters"],
+        "tags": [
+          "Characters"
+        ],
         "summary": "Get characters by campaign ID",
         "description": "Endpoint to retrieve characters linked to a specific campaign.",
         "parameters": [
@@ -1017,7 +1063,9 @@
     },
     "/campaigns/": {
       "get": {
-        "tags": ["Campaigns"],
+        "tags": [
+          "Campaigns"
+        ],
         "summary": "Get all campaigns",
         "description": "Endpoint to retrieve all campaigns.",
         "responses": {
@@ -1063,7 +1111,9 @@
         }
       },
       "post": {
-        "tags": ["Campaigns"],
+        "tags": [
+          "Campaigns"
+        ],
         "summary": "Create a new campaign",
         "description": "Endpoint to create a new campaign.",
         "responses": {
@@ -1097,7 +1147,9 @@
     },
     "/campaigns/creator/{creatorId}": {
       "get": {
-        "tags": ["Campaigns"],
+        "tags": [
+          "Campaigns"
+        ],
         "summary": "Get campaigns by creator ID",
         "description": "Endpoint to retrieve campaigns created by a specific user.",
         "parameters": [
@@ -1156,7 +1208,9 @@
     },
     "/campaigns/{id}": {
       "get": {
-        "tags": ["Campaigns"],
+        "tags": [
+          "Campaigns"
+        ],
         "summary": "Get campaign by ID",
         "description": "Endpoint to retrieve a campaign by ID.",
         "parameters": [
@@ -1189,7 +1243,9 @@
         }
       },
       "put": {
-        "tags": ["Campaigns"],
+        "tags": [
+          "Campaigns"
+        ],
         "summary": "Update a campaign",
         "description": "Endpoint to update an existing campaign.",
         "parameters": [
@@ -1232,7 +1288,9 @@
         }
       },
       "delete": {
-        "tags": ["Campaigns"],
+        "tags": [
+          "Campaigns"
+        ],
         "summary": "Delete a campaign",
         "description": "Endpoint to soft delete a campaign.",
         "parameters": [
@@ -1267,7 +1325,9 @@
     },
     "/campaigns/{id}/members": {
       "get": {
-        "tags": ["Campaigns"],
+        "tags": [
+          "Campaigns"
+        ],
         "summary": "Get campaign members",
         "description": "Endpoint to retrieve members of a specific campaign.",
         "parameters": [
@@ -1326,7 +1386,9 @@
     },
     "/characterpercampaigns/": {
       "get": {
-        "tags": ["CharacterPerCampaign"],
+        "tags": [
+          "CharacterPerCampaign"
+        ],
         "summary": "Get all character-campaign relations",
         "description": "",
         "responses": {
@@ -1336,7 +1398,9 @@
         }
       },
       "post": {
-        "tags": ["CharacterPerCampaign"],
+        "tags": [
+          "CharacterPerCampaign"
+        ],
         "summary": "Create a character-campaign relation",
         "description": "Link a character to a campaign.",
         "responses": {
@@ -1358,7 +1422,9 @@
     },
     "/characterpercampaigns/campaign/{campaignId}": {
       "get": {
-        "tags": ["CharacterPerCampaign"],
+        "tags": [
+          "CharacterPerCampaign"
+        ],
         "summary": "Get character-campaign relations by campaign ID",
         "description": "",
         "parameters": [
@@ -1380,7 +1446,9 @@
     },
     "/characterpercampaigns/character/{characterId}": {
       "get": {
-        "tags": ["CharacterPerCampaign"],
+        "tags": [
+          "CharacterPerCampaign"
+        ],
         "summary": "Get character-campaign relations by character ID",
         "description": "",
         "parameters": [
@@ -1402,7 +1470,9 @@
     },
     "/characterpercampaigns/{id}": {
       "get": {
-        "tags": ["CharacterPerCampaign"],
+        "tags": [
+          "CharacterPerCampaign"
+        ],
         "summary": "Get character-campaign relation by ID",
         "description": "",
         "parameters": [
@@ -1422,7 +1492,9 @@
         }
       },
       "put": {
-        "tags": ["CharacterPerCampaign"],
+        "tags": [
+          "CharacterPerCampaign"
+        ],
         "summary": "Update a character-campaign relation",
         "description": "",
         "parameters": [
@@ -1442,7 +1514,9 @@
         }
       },
       "delete": {
-        "tags": ["CharacterPerCampaign"],
+        "tags": [
+          "CharacterPerCampaign"
+        ],
         "summary": "Delete a character-campaign relation",
         "description": "",
         "parameters": [
@@ -1464,7 +1538,9 @@
     },
     "/campaignmembers/": {
       "get": {
-        "tags": ["CampaignMembers"],
+        "tags": [
+          "CampaignMembers"
+        ],
         "summary": "Get all campaign members",
         "description": "",
         "responses": {
@@ -1474,7 +1550,9 @@
         }
       },
       "post": {
-        "tags": ["CampaignMembers"],
+        "tags": [
+          "CampaignMembers"
+        ],
         "summary": "Add a member to a campaign",
         "description": "",
         "responses": {
@@ -1486,7 +1564,9 @@
     },
     "/campaignmembers/campaign/{campaignId}": {
       "get": {
-        "tags": ["CampaignMembers"],
+        "tags": [
+          "CampaignMembers"
+        ],
         "summary": "Get campaign members by campaign ID",
         "description": "",
         "parameters": [
@@ -1508,7 +1588,9 @@
     },
     "/campaignmembers/user/{userId}": {
       "get": {
-        "tags": ["CampaignMembers"],
+        "tags": [
+          "CampaignMembers"
+        ],
         "summary": "Get campaigns for a user",
         "description": "",
         "parameters": [
@@ -1530,7 +1612,9 @@
     },
     "/campaignmembers/{id}": {
       "get": {
-        "tags": ["CampaignMembers"],
+        "tags": [
+          "CampaignMembers"
+        ],
         "summary": "Get campaign member by ID",
         "description": "",
         "parameters": [
@@ -1550,7 +1634,9 @@
         }
       },
       "put": {
-        "tags": ["CampaignMembers"],
+        "tags": [
+          "CampaignMembers"
+        ],
         "summary": "Update campaign member",
         "description": "",
         "parameters": [
@@ -1570,7 +1656,9 @@
         }
       },
       "delete": {
-        "tags": ["CampaignMembers"],
+        "tags": [
+          "CampaignMembers"
+        ],
         "summary": "Delete campaign member",
         "description": "",
         "parameters": [
@@ -1592,7 +1680,9 @@
     },
     "/characterattributes/": {
       "get": {
-        "tags": ["CharacterAttributes"],
+        "tags": [
+          "CharacterAttributes"
+        ],
         "summary": "Get all characterattributes",
         "description": "Endpoint to retrieve all characterattributes.",
         "responses": {
@@ -1641,7 +1731,9 @@
         }
       },
       "post": {
-        "tags": ["CharacterAttributes"],
+        "tags": [
+          "CharacterAttributes"
+        ],
         "summary": "Create a new characterattribute",
         "description": "Endpoint to create a new characterattribute.",
         "responses": {
@@ -1684,7 +1776,9 @@
     },
     "/characterattributes/{id}": {
       "get": {
-        "tags": ["CharacterAttributes"],
+        "tags": [
+          "CharacterAttributes"
+        ],
         "summary": "Get characterattribute by ID",
         "description": "Endpoint to retrieve a characterattribute by ID.",
         "parameters": [
@@ -1723,7 +1817,9 @@
         }
       },
       "put": {
-        "tags": ["CharacterAttributes"],
+        "tags": [
+          "CharacterAttributes"
+        ],
         "summary": "Update a characterattribute",
         "description": "Endpoint to update an existing characterattribute.",
         "parameters": [
@@ -1772,7 +1868,9 @@
         }
       },
       "delete": {
-        "tags": ["CharacterAttributes"],
+        "tags": [
+          "CharacterAttributes"
+        ],
         "summary": "Delete a characterattribute",
         "description": "Endpoint to delete a characterattribute.",
         "parameters": [
@@ -1813,7 +1911,9 @@
     },
     "/characterattributes/character/{characterId}": {
       "get": {
-        "tags": ["CharacterAttributes"],
+        "tags": [
+          "CharacterAttributes"
+        ],
         "summary": "Get characterattributes by character ID",
         "description": "Endpoint to retrieve characterattributes by character ID.",
         "parameters": [
@@ -1878,7 +1978,9 @@
     },
     "/characterhasitems/": {
       "get": {
-        "tags": ["CharacterHasItems"],
+        "tags": [
+          "CharacterHasItems"
+        ],
         "summary": "Get all characterhasitems",
         "description": "Endpoint to retrieve all characterhasitems.",
         "responses": {
@@ -1927,7 +2029,9 @@
         }
       },
       "post": {
-        "tags": ["CharacterHasItems"],
+        "tags": [
+          "CharacterHasItems"
+        ],
         "summary": "Create a new characterhasitem",
         "description": "Endpoint to create a new characterhasitem.",
         "responses": {
@@ -1970,7 +2074,9 @@
     },
     "/characterhasitems/{id}": {
       "get": {
-        "tags": ["CharacterHasItems"],
+        "tags": [
+          "CharacterHasItems"
+        ],
         "summary": "Get characterhasitem by ID",
         "description": "Endpoint to retrieve a characterhasitem by ID.",
         "parameters": [
@@ -2009,7 +2115,9 @@
         }
       },
       "put": {
-        "tags": ["CharacterHasItems"],
+        "tags": [
+          "CharacterHasItems"
+        ],
         "summary": "Update a characterhasitem",
         "description": "Endpoint to update an existing characterhasitem.",
         "parameters": [
@@ -2058,7 +2166,9 @@
         }
       },
       "delete": {
-        "tags": ["CharacterHasItems"],
+        "tags": [
+          "CharacterHasItems"
+        ],
         "summary": "Delete a characterhasitem",
         "description": "Endpoint to delete a characterhasitem.",
         "parameters": [
@@ -2099,7 +2209,9 @@
     },
     "/characterhasitems/character/{characterId}": {
       "get": {
-        "tags": ["CharacterHasItems"],
+        "tags": [
+          "CharacterHasItems"
+        ],
         "summary": "Get all characterhasitems by character ID",
         "description": "Endpoint to retrieve all characterhasitems by character ID.",
         "parameters": [
@@ -2161,7 +2273,9 @@
     },
     "/abilities/": {
       "get": {
-        "tags": ["Abilities"],
+        "tags": [
+          "Abilities"
+        ],
         "summary": "Get all abilitiess",
         "description": "Endpoint to retrieve all abilitiess.",
         "responses": {
@@ -2210,7 +2324,9 @@
         }
       },
       "post": {
-        "tags": ["Abilities"],
+        "tags": [
+          "Abilities"
+        ],
         "summary": "Create a new abilities",
         "description": "Endpoint to create a new abilities.",
         "responses": {
@@ -2253,7 +2369,9 @@
     },
     "/abilities/{id}": {
       "get": {
-        "tags": ["Abilities"],
+        "tags": [
+          "Abilities"
+        ],
         "summary": "Get abilities by ID",
         "description": "Endpoint to retrieve a abilities by ID.",
         "parameters": [
@@ -2292,7 +2410,9 @@
         }
       },
       "put": {
-        "tags": ["Abilities"],
+        "tags": [
+          "Abilities"
+        ],
         "summary": "Update a abilities",
         "description": "Endpoint to update an existing abilities.",
         "parameters": [
@@ -2341,7 +2461,9 @@
         }
       },
       "delete": {
-        "tags": ["Abilities"],
+        "tags": [
+          "Abilities"
+        ],
         "summary": "Delete a abilities",
         "description": "Endpoint to delete a abilities.",
         "parameters": [
@@ -2382,7 +2504,9 @@
     },
     "/abilityeffects/": {
       "get": {
-        "tags": ["AbilityEffects"],
+        "tags": [
+          "AbilityEffects"
+        ],
         "summary": "Get all abilityeffects",
         "description": "Endpoint to retrieve all abilityeffects.",
         "responses": {
@@ -2431,7 +2555,9 @@
         }
       },
       "post": {
-        "tags": ["AbilityEffects"],
+        "tags": [
+          "AbilityEffects"
+        ],
         "summary": "Create a new abilityeffect",
         "description": "Endpoint to create a new abilityeffect.",
         "responses": {
@@ -2474,7 +2600,9 @@
     },
     "/abilityeffects/{id}": {
       "get": {
-        "tags": ["AbilityEffects"],
+        "tags": [
+          "AbilityEffects"
+        ],
         "summary": "Get abilityeffect by ID",
         "description": "Endpoint to retrieve a abilityeffect by ID.",
         "parameters": [
@@ -2513,7 +2641,9 @@
         }
       },
       "put": {
-        "tags": ["AbilityEffects"],
+        "tags": [
+          "AbilityEffects"
+        ],
         "summary": "Update a abilityeffect",
         "description": "Endpoint to update an existing abilityeffect.",
         "parameters": [
@@ -2562,7 +2692,9 @@
         }
       },
       "delete": {
-        "tags": ["AbilityEffects"],
+        "tags": [
+          "AbilityEffects"
+        ],
         "summary": "Delete a abilityeffect",
         "description": "Endpoint to delete a abilityeffect.",
         "parameters": [
@@ -2603,7 +2735,9 @@
     },
     "/attributes/": {
       "get": {
-        "tags": ["Attributes"],
+        "tags": [
+          "Attributes"
+        ],
         "summary": "Get all attributess",
         "description": "Endpoint to retrieve all attributess.",
         "responses": {
@@ -2652,7 +2786,9 @@
         }
       },
       "post": {
-        "tags": ["Attributes"],
+        "tags": [
+          "Attributes"
+        ],
         "summary": "Create a new attributes",
         "description": "Endpoint to create a new attributes.",
         "responses": {
@@ -2695,7 +2831,9 @@
     },
     "/attributes/{id}": {
       "get": {
-        "tags": ["Attributes"],
+        "tags": [
+          "Attributes"
+        ],
         "summary": "Get attributes by ID",
         "description": "Endpoint to retrieve a attributes by ID.",
         "parameters": [
@@ -2734,7 +2872,9 @@
         }
       },
       "put": {
-        "tags": ["Attributes"],
+        "tags": [
+          "Attributes"
+        ],
         "summary": "Update a attributes",
         "description": "Endpoint to update an existing attributes.",
         "parameters": [
@@ -2783,7 +2923,9 @@
         }
       },
       "delete": {
-        "tags": ["Attributes"],
+        "tags": [
+          "Attributes"
+        ],
         "summary": "Delete a attributes",
         "description": "Endpoint to delete a attributes.",
         "parameters": [
@@ -2824,7 +2966,9 @@
     },
     "/attributes/kind/{kind}": {
       "get": {
-        "tags": ["Attributes"],
+        "tags": [
+          "Attributes"
+        ],
         "summary": "Get attributes by kind",
         "description": "Endpoint to retrieve a attributes by kind.",
         "parameters": [
@@ -2889,7 +3033,9 @@
     },
     "/attributes/character/{characterId}": {
       "get": {
-        "tags": ["Attributes"],
+        "tags": [
+          "Attributes"
+        ],
         "summary": "Get attributes by character ID",
         "description": "Endpoint to retrieve attributes for a specific character by ID.",
         "parameters": [
@@ -2954,7 +3100,9 @@
     },
     "/effects/": {
       "get": {
-        "tags": ["Effects"],
+        "tags": [
+          "Effects"
+        ],
         "summary": "Get all effects",
         "description": "Endpoint to retrieve all effects.",
         "responses": {
@@ -3003,7 +3151,9 @@
         }
       },
       "post": {
-        "tags": ["Effects"],
+        "tags": [
+          "Effects"
+        ],
         "summary": "Create a new effect",
         "description": "Endpoint to create a new effect.",
         "responses": {
@@ -3046,7 +3196,9 @@
     },
     "/effects/{id}": {
       "get": {
-        "tags": ["Effects"],
+        "tags": [
+          "Effects"
+        ],
         "summary": "Get effect by ID",
         "description": "Endpoint to retrieve a effect by ID.",
         "parameters": [
@@ -3085,7 +3237,9 @@
         }
       },
       "put": {
-        "tags": ["Effects"],
+        "tags": [
+          "Effects"
+        ],
         "summary": "Update a effect",
         "description": "Endpoint to update an existing effect.",
         "parameters": [
@@ -3134,7 +3288,9 @@
         }
       },
       "delete": {
-        "tags": ["Effects"],
+        "tags": [
+          "Effects"
+        ],
         "summary": "Delete a effect",
         "description": "Endpoint to delete a effect.",
         "parameters": [
@@ -3175,7 +3331,9 @@
     },
     "/effectmodifiers/": {
       "get": {
-        "tags": ["effectmodifiers"],
+        "tags": [
+          "effectmodifiers"
+        ],
         "summary": "Get all EffectModifiers",
         "description": "Endpoint to retrieve all EffectModifiers.",
         "responses": {
@@ -3224,7 +3382,9 @@
         }
       },
       "post": {
-        "tags": ["effectmodifiers"],
+        "tags": [
+          "effectmodifiers"
+        ],
         "summary": "Create a new EffectModifier",
         "description": "Endpoint to create a new EffectModifier.",
         "responses": {
@@ -3267,7 +3427,9 @@
     },
     "/effectmodifiers/{id}": {
       "get": {
-        "tags": ["effectmodifiers"],
+        "tags": [
+          "effectmodifiers"
+        ],
         "summary": "Get EffectModifier by ID",
         "description": "Endpoint to retrieve a EffectModifier by ID.",
         "parameters": [
@@ -3306,7 +3468,9 @@
         }
       },
       "put": {
-        "tags": ["effectmodifiers"],
+        "tags": [
+          "effectmodifiers"
+        ],
         "summary": "Update a EffectModifier",
         "description": "Endpoint to update an existing EffectModifier.",
         "parameters": [
@@ -3355,7 +3519,9 @@
         }
       },
       "delete": {
-        "tags": ["effectmodifiers"],
+        "tags": [
+          "effectmodifiers"
+        ],
         "summary": "Delete a EffectModifier",
         "description": "Endpoint to delete a EffectModifier.",
         "parameters": [
@@ -3396,7 +3562,9 @@
     },
     "/appliedeffects/": {
       "get": {
-        "tags": ["AppliedEffects"],
+        "tags": [
+          "AppliedEffects"
+        ],
         "summary": "Lista todos os AppliedEffects",
         "description": "",
         "responses": {
@@ -3409,7 +3577,9 @@
         }
       },
       "post": {
-        "tags": ["AppliedEffects"],
+        "tags": [
+          "AppliedEffects"
+        ],
         "summary": "Cria um novo AppliedEffect",
         "description": "",
         "responses": {
@@ -3437,7 +3607,11 @@
                   },
                   "sourceType": {
                     "type": "string",
-                    "enum": ["ITEM", "SKILL", "OTHER"]
+                    "enum": [
+                      "ITEM",
+                      "SKILL",
+                      "OTHER"
+                    ]
                   },
                   "currentTurn": {
                     "type": "integer"
@@ -3467,7 +3641,9 @@
     },
     "/appliedeffects/{id}": {
       "get": {
-        "tags": ["AppliedEffects"],
+        "tags": [
+          "AppliedEffects"
+        ],
         "summary": "Obtém um AppliedEffect pelo ID",
         "description": "",
         "parameters": [
@@ -3494,7 +3670,9 @@
         }
       },
       "put": {
-        "tags": ["AppliedEffects"],
+        "tags": [
+          "AppliedEffects"
+        ],
         "summary": "Atualiza um AppliedEffect existente",
         "description": "",
         "parameters": [
@@ -3528,7 +3706,9 @@
         }
       },
       "delete": {
-        "tags": ["AppliedEffects"],
+        "tags": [
+          "AppliedEffects"
+        ],
         "summary": "Remove um AppliedEffect pelo ID",
         "description": "",
         "parameters": [
@@ -3554,7 +3734,9 @@
     },
     "/appliedeffects/character/{characterId}": {
       "get": {
-        "tags": ["AppliedEffects"],
+        "tags": [
+          "AppliedEffects"
+        ],
         "summary": "Obtém todos os AppliedEffects de um personagem",
         "description": "",
         "parameters": [
@@ -3580,7 +3762,9 @@
     },
     "/appliedeffects/turn": {
       "post": {
-        "tags": ["AppliedEffects"],
+        "tags": [
+          "AppliedEffects"
+        ],
         "summary": "Aplica um efeito em um personagem no turno atual",
         "description": "Resolve buffs, debuffs e efeitos instantâneos (HP/MP/etc).",
         "responses": {
@@ -3611,7 +3795,11 @@
                   },
                   "sourceType": {
                     "type": "string",
-                    "enum": ["ITEM", "SKILL", "OTHER"]
+                    "enum": [
+                      "ITEM",
+                      "SKILL",
+                      "OTHER"
+                    ]
                   },
                   "currentTurn": {
                     "type": "integer",
@@ -3645,7 +3833,9 @@
     },
     "/appliedeffects/{id}/tick": {
       "post": {
-        "tags": ["AppliedEffects"],
+        "tags": [
+          "AppliedEffects"
+        ],
         "summary": "Avança 1 turno de um efeito aplicado, reduzindo sua duração.",
         "description": "Se a duração chegar a 0, o efeito é removido (soft delete).",
         "parameters": [
@@ -3674,7 +3864,9 @@
     },
     "/appliedeffects/tick/all": {
       "post": {
-        "tags": ["AppliedEffects"],
+        "tags": [
+          "AppliedEffects"
+        ],
         "summary": "Avança 1 turno para TODOS os efeitos ativos no sistema.",
         "description": "Reduz a duração de todos os efeitos e remove (soft delete) os que chegarem a 0.",
         "responses": {
@@ -3689,7 +3881,9 @@
     },
     "/appliedeffects/character/{characterId}/tick": {
       "post": {
-        "tags": ["AppliedEffects"],
+        "tags": [
+          "AppliedEffects"
+        ],
         "summary": "Avança 1 turno para todos os efeitos de um personagem.",
         "description": "Reduz a duração dos efeitos do personagem e remove (soft delete) os que chegarem a 0.",
         "parameters": [
@@ -3715,7 +3909,9 @@
     },
     "/items/": {
       "get": {
-        "tags": ["Items"],
+        "tags": [
+          "Items"
+        ],
         "summary": "Get all itemss",
         "description": "Endpoint to retrieve all itemss.",
         "responses": {
@@ -3764,7 +3960,9 @@
         }
       },
       "post": {
-        "tags": ["Items"],
+        "tags": [
+          "Items"
+        ],
         "summary": "Create a new items",
         "description": "Endpoint to create a new items.",
         "responses": {
@@ -3807,7 +4005,9 @@
     },
     "/items/{id}": {
       "get": {
-        "tags": ["Items"],
+        "tags": [
+          "Items"
+        ],
         "summary": "Get items by ID",
         "description": "Endpoint to retrieve a items by ID.",
         "parameters": [
@@ -3846,7 +4046,9 @@
         }
       },
       "put": {
-        "tags": ["Items"],
+        "tags": [
+          "Items"
+        ],
         "summary": "Update a items",
         "description": "Endpoint to update an existing items.",
         "parameters": [
@@ -3895,7 +4097,9 @@
         }
       },
       "delete": {
-        "tags": ["Items"],
+        "tags": [
+          "Items"
+        ],
         "summary": "Delete a items",
         "description": "Endpoint to delete a items.",
         "parameters": [
@@ -3936,7 +4140,9 @@
     },
     "/itemskills/": {
       "get": {
-        "tags": ["ItemSkills"],
+        "tags": [
+          "ItemSkills"
+        ],
         "summary": "Get all itemskillss",
         "description": "Endpoint to retrieve all itemskillss.",
         "responses": {
@@ -3985,7 +4191,9 @@
         }
       },
       "post": {
-        "tags": ["ItemSkills"],
+        "tags": [
+          "ItemSkills"
+        ],
         "summary": "Create a new itemskills",
         "description": "Endpoint to create a new itemskills.",
         "responses": {
@@ -4028,7 +4236,9 @@
     },
     "/itemskills/{id}": {
       "get": {
-        "tags": ["ItemSkills"],
+        "tags": [
+          "ItemSkills"
+        ],
         "summary": "Get itemskills by ID",
         "description": "Endpoint to retrieve a itemskills by ID.",
         "parameters": [
@@ -4067,7 +4277,9 @@
         }
       },
       "put": {
-        "tags": ["ItemSkills"],
+        "tags": [
+          "ItemSkills"
+        ],
         "summary": "Update a itemskills",
         "description": "Endpoint to update an existing itemskills.",
         "parameters": [
@@ -4116,7 +4328,9 @@
         }
       },
       "delete": {
-        "tags": ["ItemSkills"],
+        "tags": [
+          "ItemSkills"
+        ],
         "summary": "Delete a itemskills",
         "description": "Endpoint to delete a itemskills.",
         "parameters": [
@@ -4157,7 +4371,9 @@
     },
     "/itemhaseffects/": {
       "get": {
-        "tags": ["ItemHasEffects"],
+        "tags": [
+          "ItemHasEffects"
+        ],
         "summary": "Get all itemhaseffects",
         "description": "Endpoint to retrieve all itemhaseffects.",
         "responses": {
@@ -4206,7 +4422,9 @@
         }
       },
       "post": {
-        "tags": ["ItemHasEffects"],
+        "tags": [
+          "ItemHasEffects"
+        ],
         "summary": "Create a new itemhaseffect",
         "description": "Endpoint to create a new itemhaseffect.",
         "responses": {
@@ -4249,7 +4467,9 @@
     },
     "/itemhaseffects/{id}": {
       "get": {
-        "tags": ["ItemHasEffects"],
+        "tags": [
+          "ItemHasEffects"
+        ],
         "summary": "Get itemhaseffect by ID",
         "description": "Endpoint to retrieve a itemhaseffect by ID.",
         "parameters": [
@@ -4288,7 +4508,9 @@
         }
       },
       "put": {
-        "tags": ["ItemHasEffects"],
+        "tags": [
+          "ItemHasEffects"
+        ],
         "summary": "Update a itemhaseffect",
         "description": "Endpoint to update an existing itemhaseffect.",
         "parameters": [
@@ -4337,7 +4559,9 @@
         }
       },
       "delete": {
-        "tags": ["ItemHasEffects"],
+        "tags": [
+          "ItemHasEffects"
+        ],
         "summary": "Delete a itemhaseffect",
         "description": "Endpoint to delete a itemhaseffect.",
         "parameters": [
@@ -4378,7 +4602,9 @@
     },
     "/skills/": {
       "get": {
-        "tags": ["Skills"],
+        "tags": [
+          "Skills"
+        ],
         "summary": "Get all skills",
         "description": "Endpoint to retrieve all skills.",
         "responses": {
@@ -4427,7 +4653,9 @@
         }
       },
       "post": {
-        "tags": ["Skills"],
+        "tags": [
+          "Skills"
+        ],
         "summary": "Create a new skill",
         "description": "Endpoint to create a new skill.",
         "responses": {
@@ -4470,7 +4698,9 @@
     },
     "/skills/{id}": {
       "get": {
-        "tags": ["Skills"],
+        "tags": [
+          "Skills"
+        ],
         "summary": "Get skill by ID",
         "description": "Endpoint to retrieve a skill by ID.",
         "parameters": [
@@ -4509,7 +4739,9 @@
         }
       },
       "put": {
-        "tags": ["Skills"],
+        "tags": [
+          "Skills"
+        ],
         "summary": "Update a skill",
         "description": "Endpoint to update an existing skill.",
         "parameters": [
@@ -4558,7 +4790,9 @@
         }
       },
       "delete": {
-        "tags": ["Skills"],
+        "tags": [
+          "Skills"
+        ],
         "summary": "Delete a skill",
         "description": "Endpoint to delete a skill.",
         "parameters": [
@@ -4599,7 +4833,9 @@
     },
     "/skills/character/{characterId}": {
       "get": {
-        "tags": ["Skills"],
+        "tags": [
+          "Skills"
+        ],
         "summary": "Get skills by character ID",
         "description": "Endpoint to retrieve skills by character ID.",
         "parameters": [
@@ -4672,7 +4908,9 @@
     },
     "/status/": {
       "get": {
-        "tags": ["Status"],
+        "tags": [
+          "Status"
+        ],
         "summary": "Get all statuss",
         "description": "Endpoint to retrieve all statuss.",
         "responses": {
@@ -4721,7 +4959,9 @@
         }
       },
       "post": {
-        "tags": ["Status"],
+        "tags": [
+          "Status"
+        ],
         "summary": "Create a new status",
         "description": "Endpoint to create a new status.",
         "responses": {
@@ -4764,7 +5004,9 @@
     },
     "/status/{id}": {
       "get": {
-        "tags": ["Status"],
+        "tags": [
+          "Status"
+        ],
         "summary": "Get status by ID",
         "description": "Endpoint to retrieve a status by ID.",
         "parameters": [
@@ -4803,7 +5045,9 @@
         }
       },
       "put": {
-        "tags": ["Status"],
+        "tags": [
+          "Status"
+        ],
         "summary": "Update a status",
         "description": "Endpoint to update an existing status.",
         "parameters": [
@@ -4852,7 +5096,9 @@
         }
       },
       "delete": {
-        "tags": ["Status"],
+        "tags": [
+          "Status"
+        ],
         "summary": "Delete a status",
         "description": "Endpoint to delete a status.",
         "parameters": [
@@ -4893,7 +5139,9 @@
     },
     "/status/character/{characterId}": {
       "get": {
-        "tags": ["Status"],
+        "tags": [
+          "Status"
+        ],
         "summary": "Get status by character ID",
         "description": "Endpoint to retrieve a status by character ID.",
         "parameters": [
@@ -4934,7 +5182,9 @@
     },
     "/dice/difficulty": {
       "post": {
-        "tags": ["Dice"],
+        "tags": [
+          "Dice"
+        ],
         "summary": "Roll dice based on difficulty level",
         "description": "Executes a dice roll using Xd6 with thresholds tied to the provided difficulty.",
         "responses": {
@@ -4961,10 +5211,17 @@
                   },
                   "difficulty": {
                     "type": "string",
-                    "enum": ["Fácil", "Médio", "Difícil"]
+                    "enum": [
+                      "Fácil",
+                      "Médio",
+                      "Difícil"
+                    ]
                   }
                 },
-                "required": ["diceCount", "difficulty"]
+                "required": [
+                  "diceCount",
+                  "difficulty"
+                ]
               }
             }
           }
@@ -4973,7 +5230,9 @@
     },
     "/dice/custom": {
       "post": {
-        "tags": ["Dice"],
+        "tags": [
+          "Dice"
+        ],
         "summary": "Roll dice based on a custom expression",
         "description": "Executes a dice roll using the provided dice expression.",
         "responses": {
@@ -4992,7 +5251,9 @@
                     "type": "string"
                   }
                 },
-                "required": ["expression"]
+                "required": [
+                  "expression"
+                ]
               }
             }
           }
@@ -5001,7 +5262,9 @@
     },
     "/dice/clear": {
       "post": {
-        "tags": ["Dice"],
+        "tags": [
+          "Dice"
+        ],
         "description": "",
         "responses": {
           "default": {

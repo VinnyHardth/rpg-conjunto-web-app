@@ -33,10 +33,22 @@ export const seedEffects = async (prisma: PrismaClient) => {
         description: "Recupera pontos de vida imediatamente"
       },
       {
+        name: "Restaura Mana",
+        damageType: DamageType.NONE,
+        stackingPolicy: StackingPolicy.NONE,
+        description: "Restaura uma quantidade de mana imediatamente"
+      },
+      {
         name: "Reduz Mana",
         damageType: DamageType.NONE,
         stackingPolicy: StackingPolicy.NONE,
         description: "Reduz a quantidade atual de mana"
+      },
+      {
+        name: "Restaura Técnica",
+        damageType: DamageType.NONE,
+        stackingPolicy: StackingPolicy.NONE,
+        description: "Restaura uma quantidade de técnica imediatamente"
       },
       {
         name: "Reduz Técnica",
