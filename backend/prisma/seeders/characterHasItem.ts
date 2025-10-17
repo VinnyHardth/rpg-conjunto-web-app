@@ -1,6 +1,5 @@
 import { PrismaClient, EquipSlot } from "@prisma/client";
-const prisma = new PrismaClient();
-export const seedCharacterHasItem = async () => {
+export const seedCharacterHasItem = async (prisma: PrismaClient) => {
   const char = await prisma.character.findFirst();
   const sword = await prisma.items.findFirst({
     where: { name: "Espada de Ferro" }

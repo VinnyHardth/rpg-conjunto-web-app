@@ -1,12 +1,10 @@
-import { PrismaClient } from "@prisma/client";
 import {
   CreateItemHasEffectDTO,
   UpdateItemHasEffectDTO,
   ItemHasEffectDTO
 } from "./itemHasEffect.types";
 
-const prisma = new PrismaClient();
-
+import prisma from "../../prisma";
 export const createItemHasEffect = async (
   data: CreateItemHasEffectDTO
 ): Promise<ItemHasEffectDTO> => {

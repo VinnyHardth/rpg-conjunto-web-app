@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import { CreateSkillDTO, UpdateSkillDTO, SkillDTO } from "./skill.types";
 
-const prisma = new PrismaClient();
+import prisma from "../../prisma";
 
 export const createSkill = async (data: CreateSkillDTO): Promise<SkillDTO> => {
   return prisma.skill.create({ data });

@@ -1,6 +1,5 @@
 import { PrismaClient, SourceType } from "@prisma/client";
-const prisma = new PrismaClient();
-export const seedAppliedEffects = async () => {
+export const seedAppliedEffects = async (prisma: PrismaClient) => {
   const char = await prisma.character.findFirst();
   const regen = await prisma.effect.findFirst({
     where: { name: "Regeneração" }

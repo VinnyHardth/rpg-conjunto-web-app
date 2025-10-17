@@ -1,5 +1,3 @@
-import { PrismaClient } from "@prisma/client";
-
 import { seedUser } from "./seeders/user";
 import { seedArchetypes } from "./seeders/archetypes";
 import { seedAttributes } from "./seeders/attributes";
@@ -17,35 +15,50 @@ import { seedAppliedEffects } from "./seeders/appliedEffects";
 import { seedStatus } from "./seeders/status";
 import { seedSkills } from "./seeders/skills";
 import { seedAbilityEffects } from "./seeders/abilityEffect";
-
-const prisma = new PrismaClient();
-
+import { seedCampaigns } from "./seeders/campaigns";
+import { seedCharacterPerCampaign } from "./seeders/characterPerCampaign";
+import { seedCampaignMembers } from "./seeders/campaignMember";
+import prisma from "../src/prisma";
 async function main() {
   try {
     await prisma.$connect();
 
-    // Ordem lógica de inserção
-    await seedUser();
-    await seedArchetypes();
-    await seedAttributes();
-    await seedExpertises();
-    await seedAbilities();
-    await seedEffects();
-    await seedEffectModifiers();
-    await seedItems();
+    console.log("🌱 Stage 1: Seeding base data...");
+    await Promise.all([
+      seedUser(prisma),
+      seedArchetypes(prisma),
+      seedAttributes(prisma),
+      seedExpertises(prisma),
+      seedAbilities(prisma),
+      seedEffects(prisma),
+      seedItems(prisma)
+    ]);
+    console.log("✅ Stage 1 complete.");
 
-    // Relações entre entidades
-    await seedItemHasEffect();
-    await seedItemSkills();
-    await seedAbilityEffects();
+    console.log("🌱 Stage 2: Seeding characters and relations...");
+    // These depend on Stage 1. Campaigns and Characters must exist before we link them.
+    await seedCampaigns(prisma);
+    await seedCharacter(prisma);
+    await Promise.all([
+      seedItemHasEffect(prisma),
+      seedItemSkills(prisma),
+      seedAbilityEffects(prisma),
+      seedEffectModifiers(prisma),
+      seedCharacterPerCampaign(prisma), // Now runs after characters and campaigns are created
+      seedCampaignMembers(prisma) // Now runs after users and campaigns are created
+    ]);
+    console.log("✅ Stage 2 complete.");
 
-    // Núcleo dos personagens
-    await seedCharacter();
-    await seedCharacterAttributes();
-    await seedCharacterHasItem();
-    await seedStatus();
-    await seedSkills();
-    await seedAppliedEffects();
+    console.log("🌱 Stage 3: Seeding character-specific data...");
+    // These depend on characters being created in stage 2
+    await Promise.all([
+      seedCharacterAttributes(prisma),
+      seedCharacterHasItem(prisma),
+      seedStatus(prisma),
+      seedSkills(prisma),
+      seedAppliedEffects(prisma)
+    ]);
+    console.log("✅ Stage 3 complete.");
 
     console.log("Seed concluído com sucesso!");
   } catch (e) {

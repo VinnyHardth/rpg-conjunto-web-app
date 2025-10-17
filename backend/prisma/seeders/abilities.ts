@@ -1,6 +1,5 @@
 import { PrismaClient, CostType } from "@prisma/client";
-const prisma = new PrismaClient();
-export const seedAbilities = async () => {
+export const seedAbilities = async (prisma: PrismaClient) => {
   await prisma.abilities.createMany({
     data: [
       {

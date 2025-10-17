@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import { genSalt, hash } from "bcryptjs";
 
 import {
@@ -8,7 +7,7 @@ import {
   UserDTO
 } from "./user.types";
 
-const prisma = new PrismaClient();
+import prisma from "../../prisma";
 
 const toUserDTO = (user: any): UserDTO => {
   const { _, ...rest } = user;

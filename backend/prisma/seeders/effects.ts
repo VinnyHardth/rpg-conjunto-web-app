@@ -1,6 +1,5 @@
 import { PrismaClient, DamageType, StackingPolicy } from "@prisma/client";
-const prisma = new PrismaClient();
-export const seedEffects = async () => {
+export const seedEffects = async (prisma: PrismaClient) => {
   await prisma.effect.createMany({
     data: [
       {

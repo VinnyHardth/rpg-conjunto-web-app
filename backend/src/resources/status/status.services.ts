@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import { CreateStatusDTO, UpdateStatusDTO, StatusDTO } from "./status.types";
 
-const prisma = new PrismaClient();
-
+import prisma from "../../prisma";
 export const createStatus = async (
   data: CreateStatusDTO
 ): Promise<StatusDTO> => {

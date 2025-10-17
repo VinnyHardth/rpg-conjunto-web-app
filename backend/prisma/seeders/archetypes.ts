@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
-export const seedArchetypes = async () => {
+export const seedArchetypes = async (prisma: PrismaClient) => {
   const existing = await prisma.archetype.findMany({
     select: { name: true }
   });

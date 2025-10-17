@@ -1,11 +1,11 @@
-import { PrismaClient, SourceType, StackingPolicy } from "@prisma/client";
+import { SourceType, StackingPolicy } from "@prisma/client";
 import {
   CreateAppliedEffectDTO,
   UpdateAppliedEffectDTO,
   AppliedEffectDTO
 } from "./appliedEffect.types";
 
-const prisma = new PrismaClient();
+import prisma from "../../prisma";
 
 export const createAppliedEffect = async (
   data: CreateAppliedEffectDTO

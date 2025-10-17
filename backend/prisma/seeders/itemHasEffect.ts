@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
-export const seedItemHasEffect = async () => {
+export const seedItemHasEffect = async (prisma: PrismaClient) => {
   const sword = await prisma.items.findFirst({
     where: { name: "Espada de Ferro" }
   });

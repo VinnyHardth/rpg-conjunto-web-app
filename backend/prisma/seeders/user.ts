@@ -1,9 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { genSalt, hash } from "bcryptjs";
 
-const prisma = new PrismaClient();
-
-export const seedUser = async () => {
+export const seedUser = async (prisma: PrismaClient) => {
   const users = [
     { nickname: "Admin", email: "admin@example.com", password: "admin1" },
     {

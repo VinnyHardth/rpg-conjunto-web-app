@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import { CreateItemsDTO, UpdateItemsDTO, ItemsDTO } from "./items.types";
 
-const prisma = new PrismaClient();
+import prisma from "../../prisma";
 
 export const createItems = async (data: CreateItemsDTO): Promise<ItemsDTO> => {
   return prisma.items.create({ data });
