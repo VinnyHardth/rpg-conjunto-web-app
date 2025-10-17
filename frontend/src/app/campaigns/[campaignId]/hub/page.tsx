@@ -31,6 +31,7 @@ import { useCharacterManagement } from "./hooks/useCharacterManagement";
 import { useDamagePanel } from "./hooks/useDamagePanel";
 import { useDiceRolls } from "./hooks/useDiceRolls";
 import { useHubInterface } from "./hooks/useHubInterface";
+import { useRestActions } from "./hooks/useRestActions";
 import { CampaignHubProvider } from "./contexts/CampaignHubContext";
 
 type Relation = CharacterPerCampaignWithCharacter;
@@ -195,6 +196,13 @@ export default function CampaignHubByIdPage() {
     handleClearRolls,
     socketHandlers: diceRollSocketHandlers,
   } = diceRolls;
+
+  // Lógica de descanso da campanha
+  const restActions = useRestActions({
+    campaignId: campaignId!,
+    characters: relations ?? [],
+    mutateRelations,
+  });
 
   const sidebarCharacterId = isMaster ? focusedCardId : playerCharacterId;
 
@@ -402,6 +410,7 @@ export default function CampaignHubByIdPage() {
     useDiceRolls: diceRolls,
     useDamagePanel: damagePanel,
     useHubInterface: hubInterface,
+    useRestActions: restActions,
     isMaster,
     sidebarCharacterId,
     sidebarCharacter,

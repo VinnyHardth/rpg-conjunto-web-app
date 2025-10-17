@@ -134,6 +134,49 @@ export function useDamagePanel({
 
     const effectValue = selectedActionConfig.isIncrease ? amount : -amount;
 
+    // Lógica para múltiplos alvos
+    if (selectedTargetId === "ALL_CHARACTERS" && isMaster) {
+      try {
+        setIsApplying(true);
+        setError(null);
+
+        const allTargets = Object.values(charactersById);
+        const promises = allTargets.map(target => 
+          applyEffectTurn({
+            characterId: target.id,
+            effectId: effect.id,
+            sourceType: SourceType.OTHER,
+            duration: 0,
+            valuePerStack: effectValue,
+          })
+        );
+
+        await Promise.all(promises);
+
+        // Invalida o cache de todos os personagens afetados
+        const cacheKeys = allTargets.map(target => statusCacheKey(target.id));
+        await Promise.all(cacheKeys.map(key => key ? mutateCache(key) : Promise.resolve()));
+
+        setMessage(
+          `${selectedActionConfig.label} (${amount}) aplicado a todos os personagens com sucesso.`
+        );
+        setRoll(null);
+
+      } catch (err) {
+        console.error("Falha ao aplicar alteração de status em múltiplos alvos:", err);
+        setError("Não foi possível aplicar a alteração em todos os personagens.");
+      } finally {
+        setIsApplying(false);
+      }
+      return;
+    }
+
+    // Lógica para alvo único (existente)
+    if (!charactersById[selectedTargetId]) {
+      setError("O alvo selecionado não é válido.");
+      return;
+    }
+
     try {
       setIsApplying(true);
       setError(null);
@@ -157,7 +200,6 @@ export function useDamagePanel({
       const finalAmount = result.immediate?.results?.[0]?.delta
         ? Math.abs(result.immediate.results[0].delta)
         : amount;
-
       let amountMessage: string;
       const damageType = effect.damageType;
 
@@ -181,7 +223,7 @@ export function useDamagePanel({
       setIsApplying(false);
     }
   }, [
-    //isMaster,
+    isMaster,
     selectedTargetId,
     roll,
     effectsLoading,
@@ -197,7 +239,7 @@ export function useDamagePanel({
   // Efeito para sincronizar o alvo selecionado
   useEffect(() => {
     const targetInList = characters.find((c) => c.id === selectedTargetId);
-    if (targetInList) {
+    if (targetInList || selectedTargetId === "ALL_CHARACTERS") {
       return; // O alvo selecionado ainda é válido, não faz nada.
     }
 

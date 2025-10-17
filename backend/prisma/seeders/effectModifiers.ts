@@ -13,12 +13,19 @@ export const seedEffectModifiers = async (prisma: PrismaClient) => {
   const healing = await prisma.effect.findFirst({
     where: { name: "Cura" }
   });
+  const restoreMana = await prisma.effect.findFirst({
+    where: { name: "Restaura Mana" }
+  });
   const reduceMana = await prisma.effect.findFirst({
     where: { name: "Reduz Mana" }
+  });
+  const restoreTechnique = await prisma.effect.findFirst({
+    where: { name: "Restaura Técnica" }
   });
   const reduceTechnique = await prisma.effect.findFirst({
     where: { name: "Reduz Técnica" }
   });
+
   if (regen) {
     await prisma.effectModifier.createMany({
       data: [
@@ -71,12 +78,38 @@ export const seedEffectModifiers = async (prisma: PrismaClient) => {
       skipDuplicates: true
     });
   }
+  if (restoreMana) {
+    await prisma.effectModifier.createMany({
+      data: [
+        {
+          effectId: restoreMana.id,
+          componentName: "MP",
+          componentType: ComponentType.STATUS,
+          operationType: OperationType.ADD
+        }
+      ],
+      skipDuplicates: true
+    });
+  }
   if (reduceMana) {
     await prisma.effectModifier.createMany({
       data: [
         {
           effectId: reduceMana.id,
           componentName: "MP",
+          componentType: ComponentType.STATUS,
+          operationType: OperationType.ADD
+        }
+      ],
+      skipDuplicates: true
+    });
+  }
+  if (restoreTechnique) {
+    await prisma.effectModifier.createMany({
+      data: [
+        {
+          effectId: restoreTechnique.id,
+          componentName: "TP",
           componentType: ComponentType.STATUS,
           operationType: OperationType.ADD
         }
