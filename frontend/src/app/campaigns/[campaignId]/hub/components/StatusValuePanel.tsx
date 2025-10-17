@@ -89,7 +89,7 @@ const StatusValuePanel = ({
                     )}
                     {characters.length > 0 && (
                       <>
-                        <option value="">Selecione um personagem</option>
+                        <option value="ALL_CHARACTERS">Todos</option>
                         {characters.map((character) => (
                           <option key={character.id} value={character.id}>
                             {character.name}
