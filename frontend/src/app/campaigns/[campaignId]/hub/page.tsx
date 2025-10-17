@@ -26,6 +26,8 @@ import {
   rollCustom,
   type RollCustomResponse,
   updateStatus,
+  updateMultipleStatuses,
+  StatusUpdateItem
 } from "@/lib/api";
 import {
   Campaign,
@@ -202,6 +204,7 @@ export default function CampaignHubByIdPage() {
   const [damageRoll, setDamageRoll] = useState<RollCustomResponse | null>(null);
   const [isRollingDamage, setIsRollingDamage] = useState(false);
   const [isApplyingDamage, setIsApplyingDamage] = useState(false);
+  const [isResting, setIsResting] = useState(false);
   const [damageError, setDamageError] = useState<string | null>(null);
   const [damageMessage, setDamageMessage] = useState<string | null>(null);
 
@@ -910,7 +913,6 @@ export default function CampaignHubByIdPage() {
   };
 
   const handleApplyDamage = async () => {
-    if (!isMaster) return;
     if (!selectedDamageTargetId) {
       setDamageError("Selecione um alvo para aplicar a alteração.");
       return;
@@ -1019,6 +1021,93 @@ export default function CampaignHubByIdPage() {
       setDamageError("Não foi possível aplicar a alteração agora.");
     } finally {
       setIsApplyingDamage(false);
+    }
+  };
+
+  const handleShortRest = async () => {
+    if (!isMaster || isResting) return;
+
+    setIsResting(true);
+    setDamageError(null);
+    setDamageMessage(null);
+
+    try {
+      // TODO: Implementar endpoint no backend
+      // await campaignShortRest(campaignId);
+      console.log("Iniciando descanso curto para todos os personagens...");
+
+      // Lógica de exemplo para o frontend
+      const allStatuses = await Promise.all(
+        orderedCharacters.map((c) => fetchCharacterStatus(c.id)),
+      );
+
+      const allUpdates = allStatuses.flat().map((s) => {
+        const max = Number(s.valueMax ?? 0) + Number(s.valueBonus ?? 0);
+        if (max <= 0) return null;
+        const current = Number(s.valueActual ?? 0);
+        const target = Math.min(max, current + max * 0.5);
+        if (target > current) {
+          return { statusId: s.id, valueActual: Math.round(target) };
+        }
+        return null;
+      });
+
+      const validUpdates = allUpdates.filter(Boolean);
+
+      if (validUpdates.length > 0) {
+        await updateMultipleStatuses(validUpdates as StatusUpdateItem[]);
+          }
+
+      setDamageMessage(
+        "Descanso curto aplicado. Os status de todos os personagens foram parcialmente recuperados.",
+      );
+    } catch (error) {
+      console.error("Falha ao aplicar descanso curto:", error);
+      setDamageError("Não foi possível aplicar o descanso curto.");
+    } finally {
+      setIsResting(false);
+    }
+  };
+
+  const handleLongRest = async () => {
+    if (!isMaster || isResting) return;
+
+    setIsResting(true);
+    setDamageError(null);
+    setDamageMessage(null);
+
+    try {
+      // TODO: Implementar endpoint no backend
+      // await campaignLongRest(campaignId);
+      const allStatuses = await Promise.all(
+        orderedCharacters.map((c) => fetchCharacterStatus(c.id)),
+      );
+
+      const allUpdates = allStatuses.flat().map((s) => {
+        const max = Number(s.valueMax ?? 0) + Number(s.valueBonus ?? 0);
+        if (max <= 0) return null;
+        const current = Number(s.valueActual ?? 0);
+        if (current < max) {
+          return { statusId: s.id, valueActual: Math.round(max) };
+        }
+        return null;
+      });
+
+      const validUpdates = allUpdates.filter(Boolean);
+
+      if (validUpdates.length > 0) {
+        await updateMultipleStatuses(validUpdates as StatusUpdateItem[]);
+      }
+
+      console.log("Iniciando descanso longo para todos os personagens...");
+      setDamageMessage(
+        "Descanso longo aplicado. Os status de todos os personagens foram totalmente recuperados.",
+      );
+    } catch (error) {
+      console.error("Falha ao aplicar descanso longo:", error);
+      setDamageError("Não foi possível aplicar o descanso longo.");
+    } finally {
+      setIsResting(false);
     }
   };
 
@@ -1461,6 +1550,9 @@ export default function CampaignHubByIdPage() {
           onRoll={handleRollDamage}
           onReset={handleResetDamage}
           onApply={handleApplyDamage}
+          onShortRest={handleShortRest}
+          onLongRest={handleLongRest}
+          isResting={isResting}
           isRolling={isRollingDamage}
           isApplying={isApplyingDamage}
           damageRoll={damageRoll}
