@@ -294,3 +294,33 @@ export const applyEffectTurn = async (payload: ApplyEffectTurnPayload) => {
   const { data } = await api.post("/appliedeffects/turn", payload);
   return data;
 };
+
+export type StatusUpdateItem = {
+  statusId: string;
+} & UpdateStatusPayload;
+
+export const updateMultipleStatuses = async (
+  payload: StatusUpdateItem[],
+): Promise<Status[]> => {
+  if (payload.length === 0) return [];
+
+  // Executa todas as atualizações em paralelo
+  await Promise.all(
+    payload.map((status) =>
+      updateStatus(status.statusId, {
+        characterId: status.characterId,
+        name: status.name,
+        valueMax: status.valueMax,
+        valueBonus: status.valueBonus,
+        valueActual: status.valueActual,
+      }).catch((err) => {
+        console.error(`Erro ao atualizar status ${status.statusId}:`, err);
+        return null; // ignora falha individual
+      }),
+    ),
+  );
+  // Busca novamente o estado atualizado do personagem
+  const { data } = await api.get(`/status/character/${payload[0].characterId}`);
+  console.log("Statuses atualizados:", data);
+  return data;
+};

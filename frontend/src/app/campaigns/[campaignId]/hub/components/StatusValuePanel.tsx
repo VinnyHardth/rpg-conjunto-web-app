@@ -1,5 +1,6 @@
 import { useCampaignHub } from "../contexts/CampaignHubContext";
 import { STATUS_ACTION_OPTIONS, type StatusAction } from "../statusActions";
+import { RestType,  } from "../hooks/useRestActions";
 
 export interface StatusValuePanelProps {
   onClose: () => void;
@@ -11,6 +12,7 @@ const StatusValuePanel = ({
   activeRollsContent,
 }: StatusValuePanelProps) => {
   const {
+    isMaster,
     effectsLoading,
     effectsError,
     useCharacterManagement: { orderedCharacters: characters },
@@ -31,6 +33,12 @@ const StatusValuePanel = ({
       handleReset,
       handleApply,
       clearState,
+    },
+    useRestActions: {
+      isResting,
+      restError,
+      restMessage,
+      handleRest,
     },
     useHubInterface: { isDamageOpen, damagePanelRef: panelRef },
   } = useCampaignHub();
@@ -205,6 +213,42 @@ const StatusValuePanel = ({
                 {activeRollsContent}
               </div>
             </div>
+
+            {isMaster && (
+              <div className="mt-auto space-y-3 border-t border-white/10 pt-4">
+                <h3 className="mb-2 text-xs font-semibold uppercase tracking-widest text-white/70">
+                  Ações do Mestre
+                </h3>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleRest(RestType.SHORT)}
+                    disabled={isResting}
+                    className="inline-flex items-center justify-center rounded-lg border border-sky-300/20 bg-sky-800/50 px-3 py-2 text-xs font-semibold text-sky-200 shadow transition hover:bg-sky-700/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 disabled:cursor-not-allowed disabled:border-white/5 disabled:bg-white/10 disabled:text-slate-400"
+                  >
+                    {isResting ? "Aguarde..." : "Descanso Curto"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleRest(RestType.LONG)}
+                    disabled={isResting}
+                    className="inline-flex items-center justify-center rounded-lg border border-emerald-300/20 bg-emerald-800/50 px-3 py-2 text-xs font-semibold text-emerald-200 shadow transition hover:bg-emerald-700/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 disabled:cursor-not-allowed disabled:border-white/5 disabled:bg-white/10 disabled:text-slate-400"
+                  >
+                    {isResting ? "Aguarde..." : "Descanso Longo"}
+                  </button>
+                </div>
+                {restError && (
+                  <p className="text-center text-xs text-red-300">
+                    {restError}
+                  </p>
+                )}
+                {restMessage && (
+                  <p className="text-center text-xs text-emerald-300">
+                    {restMessage}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </aside>
