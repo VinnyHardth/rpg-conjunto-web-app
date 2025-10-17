@@ -31,13 +31,13 @@ export const updateAppliedEffectSchema = Joi.object<UpdateAppliedEffectDTO>({
 
 // 🆕 Novo schema para aplicação dinâmica de efeitos (rota /apply)
 export const applyEffectSchema = Joi.object({
-  campaignId: Joi.string().uuid().required(),
   characterId: Joi.string().uuid().required(),
   effectId: Joi.string().uuid().required(),
   sourceType: Joi.string()
     .valid(...Object.values(SourceType))
     .required(),
-  amount: Joi.number().integer().required(),
-  duration: Joi.number().integer().min(0).default(0),
-  stacks: Joi.number().integer().min(0).default(1)
+  currentTurn: Joi.number().integer().min(0).default(0),
+  duration: Joi.number().integer().min(0).required(),
+  stacksDelta: Joi.number().integer().default(1),
+  valuePerStack: Joi.number().default(0)
 });

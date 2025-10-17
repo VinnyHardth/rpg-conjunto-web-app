@@ -74,6 +74,8 @@ export async function applyEffectTurn(p: ApplyParams) {
 
     // ----------- EFEITO INSTANTÂNEO ----------- //
     if (duration <= 0) {
+      const immediateResults: any[] = [];
+
       // Aplicação imediata em STATUS, se houver targets
       for (const t of effect.targets) {
         if (t.componentType !== "STATUS") continue;
@@ -83,8 +85,36 @@ export async function applyEffectTurn(p: ApplyParams) {
         });
         if (!status) continue;
 
-        const delta = valuePerStack * stacksDelta;
+        let delta = valuePerStack * stacksDelta;
         const op = t.operationType;
+
+        // --- LÓGICA DE RESISTÊNCIA ---
+        // Se o efeito for de dano (ADD com valor negativo) e o alvo for HP
+        if (
+          targetName === "HP" &&
+          delta < 0 &&
+          (effect.damageType === "PHISICAL" || effect.damageType === "MAGIC")
+        ) {
+          const resistanceAttrName =
+            effect.damageType === "PHISICAL" ? "Res. Física" : "Res. Mágica";
+
+          // Busca o valor da perícia de resistência, que já está calculado e salvo no DB.
+          const resistanceAttr = await tx.characterAttribute.findFirst({
+            where: {
+              characterId,
+              attribute: { name: resistanceAttrName }
+            },
+            include: { attribute: true }
+          });
+
+          if (resistanceAttr) {
+            const resistanceValue =
+              resistanceAttr.valueBase +
+              resistanceAttr.valueInv +
+              resistanceAttr.valueExtra;
+            delta = Math.min(0, delta + resistanceValue);
+          }
+        }
 
         let newValue = status.valueActual;
         if (op === "ADD") newValue += delta;
@@ -98,15 +128,20 @@ export async function applyEffectTurn(p: ApplyParams) {
           where: { id: status.id },
           data: { valueActual: newValue }
         });
+
+        immediateResults.push({
+          target: targetName,
+          delta,
+          initialValue: status.valueActual,
+          finalValue: newValue
+        });
       }
 
       return {
         applied: null,
         immediate: {
-          effectId,
-          damageType: effect.damageType,
-          targets: effect.targets,
-          sourceType
+          ...p,
+          results: immediateResults
         }
       };
     }
@@ -225,5 +260,107 @@ export const getAppliedEffectsByCharacterId = async (
 ): Promise<AppliedEffectDTO[]> => {
   return prisma.appliedEffect.findMany({
     where: { characterId, deletedAt: null }
+  });
+};
+
+/**
+ * Avança um turno para um efeito específico, decrementando sua duração.
+ * Se a duração chegar a 0, o efeito é marcado como deletado.
+ * @param id O ID do AppliedEffect.
+ */
+export const advanceEffectTurn = async (
+  id: string
+): Promise<AppliedEffectDTO> => {
+  return prisma.$transaction(async (tx) => {
+    const effect = await tx.appliedEffect.findUnique({
+      where: { id, deletedAt: null }
+    });
+
+    if (!effect) {
+      throw new Error(
+        `AppliedEffect with ID ${id} not found or already expired.`
+      );
+    }
+
+    const newDuration = effect.duration - 1;
+
+    return tx.appliedEffect.update({
+      where: { id },
+      data: {
+        duration: newDuration,
+        deletedAt: newDuration <= 0 ? new Date() : null
+      }
+    });
+  });
+};
+
+/**
+ * Avança um turno para TODOS os efeitos ativos, decrementando suas durações.
+ * Efeitos cuja duração chega a 0 são marcados como deletados.
+ * @returns Uma contagem dos efeitos atualizados e expirados.
+ */
+export const advanceAllEffectsTurn = async (): Promise<{
+  updatedCount: number;
+  expiredCount: number;
+}> => {
+  return prisma.$transaction(async (tx) => {
+    // 1. Decrementa a duração de todos os efeitos ativos que possuem duração.
+    const updateResult = await tx.appliedEffect.updateMany({
+      where: {
+        deletedAt: null,
+        duration: { gt: 0 }
+      },
+      data: {
+        duration: { decrement: 1 }
+      }
+    });
+
+    // 2. Marca como deletados os efeitos que acabaram de expirar.
+    const expireResult = await tx.appliedEffect.updateMany({
+      where: { deletedAt: null, duration: { lte: 0 } },
+      data: { deletedAt: new Date() }
+    });
+
+    return {
+      updatedCount: updateResult.count,
+      expiredCount: expireResult.count
+    };
+  });
+};
+
+/**
+ * Avança um turno para TODOS os efeitos ativos de um personagem específico.
+ * @param characterId O ID do personagem.
+ * @returns Uma contagem dos efeitos atualizados e expirados.
+ */
+export const advanceCharacterEffectsTurn = async (
+  characterId: string
+): Promise<{
+  updatedCount: number;
+  expiredCount: number;
+}> => {
+  return prisma.$transaction(async (tx) => {
+    // 1. Decrementa a duração de todos os efeitos ativos do personagem.
+    const updateResult = await tx.appliedEffect.updateMany({
+      where: {
+        characterId,
+        deletedAt: null,
+        duration: { gt: 0 }
+      },
+      data: {
+        duration: { decrement: 1 }
+      }
+    });
+
+    // 2. Marca como deletados os efeitos que acabaram de expirar para esse personagem.
+    const expireResult = await tx.appliedEffect.updateMany({
+      where: { characterId, deletedAt: null, duration: { lte: 0 } },
+      data: { deletedAt: new Date() }
+    });
+
+    return {
+      updatedCount: updateResult.count,
+      expiredCount: expireResult.count
+    };
   });
 };

@@ -3552,6 +3552,32 @@
         }
       }
     },
+    "/appliedeffects/character/{characterId}": {
+      "get": {
+        "tags": ["AppliedEffects"],
+        "summary": "Obtém todos os AppliedEffects de um personagem",
+        "description": "",
+        "parameters": [
+          {
+            "name": "characterId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "UUID do Personagem"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de AppliedEffects encontrada."
+          },
+          "500": {
+            "description": "Erro interno do servidor."
+          }
+        }
+      }
+    },
     "/appliedeffects/turn": {
       "post": {
         "tags": ["AppliedEffects"],
@@ -3613,6 +3639,76 @@
                 ]
               }
             }
+          }
+        }
+      }
+    },
+    "/appliedeffects/{id}/tick": {
+      "post": {
+        "tags": ["AppliedEffects"],
+        "summary": "Avança 1 turno de um efeito aplicado, reduzindo sua duração.",
+        "description": "Se a duração chegar a 0, o efeito é removido (soft delete).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "UUID do AppliedEffect"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Turno do efeito avançado com sucesso."
+          },
+          "404": {
+            "description": "Efeito não encontrado ou já expirado."
+          },
+          "500": {
+            "description": "Erro interno do servidor."
+          }
+        }
+      }
+    },
+    "/appliedeffects/tick/all": {
+      "post": {
+        "tags": ["AppliedEffects"],
+        "summary": "Avança 1 turno para TODOS os efeitos ativos no sistema.",
+        "description": "Reduz a duração de todos os efeitos e remove (soft delete) os que chegarem a 0.",
+        "responses": {
+          "200": {
+            "description": "Turno global avançado com sucesso."
+          },
+          "500": {
+            "description": "Erro interno do servidor."
+          }
+        }
+      }
+    },
+    "/appliedeffects/character/{characterId}/tick": {
+      "post": {
+        "tags": ["AppliedEffects"],
+        "summary": "Avança 1 turno para todos os efeitos de um personagem.",
+        "description": "Reduz a duração dos efeitos do personagem e remove (soft delete) os que chegarem a 0.",
+        "parameters": [
+          {
+            "name": "characterId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "UUID do Personagem"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Turno do personagem avançado com sucesso."
+          },
+          "500": {
+            "description": "Erro interno do servidor."
           }
         }
       }
