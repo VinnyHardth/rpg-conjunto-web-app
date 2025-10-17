@@ -136,11 +136,6 @@ export default function CampaignHubByIdPage() {
     memberIds: members.map((m) => m.userId).filter(Boolean) as string[],
   });
 
-  const activeRelations = useMemo(
-    () => (relations ?? []).filter((rel) => !rel.deletedAt),
-    [relations],
-  );
-
   const playerCharacterId = useMemo(() => {
     if (!user) return null;
     return (
