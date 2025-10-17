@@ -1,21 +1,24 @@
 #!/bin/sh
-# Faz git push + gh pr create usando a mensagem do último commit
-# Uso: ./create-pr.sh [ISSUE_ID] [LINK_TYPE]
-# Exemplos:
-#   ./create-pr.sh 29 fixes
-#   ./create-pr.sh 42 related
+# Uso: ./push_master [ISSUE_ID] [LINK_TYPE]
 
 set -e
 
 ISSUE="$1"
-LINK_TYPE="${2:-fixes}" # padrão = fixes
+LINK_TYPE="${2:-fixes}" # padrão
 MSG=$(git log -1 --pretty=%B | head -n 1)
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 git push -u origin "$BRANCH"
 
 if [ -n "$ISSUE" ]; then
-  BODY="$MSG\n\n${LINK_TYPE^} #$ISSUE"
+  case "$LINK_TYPE" in
+    fixes|Fixes) LINK="Fixes" ;;
+    closes|Closes) LINK="Closes" ;;
+    resolves|Resolves) LINK="Resolves" ;;
+    related|Related) LINK="Related" ;;
+    *) LINK="$LINK_TYPE" ;;
+  esac
+  BODY="$MSG\n\n$LINK #$ISSUE"
 else
   BODY="$MSG"
 fi
