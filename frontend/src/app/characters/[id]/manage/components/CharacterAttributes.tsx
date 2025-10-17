@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 
-import { useAttributes } from "@/hooks/useAttributes";
+import { useAttributes } from "../hooks/useAttributes";
 import type {
   Archetype,
   AttributeKey,

@@ -4,8 +4,8 @@
 import React, { useEffect, useState } from "react";
 import { useCharacterData } from "@/hooks/useCharacterData";
 import toast from "react-hot-toast";
-import CharacterBasicInfo from "@/components/character-manager/CharacterBasicInfo";
-import CharacterAttributes from "@/components/character-manager/CharacterAttributes";
+import CharacterBasicInfo from "./components/CharacterBasicInfo";
+import CharacterAttributes from "./components/CharacterAttributes";
 
 import {
   CharacterBasicInfoUpdate,
@@ -50,21 +50,26 @@ export default function CharacterManagementPage({
 
   const handleBasicInfoUpdate = (updates: CharacterBasicInfoUpdate) => {
     setPendingUpdates(
-      (prev): Partial<FullCharacterData> => ({
-        ...prev,
-        info: prev.info ? { ...prev.info, ...updates } : undefined,
-      }),
+      (prev): Partial<FullCharacterData> => (
+        {
+          ...prev,
+          info: {
+            ...(localCharacterData?.info as CharacterDTO), // Start with the full, current data
+            ...prev.info,
+            ...updates,
+            id, // Ensure ID is always present and correct
+          },
+        }
+      ),
     );
     setLocalCharacterData((prevData) => {
       if (!prevData) return null; // Should not happen, but keeps type safety
       return {
         ...prevData,
-        // Explicitly cast the merged object to CharacterDTO to satisfy the type checker.
-        // We know this is safe because prevData.info contains all required fields.
         info: {
           ...prevData.info,
           ...updates,
-        } as CharacterDTO,
+        },
       };
     });
   };
@@ -102,7 +107,22 @@ export default function CharacterManagementPage({
 
       // 1️⃣ Atualiza personagem base
       if (pendingUpdates.info && Object.keys(pendingUpdates.info).length > 0) {
-        promises.push(api.put(`/characters/${id}`, pendingUpdates.info));
+        // Sanitize the payload to send only allowed fields
+
+        const {
+          id: _charId,
+          userId: _userId,
+          createdAt: _createdAt,
+          updatedAt: _updatedAt,
+          deletedAt: _deletedAt,
+          ...allowedUpdates
+        } = pendingUpdates.info;
+
+        // Ensure annotations is a string
+        if (allowedUpdates.annotations === null || allowedUpdates.annotations === undefined) {
+          allowedUpdates.annotations = "";
+        }
+        promises.push(api.put(`/characters/${id}`, allowedUpdates));
       }
 
       // 2️⃣ Atualiza atributos
