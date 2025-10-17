@@ -106,7 +106,7 @@ export function useDamagePanel({
   }, []);
 
   const handleApply = useCallback(async () => {
-    if (!isMaster) return;
+    //if (!isMaster) return;
     if (!selectedTargetId) {
       setError("Selecione um alvo para aplicar a alteração.");
       return;
@@ -205,7 +205,7 @@ export function useDamagePanel({
       setIsApplying(false);
     }
   }, [
-    isMaster,
+    //isMaster,
     selectedTargetId,
     roll,
     effectsLoading,
