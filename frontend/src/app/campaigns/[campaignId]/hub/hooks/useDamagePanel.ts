@@ -1,10 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
-import {
-  createAppliedEffect,
-  fetchCharacterStatus,
-  rollCustom,
-  updateStatus,
-} from "@/lib/api";
+import { applyEffectTurn, rollCustom } from "@/lib/api";
+
 import type { RollCustomResponse } from "@/lib/api";
 import type { Character } from "@/types/models";
 import { EffectDTO } from "@rpg/shared";
@@ -142,60 +138,40 @@ export function useDamagePanel({
       setIsApplying(true);
       setError(null);
 
-      await createAppliedEffect({
+      // 1. Delega toda a lógica de aplicação (cálculo, resistência, etc.) para o backend
+      const result = await applyEffectTurn({
         characterId: selectedTargetId,
         effectId: effect.id,
         sourceType: SourceType.OTHER,
         duration: 0,
-        startedAt: 0,
-        expiresAt: 0,
-        stacks: 1,
-        value: effectValue,
+        valuePerStack: effectValue,
       });
 
-      let statusMessage = "";
-      try {
-        const statusList = await fetchCharacterStatus(selectedTargetId);
-        const targetStatus = statusList.find(
-          (status) =>
-            status.name.toLowerCase() ===
-            selectedActionConfig.targetStatus.toLowerCase(),
-        );
-        if (targetStatus) {
-          const currentValue = Number(targetStatus.valueActual ?? 0);
-          const rawMax =
-            Number(targetStatus.valueMax ?? 0) +
-            Number(targetStatus.valueBonus ?? 0);
-          const safeMax = Number.isFinite(rawMax) ? Math.max(0, rawMax) : 0;
-          let nextValue = currentValue + effectValue;
-          if (safeMax > 0) {
-            nextValue = Math.min(safeMax, nextValue);
-          }
-          nextValue = Math.max(0, nextValue);
-          let updatedStatuses = statusList;
-          if (nextValue !== currentValue) {
-            await updateStatus(targetStatus.id, { valueActual: nextValue });
-            updatedStatuses = statusList.map((status) =>
-              status.id === targetStatus.id
-                ? { ...status, valueActual: nextValue }
-                : status,
-            );
-          }
-          const cacheKey = statusCacheKey(selectedTargetId);
-          if (cacheKey) {
-            await mutateCache(cacheKey, updatedStatuses, { revalidate: false });
-          }
-          statusMessage = ` ${selectedActionConfig.targetStatus} atual: ${Math.round(nextValue)}/${Math.round(safeMax > 0 ? safeMax : Math.max(currentValue, nextValue))}.`;
-        }
-      } catch (statusError) {
-        console.error("Falha ao atualizar status:", statusError);
-        statusMessage =
-          " (Efeito registrado, mas não foi possível atualizar o status automaticamente.)";
+      // 2. Invalida o cache de status. O SWR se encarregará de buscar os dados atualizados do servidor.
+      const cacheKey = statusCacheKey(selectedTargetId);
+      if (cacheKey) {
+        await mutateCache(cacheKey); // O SWR irá revalidar automaticamente
+      }
+
+      // Usa o dano final retornado pela API na mensagem, se disponível.
+      const finalAmount = result.immediate?.results?.[0]?.delta
+        ? Math.abs(result.immediate.results[0].delta)
+        : amount;
+
+      let amountMessage: string;
+      const damageType = effect.damageType;
+
+      // Para dano Físico ou Mágico, sempre mostramos a redução, mesmo que seja zero.
+      // Para outros tipos, mostramos apenas o valor final.
+      if (damageType === "PHISICAL" || damageType === "MAGIC") {
+        amountMessage = `${amount} ➔ ${finalAmount}`;
+      } else {
+        amountMessage = `${finalAmount}`;
       }
 
       const target = charactersById[selectedTargetId];
       setMessage(
-        `${target ? `${selectedActionConfig.label} (${amount}) em ${target.name}` : `${selectedActionConfig.label} (${amount}`}.${statusMessage}`,
+        `${target ? `${selectedActionConfig.label} (${amountMessage}) em ${target.name}` : `${selectedActionConfig.label} (${amountMessage})`} aplicado com sucesso.`,
       );
       setRoll(null);
     } catch (err) {
@@ -220,19 +196,15 @@ export function useDamagePanel({
 
   // Efeito para sincronizar o alvo selecionado
   useEffect(() => {
-    const targetExists = characters.some((c) => c.id === selectedTargetId);
-    if (targetExists) return;
-
-    if (
-      focusedCharacterId &&
-      characters.some((c) => c.id === focusedCharacterId)
-    ) {
-      setSelectedTargetId(focusedCharacterId);
-    } else if (characters.length > 0) {
-      setSelectedTargetId(characters[0].id);
-    } else {
-      setSelectedTargetId(null);
+    const targetInList = characters.find((c) => c.id === selectedTargetId);
+    if (targetInList) {
+      return; // O alvo selecionado ainda é válido, não faz nada.
     }
+
+    // Se o alvo selecionado não for mais válido, tenta definir um novo.
+    const focusedInList = characters.find((c) => c.id === focusedCharacterId);
+    const newTargetId = focusedInList?.id ?? characters[0]?.id ?? null;
+    setSelectedTargetId(newTargetId);
   }, [focusedCharacterId, characters, selectedTargetId]);
 
   return {

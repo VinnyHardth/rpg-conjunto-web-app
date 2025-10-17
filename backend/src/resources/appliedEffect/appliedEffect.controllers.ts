@@ -6,9 +6,12 @@ import {
   getAppliedEffects,
   updateAppliedEffect,
   deleteAppliedEffect,
-  applyEffectTurn // novo método do service
+  applyEffectTurn, // novo método do service
+  getAppliedEffectsByCharacterId,
+  advanceEffectTurn,
+  advanceAllEffectsTurn,
+  advanceCharacterEffectsTurn
 } from "./appliedEffect.services";
-import { SourceType } from "@prisma/client";
 
 const handleError = (res: Response, err: any, context: string): void => {
   console.error(`${context}:`, err);
@@ -163,42 +166,94 @@ const applyTurn = async (req: Request, res: Response): Promise<void> => {
     #swagger.responses[500] = { description: 'Erro interno do servidor.' }
   */
   try {
-    const {
-      characterId,
-      effectId,
-      sourceType,
-      currentTurn,
-      duration,
-      stacksDelta,
-      valuePerStack
-    } = req.body;
-
-    if (
-      !characterId ||
-      !effectId ||
-      !sourceType ||
-      !currentTurn ||
-      duration === undefined
-    ) {
-      res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ error: "Missing required fields" });
-      return;
-    }
-
-    const result = await applyEffectTurn({
-      characterId,
-      effectId,
-      sourceType: sourceType as SourceType,
-      currentTurn: Number(currentTurn),
-      duration: Number(duration),
-      stacksDelta: Number(stacksDelta ?? 1),
-      valuePerStack: Number(valuePerStack ?? 0)
-    });
-
+    // A validação, conversão de tipos e valores padrão agora são tratados
+    // pelo middleware `validateRequestBody` com o schema Joi.
+    const result = await applyEffectTurn(req.body);
     res.status(StatusCodes.OK).json(result);
   } catch (err) {
     handleError(res, err, "Error applying effect turn");
+  }
+};
+
+const getByCharacterId = async (req: Request, res: Response): Promise<void> => {
+  /*
+    #swagger.tags = ['AppliedEffects']
+    #swagger.summary = 'Obtém todos os AppliedEffects de um personagem'
+    #swagger.parameters['characterId'] = { description: 'UUID do Personagem', required: true }
+    #swagger.responses[200] = { description: 'Lista de AppliedEffects encontrada.' }
+    #swagger.responses[500] = { description: 'Erro interno do servidor.' }
+  */
+  try {
+    const effects = await getAppliedEffectsByCharacterId(
+      req.params.characterId
+    );
+    res.status(StatusCodes.OK).json(effects);
+  } catch (err) {
+    handleError(res, err, "Error retrieving applied effects by character");
+  }
+};
+
+const tick = async (req: Request, res: Response): Promise<void> => {
+  /*
+    #swagger.tags = ['AppliedEffects']
+    #swagger.summary = 'Avança 1 turno de um efeito aplicado, reduzindo sua duração.'
+    #swagger.description = 'Se a duração chegar a 0, o efeito é removido (soft delete).'
+    #swagger.parameters['id'] = { description: 'UUID do AppliedEffect', required: true }
+    #swagger.responses[200] = { description: 'Turno do efeito avançado com sucesso.' }
+    #swagger.responses[404] = { description: 'Efeito não encontrado ou já expirado.' }
+    #swagger.responses[500] = { description: 'Erro interno do servidor.' }
+  */
+  try {
+    const { id } = req.params;
+    const result = await advanceEffectTurn(id);
+    res.status(StatusCodes.OK).json(result);
+  } catch (err) {
+    // Tratamento de erro para "não encontrado"
+    if (err instanceof Error && err.message.includes("not found")) {
+      res.status(StatusCodes.NOT_FOUND).json({ message: err.message });
+    } else {
+      handleError(res, err, "Error advancing effect turn");
+    }
+  }
+};
+
+const tickAll = async (_req: Request, res: Response): Promise<void> => {
+  /*
+    #swagger.tags = ['AppliedEffects']
+    #swagger.summary = 'Avança 1 turno para TODOS os efeitos ativos no sistema.'
+    #swagger.description = 'Reduz a duração de todos os efeitos e remove (soft delete) os que chegarem a 0.'
+    #swagger.responses[200] = { description: 'Turno global avançado com sucesso.' }
+    #swagger.responses[500] = { description: 'Erro interno do servidor.' }
+  */
+  try {
+    const result = await advanceAllEffectsTurn();
+    res.status(StatusCodes.OK).json({
+      message: "Global turn advanced for all active effects.",
+      ...result
+    });
+  } catch (err) {
+    handleError(res, err, "Error advancing global effect turn");
+  }
+};
+
+const tickByCharacter = async (req: Request, res: Response): Promise<void> => {
+  /*
+    #swagger.tags = ['AppliedEffects']
+    #swagger.summary = 'Avança 1 turno para todos os efeitos de um personagem.'
+    #swagger.description = 'Reduz a duração dos efeitos do personagem e remove (soft delete) os que chegarem a 0.'
+    #swagger.parameters['characterId'] = { description: 'UUID do Personagem', required: true }
+    #swagger.responses[200] = { description: 'Turno do personagem avançado com sucesso.' }
+    #swagger.responses[500] = { description: 'Erro interno do servidor.' }
+  */
+  try {
+    const { characterId } = req.params;
+    const result = await advanceCharacterEffectsTurn(characterId);
+    res.status(StatusCodes.OK).json({
+      message: `Turn advanced for all active effects on character ${characterId}.`,
+      ...result
+    });
+  } catch (err) {
+    handleError(res, err, "Error advancing character effect turns");
   }
 };
 
@@ -208,5 +263,9 @@ export default {
   getAll,
   update,
   remove,
-  applyTurn
+  applyTurn,
+  getByCharacterId,
+  tick,
+  tickAll,
+  tickByCharacter
 };

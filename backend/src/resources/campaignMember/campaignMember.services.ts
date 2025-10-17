@@ -1,5 +1,3 @@
-import { PrismaClient } from "@prisma/client";
-
 import {
   CampaignMemberDTO,
   CampaignMemberWithUserDTO,
@@ -7,7 +5,7 @@ import {
   UpdateCampaignMemberDTO
 } from "./campaignMember.types";
 
-const prisma = new PrismaClient();
+import prisma from "../../prisma";
 
 export const createCampaignMember = async (
   data: CreateCampaignMemberDTO
@@ -28,39 +26,24 @@ export const getCampaignMembers = async (): Promise<CampaignMemberDTO[]> => {
 export const getCampaignMembersByCampaignId = async (
   campaignId: string
 ): Promise<CampaignMemberWithUserDTO[]> => {
-  const members = await prisma.campaignMember.findMany({
-    where: { campaignId }
-  });
-
-  if (members.length === 0) {
-    return [];
-  }
-
-  const users = await prisma.user.findMany({
-    where: { id: { in: members.map((member) => member.userId) } },
-    select: {
-      id: true,
-      nickname: true,
-      email: true,
-      imageUrl: true,
-      createdAt: true,
-      updatedAt: true,
-      deletedAt: true
+  // Simplificado para usar o 'include' do Prisma, que é mais eficiente e correto.
+  return prisma.campaignMember.findMany({
+    where: { campaignId },
+    include: {
+      user: true // Inclui os dados completos do usuário associado.
     }
   });
-
-  const userMap = new Map(users.map((user) => [user.id, user]));
-
-  return members.map((member) => ({
-    ...member,
-    user: userMap.get(member.userId) ?? null
-  }));
 };
 
 export const getCampaignMembersByUserId = async (
   userId: string
 ): Promise<CampaignMemberDTO[]> => {
-  return prisma.campaignMember.findMany({ where: { userId } });
+  // A função foi ajustada para incluir os dados completos da campanha,
+  // que é o que o frontend precisa para exibir a lista.
+  return prisma.campaignMember.findMany({
+    where: { userId },
+    include: { campaign: true }
+  });
 };
 
 export const updateCampaignMember = async (

@@ -1,4 +1,3 @@
-import { PrismaClient } from "@prisma/client";
 import {
   FullCharacterData,
   CreateCharacterDTO,
@@ -6,7 +5,7 @@ import {
   CharacterDTO
 } from "./character.types";
 
-const prisma = new PrismaClient();
+import prisma from "../../prisma";
 
 // CRUD operations -------------------------------------------------------------
 const createCharacter = async (

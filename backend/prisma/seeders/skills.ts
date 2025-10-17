@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
-export const seedSkills = async () => {
+export const seedSkills = async (prisma: PrismaClient) => {
   const ability1 = await prisma.abilities.findFirst({
     where: { name: "Golpe Poderoso" }
   });

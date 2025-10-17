@@ -8,6 +8,8 @@ const router = Router();
 // read methods ---------------------------------------------------------------
 router.get("/", appliedeffectController.getAll);
 router.get("/:id", appliedeffectController.getById);
+// Rota para buscar todos os efeitos aplicados a um personagem específico
+router.get("/character/:characterId", appliedeffectController.getByCharacterId);
 
 // write methods --------------------------------------------------------------
 router.post(
@@ -24,7 +26,14 @@ router.put(
 // combat engine method -------------------------------------------------------
 router.post(
   "/turn",
+  validateRequestBody(appliedeffectSchemas.applyEffectSchema),
   appliedeffectController.applyTurn // nova rota para aplicar efeitos por turno
+);
+router.post("/:id/tick", appliedeffectController.tick);
+router.post("/tick/all", appliedeffectController.tickAll);
+router.post(
+  "/character/:characterId/tick",
+  appliedeffectController.tickByCharacter
 );
 
 // delete methods -------------------------------------------------------------

@@ -1,11 +1,10 @@
-import { PrismaClient } from "@prisma/client";
 import {
   CreateCharacterAttributeDTO,
   UpdateCharacterAttributeDTO,
   CharacterAttributeDTO
 } from "./characterAttribute.types";
 
-const prisma = new PrismaClient();
+import prisma from "../../prisma";
 
 export const createCharacterAttribute = async (
   data: CreateCharacterAttributeDTO

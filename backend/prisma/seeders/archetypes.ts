@@ -1,8 +1,7 @@
 import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
-export const seedArchetypes = async () => {
+export const seedArchetypes = async (prisma: PrismaClient) => {
   const existing = await prisma.archetype.findMany({
-    select: { name: true },
+    select: { name: true }
   });
 
   const existingNames = new Set(existing.map((a) => a.name));
@@ -20,7 +19,7 @@ export const seedArchetypes = async () => {
     { name: "Tank-Melee", hp: 7, mp: 3, tp: 6 },
     { name: "Tank-Ranged", hp: 7, mp: 2, tp: 7 },
     { name: "Tank-Magic", hp: 7, mp: 7, tp: 2 },
-    { name: "None", hp: 6, mp: 5, tp: 5 },
+    { name: "None", hp: 6, mp: 5, tp: 5 }
   ].filter((a) => !existingNames.has(a.name));
 
   if (data.length > 0) {

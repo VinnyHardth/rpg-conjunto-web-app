@@ -160,8 +160,8 @@ const StatusValuePanel = ({
 
               {!effectsLoading && !effectsError && !effectAvailable && (
                 <p className="text-xs text-amber-300">
-                  Nenhum efeito cadastrado para esse tipo de alteração.
-                  Atualize os dados do servidor antes de aplicar.
+                  Nenhum efeito cadastrado para esse tipo de alteração. Atualize
+                  os dados do servidor antes de aplicar.
                 </p>
               )}
 

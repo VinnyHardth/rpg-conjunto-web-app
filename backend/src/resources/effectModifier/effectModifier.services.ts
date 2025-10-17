@@ -1,12 +1,10 @@
-import { PrismaClient } from "@prisma/client";
 import {
   CreateEffectModifierDTO,
   UpdateEffectModifierDTO,
   EffectModifierDTO
 } from "./effectModifier.types";
 
-const prisma = new PrismaClient();
-
+import prisma from "../../prisma";
 export const createEffectModifier = async (
   data: CreateEffectModifierDTO
 ): Promise<EffectModifierDTO> => {

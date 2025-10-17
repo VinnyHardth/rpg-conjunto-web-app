@@ -1,11 +1,10 @@
-import { PrismaClient } from "@prisma/client";
 import {
   CreateAbilityEffectDTO,
   UpdateAbilityEffectDTO,
   AbilityEffectDTO
 } from "./abilityEffect.types";
 
-const prisma = new PrismaClient();
+import prisma from "../../prisma";
 
 export const createAbilityEffect = async (
   data: CreateAbilityEffectDTO

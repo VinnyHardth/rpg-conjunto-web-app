@@ -275,3 +275,22 @@ export const createAppliedEffect = async (
   const { data } = await api.post("/appliedeffects", payload);
   return data;
 };
+
+export interface ApplyEffectTurnPayload {
+  characterId: string;
+  effectId: string;
+  sourceType: string;
+  duration: number;
+  valuePerStack?: number;
+  stacksDelta?: number;
+  currentTurn?: number;
+}
+
+/**
+ * Aplica um efeito em um personagem (dano, cura, buff, etc).
+ * Corresponde à rota POST /applied-effects/turn
+ */
+export const applyEffectTurn = async (payload: ApplyEffectTurnPayload) => {
+  const { data } = await api.post("/appliedeffects/turn", payload);
+  return data;
+};

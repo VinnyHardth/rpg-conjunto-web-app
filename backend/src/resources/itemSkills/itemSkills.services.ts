@@ -1,11 +1,10 @@
-import { PrismaClient } from "@prisma/client";
 import {
   CreateItemSkillsDTO,
   UpdateItemSkillsDTO,
   ItemSkillsDTO
 } from "./itemSkills.types";
 
-const prisma = new PrismaClient();
+import prisma from "../../prisma";
 
 export const createItemSkills = async (
   data: CreateItemSkillsDTO

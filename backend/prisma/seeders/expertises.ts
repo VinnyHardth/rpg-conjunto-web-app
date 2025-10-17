@@ -1,6 +1,5 @@
 import { PrismaClient, AttributeKind } from "@prisma/client";
-const prisma = new PrismaClient();
-export const seedExpertises = async () => {
+export const seedExpertises = async (prisma: PrismaClient) => {
   const existing = await prisma.attributes.findMany({
     where: { kind: AttributeKind.EXPERTISE },
     select: { name: true }
