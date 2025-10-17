@@ -4,8 +4,8 @@
 import React, { useEffect, useState } from "react";
 import { useCharacterData } from "@/hooks/useCharacterData";
 import toast from "react-hot-toast";
-import CharacterBasicInfo from "@/components/character-manager/CharacterBasicInfo";
-import CharacterAttributes from "@/components/character-manager/CharacterAttributes";
+import CharacterBasicInfo from "./components/CharacterBasicInfo";
+import CharacterAttributes from "./components/CharacterAttributes";
 
 import {
   CharacterBasicInfoUpdate,
