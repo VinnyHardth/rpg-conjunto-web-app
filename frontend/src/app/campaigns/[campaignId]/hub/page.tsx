@@ -31,6 +31,7 @@ import { useCharacterManagement } from "./hooks/useCharacterManagement";
 import { useDamagePanel } from "./hooks/useDamagePanel";
 import { useDiceRolls } from "./hooks/useDiceRolls";
 import { useHubInterface } from "./hooks/useHubInterface";
+import { useSelectCharacter } from "./hooks/useSelectCharacter";
 import { useRestActions } from "./hooks/useRestActions";
 import { CampaignHubProvider } from "./contexts/CampaignHubContext";
 
@@ -156,23 +157,34 @@ export default function CampaignHubByIdPage() {
     availableCharacters.length === 0 || loadingState || hasError;
 
   // Lógica de gerenciamento da interface do Hub
+  const { focusedCardId, handleFocusCard, ensureAndGetFocus } =
+    useSelectCharacter({
+      isMaster,
+      playerCharacterId,
+      orderedCharacters,
+    });
+
   const hubInterface = useHubInterface({
-    isMaster,
-    playerCharacterId,
-    orderedCharacters,
     disableSelection,
+    focusedCardId,
+    handleFocusCard,
   });
   const {
-    focusedCardId,
     isAttributesOpen,
     isDamageOpen,
     isSelecting,
     actionError,
-    handleToggleAttributes,
-    handleToggleDamage,
+    setAttributesOpen,
+    setDamageOpen,
     openSelection,
     closeSelection,
   } = hubInterface;
+
+  const handleToggleAttributes = useCallback(() => {
+    ensureAndGetFocus();
+    setDamageOpen(false);
+    setAttributesOpen((prev) => !prev);
+  }, [ensureAndGetFocus, setDamageOpen, setAttributesOpen]);
 
   // Lógica do painel de dano movida para o hook
   const damagePanel = useDamagePanel({
@@ -182,6 +194,21 @@ export default function CampaignHubByIdPage() {
     effectsLoading,
     focusedCharacterId: focusedCardId,
   });
+
+  const handleToggleDamage = useCallback(() => {
+    if (!isDamageOpen) {
+      const targetId = ensureAndGetFocus();
+      // Define o alvo no painel
+      damagePanel.setSelectedTargetId(targetId);
+    }
+    // Abre/fecha o painel
+    setDamageOpen((prev) => !prev);
+  }, [
+    isDamageOpen,
+    ensureAndGetFocus,
+    setDamageOpen,
+    damagePanel.setSelectedTargetId,
+  ]);
 
   // Lógica de rolagens de dificuldade movida para o hook
   const diceRolls = useDiceRolls({
@@ -214,7 +241,7 @@ export default function CampaignHubByIdPage() {
   useEffect(() => {
     if (isDamageOpen) return;
     damagePanel.clearState();
-  }, [isDamageOpen, damagePanel]);
+  }, [isDamageOpen, damagePanel.clearState]);
 
   const sidebarCharacter = useMemo(() => {
     if (!sidebarCharacterId) {
@@ -410,6 +437,7 @@ export default function CampaignHubByIdPage() {
     useDiceRolls: diceRolls,
     useDamagePanel: damagePanel,
     useHubInterface: hubInterface,
+    useSelectCharacter: { focusedCardId, handleFocusCard, ensureAndGetFocus },
     useRestActions: restActions,
     isMaster,
     sidebarCharacterId,
@@ -523,7 +551,7 @@ export default function CampaignHubByIdPage() {
                 handleAttachCharacter(char).then(closeSelection)
               }
               closeSelection={closeSelection}
-              actionError={actionError}
+              actionError={characterManagementError}
               isAttributesOpen={isAttributesOpen}
             />
           ) : (

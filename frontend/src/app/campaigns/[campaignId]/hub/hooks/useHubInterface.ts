@@ -1,20 +1,16 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import type { Character } from "@/types/models";
 
 interface UseHubInterfaceProps {
-  isMaster: boolean;
-  playerCharacterId: string | null;
-  orderedCharacters: Character[];
   disableSelection: boolean;
+  focusedCardId: string | null;
+  handleFocusCard: (characterId: string | null) => void;
 }
 
 export function useHubInterface({
-  isMaster,
-  playerCharacterId,
-  orderedCharacters,
   disableSelection,
+  focusedCardId,
+  handleFocusCard,
 }: UseHubInterfaceProps) {
-  const [focusedCardId, setFocusedCardId] = useState<string | null>(null);
   const [isAttributesOpen, setAttributesOpen] = useState(false);
   const [isDamageOpen, setDamageOpen] = useState(false);
   const [isSelecting, setIsSelecting] = useState(false);
@@ -37,53 +33,29 @@ export function useHubInterface({
         !damageButtonRef.current?.contains(target) &&
         !damagePanelRef.current?.contains(target)
       ) {
-        setFocusedCardId(null);
+        handleFocusCard(null);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [handleFocusCard]);
 
   const openSelection = useCallback(() => {
     if (disableSelection) return;
     setActionError(null);
     setIsSelecting(true);
-    if (!isMaster) setFocusedCardId(null);
     setAttributesOpen(false);
     setDamageOpen(false);
-  }, [disableSelection, isMaster]);
+  }, [disableSelection]);
 
   const closeSelection = useCallback(() => {
     setActionError(null);
     setIsSelecting(false);
-    if (!isMaster) setFocusedCardId(null);
-  }, [isMaster]);
-
-  const handleToggleAttributes = useCallback(() => {
-    if (isMaster && !focusedCardId && orderedCharacters.length > 0) {
-      setFocusedCardId(orderedCharacters[0].id);
-    } else if (!isMaster && playerCharacterId) {
-      setFocusedCardId(playerCharacterId);
-    }
-    setDamageOpen(false);
-    setAttributesOpen((prev) => !prev);
-  }, [isMaster, focusedCardId, orderedCharacters, playerCharacterId]);
-
-  const handleToggleDamage = useCallback(() => {
-    if (isMaster && !focusedCardId && orderedCharacters.length > 0) {
-      setFocusedCardId(orderedCharacters[0].id);
-    } else if (!isMaster && playerCharacterId) {
-      setFocusedCardId(playerCharacterId);
-    }
-    setAttributesOpen(false);
-    setDamageOpen((prev) => !prev);
-  }, [isMaster, focusedCardId, orderedCharacters, playerCharacterId]);
+  }, []);
 
   return {
     // State
-    focusedCardId,
-    setFocusedCardId,
     isAttributesOpen,
     setAttributesOpen,
     isDamageOpen,
@@ -100,7 +72,5 @@ export function useHubInterface({
     // Handlers
     openSelection,
     closeSelection,
-    handleToggleAttributes,
-    handleToggleDamage,
   };
 }

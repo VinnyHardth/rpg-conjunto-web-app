@@ -17,12 +17,8 @@ export default function CharacterBoard() {
       handleDetachCharacter,
     },
     useDiceRolls: { rollsByCharacter },
-    useHubInterface: {
-      boardRef,
-      focusedCardId,
-      setFocusedCardId,
-      openSelection,
-    },
+    useHubInterface: { boardRef, openSelection },
+    useSelectCharacter: { focusedCardId, handleFocusCard },
   } = useCampaignHub();
 
   const loadingState = false; // Obter do contexto se necessário
@@ -129,11 +125,7 @@ export default function CharacterBoard() {
 
                   <CharacterCard
                     character={character}
-                    onClick={() =>
-                      setFocusedCardId((prev) =>
-                        prev === character.id ? null : character.id,
-                      )
-                    }
+                    onClick={() => handleFocusCard(character.id)}
                     disableHoverEffect
                     className="h-full"
                     nameSuffix={isOwner ? "•" : undefined}

@@ -1,6 +1,6 @@
 import { useCampaignHub } from "../contexts/CampaignHubContext";
 import { STATUS_ACTION_OPTIONS, type StatusAction } from "../statusActions";
-import { RestType,  } from "../hooks/useRestActions";
+import { RestType } from "../hooks/useRestActions";
 
 export interface StatusValuePanelProps {
   onClose: () => void;
@@ -34,12 +34,7 @@ const StatusValuePanel = ({
       handleApply,
       clearState,
     },
-    useRestActions: {
-      isResting,
-      restError,
-      restMessage,
-      handleRest,
-    },
+    useRestActions: { isResting, restError, restMessage, handleRest },
     useHubInterface: { isDamageOpen, damagePanelRef: panelRef },
   } = useCampaignHub();
 
