@@ -50,17 +50,15 @@ export default function CharacterManagementPage({
 
   const handleBasicInfoUpdate = (updates: CharacterBasicInfoUpdate) => {
     setPendingUpdates(
-      (prev): Partial<FullCharacterData> => (
-        {
-          ...prev,
-          info: {
-            ...(localCharacterData?.info as CharacterDTO), // Start with the full, current data
-            ...prev.info,
-            ...updates,
-            id, // Ensure ID is always present and correct
-          },
-        }
-      ),
+      (prev): Partial<FullCharacterData> => ({
+        ...prev,
+        info: {
+          ...(localCharacterData?.info as CharacterDTO), // Start with the full, current data
+          ...prev.info,
+          ...updates,
+          id, // Ensure ID is always present and correct
+        },
+      }),
     );
     setLocalCharacterData((prevData) => {
       if (!prevData) return null; // Should not happen, but keeps type safety
@@ -119,7 +117,10 @@ export default function CharacterManagementPage({
         } = pendingUpdates.info;
 
         // Ensure annotations is a string
-        if (allowedUpdates.annotations === null || allowedUpdates.annotations === undefined) {
+        if (
+          allowedUpdates.annotations === null ||
+          allowedUpdates.annotations === undefined
+        ) {
           allowedUpdates.annotations = "";
         }
         promises.push(api.put(`/characters/${id}`, allowedUpdates));

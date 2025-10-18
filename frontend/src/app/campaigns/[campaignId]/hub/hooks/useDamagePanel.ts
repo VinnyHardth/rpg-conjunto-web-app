@@ -135,36 +135,42 @@ export function useDamagePanel({
     const effectValue = selectedActionConfig.isIncrease ? amount : -amount;
 
     // Lógica para múltiplos alvos
-    if (selectedTargetId === "ALL_CHARACTERS" && isMaster) {
+    if (selectedTargetId === "ALL_CHARACTERS") {
       try {
         setIsApplying(true);
         setError(null);
 
         const allTargets = Object.values(charactersById);
-        const promises = allTargets.map(target => 
+        const promises = allTargets.map((target) =>
           applyEffectTurn({
             characterId: target.id,
             effectId: effect.id,
             sourceType: SourceType.OTHER,
             duration: 0,
             valuePerStack: effectValue,
-          })
+          }),
         );
 
         await Promise.all(promises);
 
         // Invalida o cache de todos os personagens afetados
-        const cacheKeys = allTargets.map(target => statusCacheKey(target.id));
-        await Promise.all(cacheKeys.map(key => key ? mutateCache(key) : Promise.resolve()));
+        const cacheKeys = allTargets.map((target) => statusCacheKey(target.id));
+        await Promise.all(
+          cacheKeys.map((key) => (key ? mutateCache(key) : Promise.resolve())),
+        );
 
         setMessage(
-          `${selectedActionConfig.label} (${amount}) aplicado a todos os personagens com sucesso.`
+          `${selectedActionConfig.label} (${amount}) aplicado a todos os personagens com sucesso.`,
         );
         setRoll(null);
-
       } catch (err) {
-        console.error("Falha ao aplicar alteração de status em múltiplos alvos:", err);
-        setError("Não foi possível aplicar a alteração em todos os personagens.");
+        console.error(
+          "Falha ao aplicar alteração de status em múltiplos alvos:",
+          err,
+        );
+        setError(
+          "Não foi possível aplicar a alteração em todos os personagens.",
+        );
       } finally {
         setIsApplying(false);
       }
@@ -197,16 +203,22 @@ export function useDamagePanel({
       }
 
       // Usa o dano final retornado pela API na mensagem, se disponível.
-      const finalAmount = result.immediate?.results?.[0]?.delta
-        ? Math.abs(result.immediate.results[0].delta)
+      const immediateResult = result.immediate?.results?.[0];
+      const initialValue = immediateResult?.value
+        ? Math.abs(immediateResult.value)
         : amount;
+      const finalAmount =
+        immediateResult?.delta != null
+          ? Math.abs(immediateResult.delta)
+          : initialValue;
+
       let amountMessage: string;
       const damageType = effect.damageType;
 
       // Para dano Físico ou Mágico, sempre mostramos a redução, mesmo que seja zero.
       // Para outros tipos, mostramos apenas o valor final.
       if (damageType === "PHISICAL" || damageType === "MAGIC") {
-        amountMessage = `${amount} ➔ ${finalAmount}`;
+        amountMessage = `${initialValue} ➔ ${finalAmount}`;
       } else {
         amountMessage = `${finalAmount}`;
       }
@@ -235,19 +247,6 @@ export function useDamagePanel({
     setMessage,
     setRoll,
   ]);
-
-  // Efeito para sincronizar o alvo selecionado
-  useEffect(() => {
-    const targetInList = characters.find((c) => c.id === selectedTargetId);
-    if (targetInList || selectedTargetId === "ALL_CHARACTERS") {
-      return; // O alvo selecionado ainda é válido, não faz nada.
-    }
-
-    // Se o alvo selecionado não for mais válido, tenta definir um novo.
-    const focusedInList = characters.find((c) => c.id === focusedCharacterId);
-    const newTargetId = focusedInList?.id ?? characters[0]?.id ?? null;
-    setSelectedTargetId(newTargetId);
-  }, [focusedCharacterId, characters, selectedTargetId]);
 
   return {
     selectedTargetId,

@@ -7,6 +7,7 @@ import { useCharacterManagement } from "../hooks/useCharacterManagement";
 import { useDiceRolls } from "../hooks/useDiceRolls";
 import { useDamagePanel } from "../hooks/useDamagePanel";
 import { useHubInterface } from "../hooks/useHubInterface";
+import { useSelectCharacter } from "../hooks/useSelectCharacter";
 import { useRestActions } from "../hooks/useRestActions";
 
 // Tipagem para o valor do contexto, agregando o retorno de todos os hooks
@@ -16,6 +17,7 @@ type CampaignHubContextType = {
   useDiceRolls: ReturnType<typeof useDiceRolls>;
   useDamagePanel: ReturnType<typeof useDamagePanel>;
   useHubInterface: ReturnType<typeof useHubInterface>;
+  useSelectCharacter: ReturnType<typeof useSelectCharacter>;
   useRestActions: ReturnType<typeof useRestActions>;
   // Adicione outros valores globais aqui se necessário
   isMaster: boolean;

@@ -1,5 +1,9 @@
 import { useState, useCallback } from "react";
-import { fetchCharacterStatus, updateMultipleStatuses, type StatusUpdateItem } from "@/lib/api";
+import {
+  fetchCharacterStatus,
+  updateMultipleStatuses,
+  type StatusUpdateItem,
+} from "@/lib/api";
 import type { CharacterPerCampaignWithCharacter } from "@/types/models";
 
 export enum RestType {
@@ -43,7 +47,9 @@ export function useRestActions({
       console.log("Personagens selecionados:", characters);
 
       const allStatuses = await Promise.all(
-        characters.map((character) => fetchCharacterStatus(character.characterId)),
+        characters.map((character) =>
+          fetchCharacterStatus(character.characterId),
+        ),
       );
 
       console.log("Statuses iniciais:", allStatuses);
@@ -55,14 +61,14 @@ export function useRestActions({
           return statuses.map((status) => ({
             statusId: status.id,
             name: status.name,
-              valueActual: Math.min(
-                status.valueMax,
-                status.valueActual + Math.floor(status.valueMax * recoveryRate),
-              ),
+            valueActual: Math.min(
+              status.valueMax,
+              status.valueActual + Math.floor(status.valueMax * recoveryRate),
+            ),
           }));
         },
-      )
-      
+      );
+
       console.log("Statuses a serem atualizados:", statusUpdates);
 
       if (statusUpdates.length === 0) {

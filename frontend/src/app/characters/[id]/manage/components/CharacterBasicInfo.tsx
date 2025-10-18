@@ -143,19 +143,17 @@ export default function CharacterBasicInfo({
           </div>
         </div>
         <div className="sm:col-span-3">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Notas do Personagem
-            </label>
-            <textarea
-              value={character.annotations || ""}
-              onChange={(e) =>
-                handleInputChange("annotations", e.target.value)
-              }
-              rows={4}
-              placeholder="História, personalidade, objetivos..."
-              className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Notas do Personagem
+          </label>
+          <textarea
+            value={character.annotations || ""}
+            onChange={(e) => handleInputChange("annotations", e.target.value)}
+            rows={4}
+            placeholder="História, personalidade, objetivos..."
+            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
       </div>
       {archetype && (
         <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
