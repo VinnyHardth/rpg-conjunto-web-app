@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, RefObject } from "react";
 import { io, Socket } from "socket.io-client";
 import type { RollDifficultyResponse } from "@/lib/api";
 import type {
@@ -18,7 +18,7 @@ type SocketHandlers = {
 interface UseCampaignSocketParams {
   campaignId: string | null;
   socketUrl: string;
-  handlers: SocketHandlers;
+  handlers: RefObject<SocketHandlers>;
 }
 
 const SOCKET_EVENTS: Array<{
@@ -55,7 +55,7 @@ export const useCampaignSocket = ({
         console.debug(`Socket connected: ${socket.id}`);
       }
       socket.emit("joinRoom", room);
-      handlers.onConnect?.(socket);
+      handlers.current?.onConnect?.(socket);
     };
 
     socket.emit("joinRoom", room);
@@ -64,9 +64,17 @@ export const useCampaignSocket = ({
       console.error("Socket connection error:", error);
     });
 
-    SOCKET_EVENTS.forEach(({ key, event }) => {
-      const handler = handlers[key];
-      if (handler) {
+    // Envolvemos os handlers em uma função para garantir que sempre
+    // acessemos a versão mais recente de `handlers.current`.
+    const registeredHandlers = SOCKET_EVENTS.map(({ key, event }) => {
+      const handler = (...args: unknown[]) => {
+        const specificHandler = handlers.current?.[key];
+        if (specificHandler) {
+          // Forçamos a tipagem para uma função genérica para satisfazer o TypeScript.
+          (specificHandler as (...args: unknown[]) => void)(...args);
+        }
+      };
+      if (handlers.current?.[key]) {
         socket.on(event, handler);
       }
     });
@@ -74,16 +82,15 @@ export const useCampaignSocket = ({
     return () => {
       socket.off("connect", handleConnect);
       socket.off("connect_error");
-      SOCKET_EVENTS.forEach(({ key, event }) => {
-        const handler = handlers[key];
-        if (handler) {
-          socket.off(event, handler);
-        }
+      SOCKET_EVENTS.forEach(({ event }) => {
+        // Para remover os listeners, precisamos remover todos para um dado evento,
+        // já que a referência da função `handler` muda a cada renderização.
+        socket.off(event);
       });
       socket.disconnect();
       socketRef.current = null;
     };
-  }, [campaignId, handlers, socketUrl]);
+  }, [campaignId, socketUrl, handlers]); // `handlers` (a ref) é estável.
 
   return socketRef;
 };

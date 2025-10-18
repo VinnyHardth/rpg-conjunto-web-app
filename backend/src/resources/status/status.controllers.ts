@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
 import { ReasonPhrases, StatusCodes } from "http-status-codes";
+import { getCampaignIdsByCharacterId } from "../characterPerCampaign/characterPerCampaign.services";
 import {
   createStatus,
   getStatusById,
   getStatusByCharacterId,
   getStatus,
   updateStatus,
-  deleteStatus,
-  getCampaignIdsByCharacterId
+  deleteStatus
 } from "./status.services";
 
 const handleError = (res: Response, err: any, context: string): void => {

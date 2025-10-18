@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useParams } from "next/navigation";
 import useSWR, { mutate as mutateCache } from "swr";
 
@@ -308,41 +308,51 @@ export default function CampaignHubByIdPage() {
         },
         { revalidate: false },
       );
-      diceRollSocketHandlers.onCharacterUnlinked(payload.relation);
     },
-    [campaignId, mutateRelations, diceRollSocketHandlers],
+    [campaignId, mutateRelations],
   );
 
   const handleStatusUpdated = useCallback(
     (payload: StatusUpdatedPayload) => {
-      if (payload.campaignId !== campaignId) return;
+      // Acessa o campaignId do payload para evitar dependência no hook
+      if (payload.campaignId !== params?.campaignId) return;
       const cacheKey = statusCacheKey(payload.characterId);
       if (cacheKey) {
         mutateCache(cacheKey, payload.statuses, { revalidate: false });
       }
     },
-    [campaignId],
+    [params?.campaignId],
   );
 
-  const socketHandlers = useMemo(
-    () => ({
+  // Usamos um ref para manter os handlers sempre atualizados sem precisar
+  // recriar o socket. O hook useCampaignSocket lerá deste ref.
+  const socketHandlersRef = useRef({
+    ...diceRollSocketHandlers,
+    onCharacterLinked: handleCharacterLinked,
+    onCharacterUnlinked: handleCharacterUnlinked,
+    onStatusUpdated: handleStatusUpdated,
+  });
+
+  // Atualiza o ref a cada renderização para garantir que os handlers
+  // sempre tenham acesso ao estado mais recente (não fiquem "stale").
+  useEffect(() => {
+    socketHandlersRef.current = {
       ...diceRollSocketHandlers,
       onCharacterLinked: handleCharacterLinked,
       onCharacterUnlinked: handleCharacterUnlinked,
       onStatusUpdated: handleStatusUpdated,
-    }),
-    [
-      diceRollSocketHandlers,
-      handleCharacterLinked,
-      handleCharacterUnlinked,
-      handleStatusUpdated,
-    ],
-  );
+    };
+  }, [
+    diceRollSocketHandlers,
+    handleCharacterLinked,
+    handleCharacterUnlinked,
+    handleStatusUpdated,
+  ]);
 
   useCampaignSocket({
     campaignId: campaignId ?? null,
     socketUrl,
-    handlers: socketHandlers,
+    handlers: socketHandlersRef, // Passamos a ref para o hook
   });
 
   const activeRollsContent =

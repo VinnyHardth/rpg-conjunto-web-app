@@ -96,7 +96,7 @@ export function useDiceRolls({
         return next;
       });
     },
-    [],
+    [setRollsByCharacter],
   );
 
   const socketHandlers = useMemo(
