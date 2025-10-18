@@ -143,7 +143,7 @@ export function useCharacterManagement({
     return () => {
       isCancelled = true;
     };
-  }, [isMaster, memberIds]);
+  }, [isMaster, memberIds, memberCharacters]);
 
   const orderedCharacters = useMemo(() => {
     return activeRelations

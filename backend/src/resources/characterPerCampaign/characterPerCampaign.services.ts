@@ -82,3 +82,13 @@ export const getCharacterPerCampaignWithCharacterById = async (
     }
   }) as unknown as CharacterPerCampaignWithCharacterDTO | null;
 };
+
+export const getCampaignIdsByCharacterId = async (
+  characterId: string
+): Promise<string[]> => {
+  const links = await prisma.characterPerCampaign.findMany({
+    where: { characterId, deletedAt: null },
+    select: { campaignId: true }
+  });
+  return links.map((link) => link.campaignId);
+};

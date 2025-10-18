@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { ReasonPhrases, StatusCodes } from "http-status-codes";
+import { getCampaignIdsByCharacterId } from "../characterPerCampaign/characterPerCampaign.services";
+import { getStatusByCharacterId } from "../status/status.services";
 import {
   createAppliedEffect,
   getAppliedEffectById,
@@ -170,6 +172,26 @@ const applyTurn = async (req: Request, res: Response): Promise<void> => {
     // pelo middleware `validateRequestBody` com o schema Joi.
     const result = await applyEffectTurn(req.body);
     res.status(StatusCodes.OK).json(result);
+
+    // Notifica via WebSocket que o status do personagem foi atualizado
+    if (req.io) {
+      const { characterId } = req.body;
+      // Um personagem pode estar em várias campanhas. Buscamos todas.
+      const [campaignIds, statuses] = await Promise.all([
+        getCampaignIdsByCharacterId(characterId),
+        getStatusByCharacterId(characterId)
+      ]);
+
+      campaignIds.forEach((campaignId) => {
+        const room = `campaign-${campaignId}`;
+        const payload = {
+          campaignId,
+          characterId,
+          statuses
+        };
+        req.io!.to(room).emit("status:updated", payload);
+      });
+    }
   } catch (err) {
     handleError(res, err, "Error applying effect turn");
   }
