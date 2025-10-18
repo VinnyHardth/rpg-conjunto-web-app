@@ -204,23 +204,21 @@ export function useDamagePanel({
 
       // Usa o dano final retornado pela API na mensagem, se disponível.
       const immediateResult = result.immediate?.results?.[0];
-      const initialValue = immediateResult?.value
-        ? Math.abs(immediateResult.value)
-        : amount;
-      const finalAmount =
-        immediateResult?.delta != null
-          ? Math.abs(immediateResult.delta)
-          : initialValue;
+      const finalDelta = immediateResult?.delta;
 
       let amountMessage: string;
       const damageType = effect.damageType;
 
-      // Para dano Físico ou Mágico, sempre mostramos a redução, mesmo que seja zero.
-      // Para outros tipos, mostramos apenas o valor final.
-      if (damageType === "PHISICAL" || damageType === "MAGIC") {
-        amountMessage = `${initialValue} ➔ ${finalAmount}`;
+      // Para dano Físico ou Mágico, mostra o dano bruto e o dano final após resistência.
+      if (
+        (damageType === "PHISICAL" || damageType === "MAGIC") &&
+        finalDelta != null
+      ) {
+        const rawDamage = amount; // Dano bruto da rolagem
+        const finalDamage = Math.abs(finalDelta); // Dano real após resistência
+        amountMessage = `${rawDamage} ➔ ${finalDamage}`;
       } else {
-        amountMessage = `${finalAmount}`;
+        amountMessage = `${amount}`;
       }
 
       const target = charactersById[selectedTargetId];

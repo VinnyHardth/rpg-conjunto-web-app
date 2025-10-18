@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { type PrismaClient, CampaignCharacterRole } from "@prisma/client";
 
 export const seedCharacterPerCampaign = async (prisma: PrismaClient) => {
   const campaign = await prisma.campaign.findFirst({
@@ -20,11 +20,23 @@ export const seedCharacterPerCampaign = async (prisma: PrismaClient) => {
     return;
   }
 
-  await prisma.characterPerCampaign.createMany({
-    data: [
-      { campaignId: campaign.id, characterId: tharion.id, role: "CHARACTER" },
-      { campaignId: campaign.id, characterId: lyra.id, role: "CHARACTER" }
-    ],
-    skipDuplicates: true
-  });
+  const links = [
+    { characterId: tharion.id, role: CampaignCharacterRole.CHARACTER },
+    { characterId: lyra.id, role: CampaignCharacterRole.CHARACTER }
+  ];
+
+  console.log("Seeding character-campaign links...");
+  for (const link of links) {
+    const data = { campaignId: campaign.id, ...link };
+    await prisma.characterPerCampaign.upsert({
+      where: {
+        campaignId_characterId: {
+          campaignId: campaign.id,
+          characterId: link.characterId
+        }
+      },
+      update: { role: link.role },
+      create: data
+    });
+  }
 };
