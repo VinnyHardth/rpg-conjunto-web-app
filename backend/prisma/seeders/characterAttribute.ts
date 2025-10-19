@@ -1,4 +1,4 @@
-import { PrismaClient, AttributeKind } from "@prisma/client";
+import { type PrismaClient, AttributeKind } from "@prisma/client";
 
 export const seedCharacterAttributes = async (prisma: PrismaClient) => {
   // 1. Busca todos os atributos e perícias separadamente
@@ -12,34 +12,30 @@ export const seedCharacterAttributes = async (prisma: PrismaClient) => {
 
   if (baseAttributesDef.length === 0 || chars.length === 0) return;
 
+  console.log("Seeding character attributes...");
   for (const ch of chars) {
-    // 2. Prepara os dados para os atributos principais com valor base 5
-    const baseAttributesData = baseAttributesDef.map((attr) => ({
-      characterId: ch.id,
-      attributeId: attr.id,
-      valueBase: 5,
-      valueInv: 0,
-      valueExtra: 0
-    }));
+    const allAttributes = [...baseAttributesDef, ...expertisesDef];
 
-    await prisma.characterAttribute.createMany({
-      data: baseAttributesData,
-      skipDuplicates: true
-    });
+    for (const attr of allAttributes) {
+      const isExpertise = attr.kind === AttributeKind.EXPERTISE;
+      const data = {
+        characterId: ch.id,
+        attributeId: attr.id,
+        valueBase: isExpertise ? 0 : 5,
+        valueInv: 0,
+        valueExtra: 0
+      };
 
-    // 3. Prepara os dados para as perícias com valor base 0
-    const expertisesData = expertisesDef.map((exp) => ({
-      characterId: ch.id,
-      attributeId: exp.id,
-      valueBase: 0,
-      valueInv: 0,
-      valueExtra: 0
-    }));
-
-    // Insere as perícias para o personagem
-    await prisma.characterAttribute.createMany({
-      data: expertisesData,
-      skipDuplicates: true
-    });
+      await prisma.characterAttribute.upsert({
+        where: {
+          characterId_attributeId: {
+            characterId: ch.id,
+            attributeId: attr.id
+          }
+        },
+        update: {}, // Não faz nada se já existir, apenas garante que exista.
+        create: data
+      });
+    }
   }
 };

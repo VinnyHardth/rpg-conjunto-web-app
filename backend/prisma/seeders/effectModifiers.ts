@@ -1,146 +1,109 @@
-import { PrismaClient, ComponentType, OperationType } from "@prisma/client";
+import {
+  type PrismaClient,
+  ComponentType,
+  OperationType
+} from "@prisma/client";
+
+const MODIFIERS_DATA = [
+  {
+    effectName: "Regeneração",
+    componentName: "HP",
+    componentType: ComponentType.STATUS,
+    operationType: OperationType.ADD
+  },
+  {
+    effectName: "Veneno",
+    componentName: "HP",
+    componentType: ComponentType.STATUS,
+    operationType: OperationType.ADD
+  },
+  {
+    effectName: "Dano Físico",
+    componentName: "HP",
+    componentType: ComponentType.STATUS,
+    operationType: OperationType.ADD
+  },
+  {
+    effectName: "Dano Mágico",
+    componentName: "HP",
+    componentType: ComponentType.STATUS,
+    operationType: OperationType.ADD
+  },
+  {
+    effectName: "Cura",
+    componentName: "HP",
+    componentType: ComponentType.STATUS,
+    operationType: OperationType.ADD
+  },
+  {
+    effectName: "Restaura Mana",
+    componentName: "MP",
+    componentType: ComponentType.STATUS,
+    operationType: OperationType.ADD
+  },
+  {
+    effectName: "Reduz Mana",
+    componentName: "MP",
+    componentType: ComponentType.STATUS,
+    operationType: OperationType.ADD
+  },
+  {
+    effectName: "Restaura Técnica",
+    componentName: "TP",
+    componentType: ComponentType.STATUS,
+    operationType: OperationType.ADD
+  },
+  {
+    effectName: "Reduz Técnica",
+    componentName: "TP",
+    componentType: ComponentType.STATUS,
+    operationType: OperationType.ADD
+  }
+];
+
 export const seedEffectModifiers = async (prisma: PrismaClient) => {
-  const regen = await prisma.effect.findFirst({
-    where: { name: "Regeneração" }
-  });
-  const poison = await prisma.effect.findFirst({ where: { name: "Veneno" } });
-  const physicalDamage = await prisma.effect.findFirst({
-    where: { name: "Dano Físico" }
-  });
-  const magicalDamage = await prisma.effect.findFirst({
-    where: { name: "Dano Mágico" }
-  });
-  const healing = await prisma.effect.findFirst({
-    where: { name: "Cura" }
-  });
-  const restoreMana = await prisma.effect.findFirst({
-    where: { name: "Restaura Mana" }
-  });
-  const reduceMana = await prisma.effect.findFirst({
-    where: { name: "Reduz Mana" }
-  });
-  const restoreTechnique = await prisma.effect.findFirst({
-    where: { name: "Restaura Técnica" }
-  });
-  const reduceTechnique = await prisma.effect.findFirst({
-    where: { name: "Reduz Técnica" }
+  console.log("Seeding effect modifiers...");
+
+  const effects = await prisma.effect.findMany({
+    where: {
+      name: { in: MODIFIERS_DATA.map((m) => m.effectName) }
+    }
   });
 
-  if (regen) {
-    await prisma.effectModifier.createMany({
-      data: [
-        {
-          effectId: regen.id,
-          componentName: "HP",
-          componentType: ComponentType.STATUS,
-          operationType: OperationType.ADD
-        }
-      ],
-      skipDuplicates: true
+  const effectsMap = effects.reduce(
+    (acc, effect) => {
+      acc[effect.name] = effect.id;
+      return acc;
+    },
+    {} as Record<string, string>
+  );
+
+  for (const mod of MODIFIERS_DATA) {
+    const effectId = effectsMap[mod.effectName];
+    if (!effectId) {
+      console.warn(
+        `Effect "${mod.effectName}" not found, skipping modifier seed.`
+      );
+      continue;
+    }
+
+    const data = { ...mod, effectId };
+    delete (data as any).effectName;
+
+    const existing = await prisma.effectModifier.findFirst({
+      where: {
+        effectId: data.effectId,
+        componentName: data.componentName
+      }
     });
-  }
-  if (physicalDamage) {
-    await prisma.effectModifier.createMany({
-      data: [
-        {
-          effectId: physicalDamage.id,
-          componentName: "HP",
-          componentType: ComponentType.STATUS,
-          operationType: OperationType.ADD
-        }
-      ],
-      skipDuplicates: true
-    });
-  }
-  if (magicalDamage) {
-    await prisma.effectModifier.createMany({
-      data: [
-        {
-          effectId: magicalDamage.id,
-          componentName: "HP",
-          componentType: ComponentType.STATUS,
-          operationType: OperationType.ADD
-        }
-      ],
-      skipDuplicates: true
-    });
-  }
-  if (healing) {
-    await prisma.effectModifier.createMany({
-      data: [
-        {
-          effectId: healing.id,
-          componentName: "HP",
-          componentType: ComponentType.STATUS,
-          operationType: OperationType.ADD
-        }
-      ],
-      skipDuplicates: true
-    });
-  }
-  if (restoreMana) {
-    await prisma.effectModifier.createMany({
-      data: [
-        {
-          effectId: restoreMana.id,
-          componentName: "MP",
-          componentType: ComponentType.STATUS,
-          operationType: OperationType.ADD
-        }
-      ],
-      skipDuplicates: true
-    });
-  }
-  if (reduceMana) {
-    await prisma.effectModifier.createMany({
-      data: [
-        {
-          effectId: reduceMana.id,
-          componentName: "MP",
-          componentType: ComponentType.STATUS,
-          operationType: OperationType.ADD
-        }
-      ],
-      skipDuplicates: true
-    });
-  }
-  if (restoreTechnique) {
-    await prisma.effectModifier.createMany({
-      data: [
-        {
-          effectId: restoreTechnique.id,
-          componentName: "TP",
-          componentType: ComponentType.STATUS,
-          operationType: OperationType.ADD
-        }
-      ],
-      skipDuplicates: true
-    });
-  }
-  if (reduceTechnique) {
-    await prisma.effectModifier.createMany({
-      data: [
-        {
-          effectId: reduceTechnique.id,
-          componentName: "TP",
-          componentType: ComponentType.STATUS,
-          operationType: OperationType.ADD
-        }
-      ],
-      skipDuplicates: true
-    });
-  }
-  if (poison) {
-    await prisma.effectModifier.createMany({
-      data: [
-        {
-          effectId: poison.id,
-          componentName: "HP",
-          componentType: ComponentType.STATUS,
-          operationType: OperationType.ADD
-        }
-      ],
-      skipDuplicates: true
-    });
+
+    if (existing) {
+      await prisma.effectModifier.update({
+        where: { id: existing.id },
+        data: { operationType: data.operationType }
+      });
+    } else {
+      await prisma.effectModifier.create({ data });
+    }
   }
 };

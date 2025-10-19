@@ -1,4 +1,4 @@
-import { PrismaClient, CampaignMemberRole } from "@prisma/client";
+import { type PrismaClient, CampaignMemberRole } from "@prisma/client";
 
 export const seedCampaignMembers = async (prisma: PrismaClient) => {
   const campaign = await prisma.campaign.findFirst({
@@ -6,35 +6,40 @@ export const seedCampaignMembers = async (prisma: PrismaClient) => {
   });
 
   const adminUser = await prisma.user.findUnique({
-    where: { email: "admin@example.com" }
+    where: { email: "admin@admin.com" }
   });
 
   const playerUser = await prisma.user.findUnique({
-    where: { email: "player1@example.com" }
+    where: { email: "player1@player.com" }
   });
 
   if (!campaign || !adminUser || !playerUser) {
-    console.warn("Campaign or users not found, skipping campaign member seed.");
+    console.warn(
+      "Campaign, admin user, or player user not found, skipping campaign member seed."
+    );
     return;
   }
 
-  await prisma.campaignMember.createMany({
-    data: [
-      // Adiciona o Admin como Mestre da campanha
-      {
-        campaignId: campaign.id,
-        userId: adminUser.id,
-        role: CampaignMemberRole.MASTER,
-        status: "ACTIVE"
+  const members = [
+    { userId: adminUser.id, role: CampaignMemberRole.MASTER, status: "ACTIVE" },
+    { userId: playerUser.id, role: CampaignMemberRole.PLAYER, status: "ACTIVE" }
+  ];
+
+  console.log("Seeding campaign members...");
+  for (const member of members) {
+    const data = {
+      campaignId: campaign.id,
+      ...member
+    };
+    await prisma.campaignMember.upsert({
+      where: {
+        campaignId_userId: {
+          campaignId: campaign.id,
+          userId: member.userId
+        }
       },
-      // Adiciona o Player1 como Jogador na campanha
-      {
-        campaignId: campaign.id,
-        userId: playerUser.id,
-        role: CampaignMemberRole.PLAYER,
-        status: "ACTIVE"
-      }
-    ],
-    skipDuplicates: true
-  });
+      update: { role: member.role, status: member.status },
+      create: data
+    });
+  }
 };
