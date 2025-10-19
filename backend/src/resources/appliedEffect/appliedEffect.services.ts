@@ -80,19 +80,19 @@ export async function applyEffectTurn(p: ApplyParams) {
         });
         if (!status) continue;
 
-        let delta = valuePerStack * stacksDelta;
+        let delta = valuePerStack * stacksDelta; // Calcula o valor base do efeito
         const op = t.operationType;
 
         // --- LÓGICA DE RESISTÊNCIA ---
         // Se o efeito for de dano (ADD com valor negativo) e o alvo for HP
         if (
+          op === "ADD" &&
           targetName === "HP" &&
-          delta < 0 &&
+          delta < 0 && // Agora esta verificação funciona
           (effect.damageType === "PHISICAL" || effect.damageType === "MAGIC")
         ) {
           const resistanceAttrName =
             effect.damageType === "PHISICAL" ? "Res. Física" : "Res. Mágica";
-
           // Busca o valor da perícia de resistência, que já está calculado e salvo no DB.
           const resistanceAttr = await tx.characterAttribute.findFirst({
             where: {
@@ -111,6 +111,7 @@ export async function applyEffectTurn(p: ApplyParams) {
           }
         }
 
+        const initialValue = status.valueActual;
         let newValue = status.valueActual;
         if (op === "ADD") newValue += delta;
         else if (op === "MULT") newValue *= delta;
@@ -131,7 +132,7 @@ export async function applyEffectTurn(p: ApplyParams) {
         immediateResults.push({
           target: targetName,
           delta,
-          initialValue: status.valueActual,
+          initialValue: initialValue,
           finalValue: newValue
         });
       }
@@ -221,24 +222,28 @@ export async function applyEffectTurn(p: ApplyParams) {
       });
       if (!status) continue;
 
-      const delta = valuePerStack * applied.stacks;
-      let newValue = status.valueActual;
+      // Esta lógica de aplicação de valor de buff/debuff só deve rodar se o valor for diferente de zero.
+      // Efeitos instantâneos já foram tratados e retornados.
+      if (valuePerStack !== 0) {
+        const delta = valuePerStack * applied.stacks;
+        let newValue = status.valueActual;
 
-      if (t.operationType === "ADD") newValue += delta;
-      else if (t.operationType === "MULT") newValue *= delta;
-      else if (t.operationType === "SET") newValue = delta;
+        if (t.operationType === "ADD") newValue += delta;
+        else if (t.operationType === "MULT") newValue *= delta;
+        else if (t.operationType === "SET") newValue = delta;
 
-      const max = status.valueMax + status.valueBonus;
-      if (targetName === "HP") {
-        newValue = Math.min(newValue, max); // HP pode ser negativo
-      } else {
-        newValue = Math.min(Math.max(0, newValue), max); // Outros status não
+        const max = status.valueMax + status.valueBonus;
+        if (targetName === "HP") {
+          newValue = Math.min(newValue, max); // HP pode ser negativo
+        } else {
+          newValue = Math.min(Math.max(0, newValue), max); // Outros status não
+        }
+
+        await tx.status.update({
+          where: { id: status.id },
+          data: { valueActual: newValue }
+        });
       }
-
-      await tx.status.update({
-        where: { id: status.id },
-        data: { valueActual: newValue }
-      });
     }
 
     return { applied, immediate: null };

@@ -204,23 +204,20 @@ export function useDamagePanel({
 
       // Usa o dano final retornado pela API na mensagem, se disponível.
       const immediateResult = result.immediate?.results?.[0];
-      const initialValue = immediateResult?.value
-        ? Math.abs(immediateResult.value)
-        : amount;
-      const finalAmount =
-        immediateResult?.delta != null
-          ? Math.abs(immediateResult.delta)
-          : initialValue;
+      // Lê os valores de antes e depois do backend. Usa o valor rolado como fallback.
+      const initialValue = immediateResult?.initialValue ?? amount;
+      const finalValue = immediateResult?.finalValue ?? initialValue;
 
       let amountMessage: string;
       const damageType = effect.damageType;
 
       // Para dano Físico ou Mágico, sempre mostramos a redução, mesmo que seja zero.
-      // Para outros tipos, mostramos apenas o valor final.
       if (damageType === "PHISICAL" || damageType === "MAGIC") {
-        amountMessage = `${initialValue} ➔ ${finalAmount}`;
+        amountMessage = `${initialValue} ➔ ${finalValue}`;
       } else {
-        amountMessage = `${finalAmount}`;
+        // Para outros tipos, mostramos apenas o valor final.
+        // Se o valor final não estiver disponível, usa o valor rolado.
+        amountMessage = `${finalValue ?? amount}`;
       }
 
       const target = charactersById[selectedTargetId];
@@ -235,7 +232,6 @@ export function useDamagePanel({
       setIsApplying(false);
     }
   }, [
-    isMaster,
     selectedTargetId,
     roll,
     effectsLoading,
