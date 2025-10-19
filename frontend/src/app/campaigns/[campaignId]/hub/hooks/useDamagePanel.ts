@@ -233,7 +233,6 @@ export function useDamagePanel({
       setIsApplying(false);
     }
   }, [
-    isMaster,
     selectedTargetId,
     roll,
     effectsLoading,
