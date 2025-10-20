@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack -H 0.0.0.0 -p 4000",
     "build": "next build --turbopack",
     "start": "next start -p 4000",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@rpg/shared": "file:../shared",
@@ -23,12 +25,17 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9.37.0",
     "eslint-config-next": "15.5.4",
+    "happy-dom": "^20.0.7",
+    "jsdom": "^26.0.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.2.4"
   }
 }

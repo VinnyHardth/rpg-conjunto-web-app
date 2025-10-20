@@ -85,6 +85,24 @@ services:
     networks:
       - rpg-manager-network
 
+  backend-tests:
+    container_name: backend_tests_rpg-manager
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      args:
+        - VERSION=v1
+    command: ["npm", "test"]
+    volumes:
+      - ./backend/:/app/
+    env_file:
+      - .env
+      - ./backend/.env
+    profiles:
+      - test
+    networks:
+      - rpg-manager-network
+
 networks:
   rpg-manager-network:
     driver: bridge

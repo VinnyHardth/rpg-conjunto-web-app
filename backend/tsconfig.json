@@ -104,6 +104,11 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
-  "include": ["./src/**/*", "./prisma/**/*.ts"],
+  "include": [
+    "./src/**/*",
+    "./test/**/*.ts",
+    "./prisma/**/*.ts",
+    "./vitest.config.ts"
+  ],
   "exclude": ["build", "node_modules"]
 }

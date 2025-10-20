@@ -1,10 +1,12 @@
 import { useState, useCallback } from "react";
+import { mutate as mutateCache } from "swr";
 import {
   fetchCharacterStatus,
   updateMultipleStatuses,
   type StatusUpdateItem,
 } from "@/lib/api";
 import type { CharacterPerCampaignWithCharacter } from "@/types/models";
+import { statusCacheKey } from "@/hooks/useStatus";
 
 export enum RestType {
   SHORT = "short",
@@ -42,34 +44,42 @@ export function useRestActions({
       setIsResting(true);
       clearState();
 
-      console.log("Iniciando descanso...");
-
-      console.log("Personagens selecionados:", characters);
-
-      const allStatuses = await Promise.all(
-        characters.map((character) =>
-          fetchCharacterStatus(character.characterId),
+      const activeCharacterIds = Array.from(
+        new Set(
+          characters
+            .filter(
+              (character) => !character.deletedAt && character.characterId,
+            )
+            .map((character) => character.characterId),
         ),
       );
 
-      console.log("Statuses iniciais:", allStatuses);
+      if (activeCharacterIds.length === 0) {
+        setRestError("Nenhum personagem para aplicar o descanso.");
+        setIsResting(false);
+        return;
+      }
+
+      const statusesByCharacter = await Promise.all(
+        activeCharacterIds.map(async (characterId) => ({
+          characterId,
+          statuses: await fetchCharacterStatus(characterId),
+        })),
+      );
 
       const recoveryRate = type === RestType.LONG ? 1 : 0.5;
 
-      const statusUpdates: StatusUpdateItem[] = allStatuses.flatMap(
-        (statuses) => {
-          return statuses.map((status) => ({
+      const statusUpdates: StatusUpdateItem[] = statusesByCharacter.flatMap(
+        ({ statuses }) =>
+          statuses.map((status) => ({
             statusId: status.id,
             name: status.name,
             valueActual: Math.min(
               status.valueMax,
               status.valueActual + Math.floor(status.valueMax * recoveryRate),
             ),
-          }));
-        },
+          })),
       );
-
-      console.log("Statuses a serem atualizados:", statusUpdates);
 
       if (statusUpdates.length === 0) {
         setRestError("Nenhum personagem para aplicar o descanso.");
@@ -89,6 +99,12 @@ export function useRestActions({
 
         // Força a revalidação dos dados da campanha para buscar as alterações de todos.
         mutateRelations((current) => current, { revalidate: true });
+        await Promise.all(
+          activeCharacterIds.map((characterId) => {
+            const cacheKey = statusCacheKey(characterId);
+            return cacheKey ? mutateCache(cacheKey) : Promise.resolve();
+          }),
+        );
       } catch (error) {
         console.error(`Falha ao aplicar descanso ${type}:`, error);
         setRestError(
