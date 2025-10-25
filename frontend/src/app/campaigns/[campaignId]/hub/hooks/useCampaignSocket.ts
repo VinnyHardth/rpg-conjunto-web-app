@@ -1,7 +1,7 @@
 import { useEffect, useRef, RefObject } from "react";
 import { io, Socket } from "socket.io-client";
 import type { RollDifficultyResponse } from "@/lib/api";
-import type {
+import {
   CampaignCharacterEventPayload,
   StatusUpdatedPayload,
 } from "../socketTypes";
@@ -21,16 +21,32 @@ interface UseCampaignSocketParams {
   handlers: RefObject<SocketHandlers>;
 }
 
-const SOCKET_EVENTS: Array<{
-  key: keyof SocketHandlers;
-  event: string;
-}> = [
-  { key: "onDiceRolled", event: "dice:rolled" },
-  { key: "onDiceCleared", event: "dice:cleared" },
-  { key: "onCharacterLinked", event: "campaign:characterLinked" },
-  { key: "onCharacterUnlinked", event: "campaign:characterUnlinked" },
-  { key: "onStatusUpdated", event: "status:updated" },
-];
+const DEFAULT_SOCKET_PATH = "/socket.io/";
+
+const resolveSocketConnectionConfig = (
+  socketUrl: string,
+): { url: string | undefined; path: string } => {
+  if (!socketUrl) {
+    return { url: undefined, path: DEFAULT_SOCKET_PATH };
+  }
+
+  try {
+    // Se for uma URL completa (ex: http://localhost:3001/socket.io/)
+    const url = new URL(socketUrl);
+    return { url: url.origin, path: url.pathname };
+  } catch {
+    // Se for apenas um path (ex: /socket.io/)
+    return { url: undefined, path: socketUrl };
+  }
+};
+
+const SOCKET_EVENTS: Record<keyof Omit<SocketHandlers, "onConnect">, string> = {
+  onDiceRolled: "dice:rolled",
+  onDiceCleared: "dice:cleared",
+  onCharacterLinked: "campaign:characterLinked",
+  onCharacterUnlinked: "campaign:characterUnlinked",
+  onStatusUpdated: "status:updated",
+};
 
 export const useCampaignSocket = ({
   campaignId,
@@ -42,10 +58,17 @@ export const useCampaignSocket = ({
   useEffect(() => {
     if (!campaignId) return;
 
-    const socket = io("/", {
-      path: "/socket.io/",
-      transports: ["websocket"],
-    });
+    const { url, path } = resolveSocketConnectionConfig(socketUrl);
+
+    const socket = url
+      ? io(url, {
+          path,
+          transports: ["websocket"],
+        })
+      : io({
+          path,
+          transports: ["websocket"],
+        });
 
     socketRef.current = socket;
     const room = `campaign-${campaignId}`;
@@ -58,35 +81,46 @@ export const useCampaignSocket = ({
       handlers.current?.onConnect?.(socket);
     };
 
-    socket.emit("joinRoom", room);
     socket.on("connect", handleConnect);
     socket.on("connect_error", (error) => {
       console.error("Socket connection error:", error);
     });
 
-    // Envolvemos os handlers em uma função para garantir que sempre
-    // acessemos a versão mais recente de `handlers.current`.
-    const registeredHandlers = SOCKET_EVENTS.map(({ key, event }) => {
-      const handler = (...args: unknown[]) => {
-        const specificHandler = handlers.current?.[key];
-        if (specificHandler) {
-          // Forçamos a tipagem para uma função genérica para satisfazer o TypeScript.
-          (specificHandler as (...args: unknown[]) => void)(...args);
-        }
-      };
-      if (handlers.current?.[key]) {
-        socket.on(event, handler);
-      }
-    });
+    // Registra os handlers para os eventos do socket
+    const diceRolledListener = (payload: RollDifficultyResponse) => {
+      handlers.current?.onDiceRolled?.(payload);
+    };
+    const diceClearedListener = (payload: { campaignId: string }) => {
+      handlers.current?.onDiceCleared?.(payload);
+    };
+    const characterLinkedListener = (
+      payload: CampaignCharacterEventPayload,
+    ) => {
+      handlers.current?.onCharacterLinked?.(payload);
+    };
+    const characterUnlinkedListener = (
+      payload: CampaignCharacterEventPayload,
+    ) => {
+      handlers.current?.onCharacterUnlinked?.(payload);
+    };
+    const statusUpdatedListener = (payload: StatusUpdatedPayload) => {
+      handlers.current?.onStatusUpdated?.(payload);
+    };
+
+    socket.on(SOCKET_EVENTS.onDiceRolled, diceRolledListener);
+    socket.on(SOCKET_EVENTS.onDiceCleared, diceClearedListener);
+    socket.on(SOCKET_EVENTS.onCharacterLinked, characterLinkedListener);
+    socket.on(SOCKET_EVENTS.onCharacterUnlinked, characterUnlinkedListener);
+    socket.on(SOCKET_EVENTS.onStatusUpdated, statusUpdatedListener);
 
     return () => {
       socket.off("connect", handleConnect);
       socket.off("connect_error");
-      SOCKET_EVENTS.forEach(({ event }) => {
-        // Para remover os listeners, precisamos remover todos para um dado evento,
-        // já que a referência da função `handler` muda a cada renderização.
-        socket.off(event);
-      });
+      socket.off(SOCKET_EVENTS.onDiceRolled, diceRolledListener);
+      socket.off(SOCKET_EVENTS.onDiceCleared, diceClearedListener);
+      socket.off(SOCKET_EVENTS.onCharacterLinked, characterLinkedListener);
+      socket.off(SOCKET_EVENTS.onCharacterUnlinked, characterUnlinkedListener);
+      socket.off(SOCKET_EVENTS.onStatusUpdated, statusUpdatedListener);
       socket.disconnect();
       socketRef.current = null;
     };

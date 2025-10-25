@@ -46,7 +46,7 @@ const verifyCredentials = async (
   return userWithoutPassword as UserDTO;
 };
 
-const logout = async (session: Express.Request["session"]): Promise<void> => {
+const logout = async (session?: Express.Request["session"]): Promise<void> => {
   return new Promise((resolve, reject) => {
     if (!session) {
       resolve();

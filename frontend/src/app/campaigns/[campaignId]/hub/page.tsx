@@ -38,7 +38,7 @@ import { CampaignHubProvider } from "./contexts/CampaignHubContext";
 type Relation = CharacterPerCampaignWithCharacter;
 
 const getSocketUrl = (): string => {
-  return "/api/socket.io";
+  return process.env.NEXT_PUBLIC_SOCKET_URL ?? "/socket.io";
 };
 
 export default function CampaignHubByIdPage() {
