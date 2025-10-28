@@ -246,13 +246,14 @@ model Attributes {
 }
 
 model CharacterAttribute {
-  id          String @id @default(uuid()) @db.Char(36)
-  characterId String @db.Char(36)
-  attributeId String @db.Char(36)
-  valueBase   Int    @default(0)
-  valueInv    Int    @default(0)
-  valueExtra  Int    @default(0)
+  id          String  @id @default(uuid()) @db.Char(36)
+  characterId String  @db.Char(36)
+  attributeId String  @db.Char(36)
+  valueBase   Int     @default(0)
+  valueInv    Int     @default(0)
+  valueExtra  Int     @default(0)
 
+  alias   String      @default("") @db.VarChar(36)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?

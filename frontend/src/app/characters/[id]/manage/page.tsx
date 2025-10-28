@@ -1,11 +1,13 @@
 // app/characters/[id]/manage/page.tsx
 "use client";
 
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useCharacterData } from "@/hooks/useCharacterData";
 import toast from "react-hot-toast";
 import CharacterBasicInfo from "./components/CharacterBasicInfo";
 import CharacterAttributes from "./components/CharacterAttributes";
+import CharacterExpertises from "./components/CharacterExpertises";
 
 import {
   CharacterBasicInfoUpdate,
@@ -21,20 +23,39 @@ import { AxiosResponse } from "axios";
 type ManagementTab =
   | "info"
   | "attributes"
-  | "skills"
+  | "expertises"
   | "inventory"
-  | "equipment";
+  | "equipment"
+  | "skills";
 
 export default function CharacterManagementPage({
   params,
 }: {
   params: Promise<{ id: string }>;
-}) {
+}) { 
   const { id } = React.use(params);
-  const [activeTab, setActiveTab] = useState<ManagementTab>("info");
   const { data, isLoading, error } = useCharacterData(id);
   const [originalCharacterData, setOriginalCharacterData] =
     useState<FullCharacterData | null>(null);
+
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const tabs: { id: ManagementTab; name: string; icon: string }[] = [
+    { id: "info", name: "Informações Básicas", icon: "📝" },
+    { id: "attributes", name: "Atributos", icon: "💪" },
+    { id: "expertises", name: "Perícias", icon: "📈" },
+    { id: "skills", name: "Habilidades", icon: "✨" },
+    { id: "inventory", name: "Inventário", icon: "🎒" },
+    { id: "equipment", name: "Equipamentos", icon: "⚔️" },
+  ];
+
+  const [activeTab, setActiveTab] = useState<ManagementTab>(() => {
+    const tabId = searchParams.get("tab") as ManagementTab;
+    return tabs.some((t) => t.id === tabId) ? tabId : "info";
+  });
+
   const [localCharacterData, setLocalCharacterData] =
     useState<FullCharacterData | null>(null);
   const [pendingUpdates, setPendingUpdates] = useState<
@@ -92,6 +113,11 @@ export default function CharacterManagementPage({
         status: updates,
       };
     });
+  };
+
+  const handleTabChange = (tabId: ManagementTab) => {
+    setActiveTab(tabId);
+    router.push(`${pathname}?tab=${tabId}`, { scroll: false });
   };
 
   const handleSave = async () => {
@@ -206,18 +232,6 @@ export default function CharacterManagementPage({
 
   const characterData = localCharacterData;
 
-  const tabs = [
-    { id: "info" as ManagementTab, name: "Informações Básicas", icon: "📝" },
-    {
-      id: "attributes" as ManagementTab,
-      name: "Atributos & Perícias",
-      icon: "💪",
-    },
-    { id: "skills" as ManagementTab, name: "Habilidades", icon: "✨" },
-    { id: "inventory" as ManagementTab, name: "Inventário", icon: "🎒" },
-    { id: "equipment" as ManagementTab, name: "Equipamentos", icon: "⚔️" },
-  ];
-
   console.log("📝 Dados do personagem:", characterData);
   console.log("📝 Atualizações pendentes:", pendingUpdates);
 
@@ -282,7 +296,7 @@ export default function CharacterManagementPage({
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => handleTabChange(tab.id)}
               className={`flex items-center px-6 py-3 border-b-2 font-medium text-sm ${
                 activeTab === tab.id
                   ? "border-blue-500 text-blue-600"
@@ -313,6 +327,13 @@ export default function CharacterManagementPage({
             archetype={characterData.archetype}
             onAttributesUpdate={handleAttributesUpdate}
             onStatusUpdate={handleStatusUpdate}
+          />
+        )}
+
+        {activeTab === "expertises" && (
+          <CharacterExpertises
+            attributes={characterData.attributes}
+            onAttributesUpdate={handleAttributesUpdate}
           />
         )}
       </div>

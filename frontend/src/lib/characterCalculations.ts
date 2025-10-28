@@ -46,5 +46,7 @@ export const calculateStatus = (
     mp: 10 + Math.ceil((int + wis) / 2) * archetype.mp,
     tp: 10 + Math.ceil((dex + str) / 2) * archetype.tp,
     mov: Math.ceil((dex + con + rf + rm + det) / 2),
+    rm,
+    rf,
   };
 };

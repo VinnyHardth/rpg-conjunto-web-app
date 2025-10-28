@@ -11,3 +11,11 @@ export function useAttributes() {
   );
   return { data, error, isLoading, mutate };
 }
+
+export function useAttributesByKind(kind: string) {
+  const { data, error, isLoading, mutate } = useSWR<Attributes[]>(
+    `/attributes/kind/${kind}`,
+    fetcher,
+  );
+  return { data, error, isLoading, mutate };
+}

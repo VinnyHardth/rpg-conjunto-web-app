@@ -4,6 +4,8 @@ interface ResourceDisplayProps {
     mp: number;
     tp: number;
     movimento: number;
+    rf: number;
+    rm: number;
   };
 }
 
@@ -21,12 +23,14 @@ export default function ResourceDisplay({
       color: "green",
       icon: "👟",
     },
+    { label: "RF", value: derivedStats.rf, color: "purple", icon: "🛡️" },
+    { label: "RM", value: derivedStats.rm, color: "pink", icon: "🔮" },
   ];
 
   return (
     <div className="p-4 border border-teal-200 rounded-lg bg-teal-50">
       <h3 className="font-bold text-xl mb-3 text-teal-700 flex items-center">
-        <span className="mr-2">❤️‍🔥</span> Recursos Base
+        <span className="mr-2">❤️‍🔥</span> Status 
       </h3>
       <div className="grid grid-cols-2 gap-3">
         {resources.map(({ label, value, unit = "", color, icon }) => (

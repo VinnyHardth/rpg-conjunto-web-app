@@ -79,7 +79,8 @@ export type AttributeKey = // Chave de Atributo
 export const GENEROS_MOCK = ["Masculino", "Feminino", "Não Binário", "Outro"];
 export const STEPS_NAMES = [
   "Informações Básicas",
-  "Atributos & Estatísticas",
+  "Atributos",
+  "Pericias",
   "Resumo Final",
 ];
 

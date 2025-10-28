@@ -8,6 +8,7 @@ export const createCharacterAttributeSchema =
   Joi.object<CreateCharacterAttributeDTO>({
     characterId: Joi.string().uuid().required(),
     attributeId: Joi.string().uuid().required(),
+    alias: Joi.string().default(""),
     valueBase: Joi.number().default(0).required(),
     valueInv: Joi.number().default(0).required(),
     valueExtra: Joi.number().default(0).required()

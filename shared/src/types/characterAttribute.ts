@@ -14,6 +14,7 @@ export interface CharacterAttributeDTO {
 export interface CreateCharacterAttributeDTO {
   characterId: string;
   attributeId: string;
+  alias: string;
   valueBase: number;
   valueInv: number;
   valueExtra: number;
