@@ -54,7 +54,6 @@ export default function StepTwo({
           selectedArchetypeId={characterData.archetype.id}
           onSelectArchetype={onArchetypeSelect}
         />
-
       </div>
 
       {/* COLUNA 2: ESTATÍSTICAS CALCULADAS */}

@@ -17,8 +17,8 @@ const router = Router();
 router.post(
   "/difficulty",
   /*
-    #swagger.summary = 'Roll dice based on difficulty level'
-    #swagger.description = 'Executes a dice roll using Xd6 with thresholds tied to the provided difficulty.'
+    #swagger.summary = 'Executa um teste de atributo/pericia'
+    #swagger.description = 'Rola 1d20 e soma os modificadores informados.'
     #swagger.requestBody = {
       required: true,
       content: {
@@ -26,17 +26,19 @@ router.post(
           schema: {
             type: 'object',
             properties: {
-              diceCount: { type: 'integer', minimum: 1 },
-              difficulty: { type: 'string', enum: ['Fácil', 'Médio', 'Difícil'] }
+              attributeValue: { type: 'number' },
+              expertiseName: { type: ['string', 'null'] },
+              expertiseValue: { type: 'number' },
+              miscBonus: { type: 'number' }
             },
-            required: ['diceCount', 'difficulty']
+            required: ['attributeValue']
           }
         }
       }
     }
     #swagger.responses[200] = { description: 'Rolagem executada com sucesso.' }
     #swagger.responses[400] = { description: 'Parâmetros inválidos.' }
-    #swagger.responses[500] = { description: 'Erro interno.' }
+    #swagger.responses[500] = { descricao: 'Erro interno.' }
   */
   validateRequestBody(rollDifficultySchema),
   rollByDifficulty

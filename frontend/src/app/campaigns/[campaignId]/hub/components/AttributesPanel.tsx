@@ -17,7 +17,7 @@ export default function AttributesPanel({ onClose }: AttributesPanelProps) {
     expertiseDefinitions,
     useCampaignData: { campaign },
     useHubInterface: { isAttributesOpen, attributesPanelRef: panelRef },
-    useDiceRolls: { socketHandlers },
+    useDiceRolls: { socketHandlers, difficultyTarget },
   } = useCampaignHub();
 
   const {
@@ -32,9 +32,6 @@ export default function AttributesPanel({ onClose }: AttributesPanelProps) {
     isRolling,
     rollError,
     handleRoll,
-    selectedDifficulty,
-    setSelectedDifficulty,
-    DIFFICULTY_OPTIONS,
   } = useAttributesPanel({
     isOpen: isAttributesOpen,
     sidebarCharacterId,
@@ -94,7 +91,9 @@ export default function AttributesPanel({ onClose }: AttributesPanelProps) {
                 headerClass="bg-red-600"
                 selectedRowName={selectedAttributeRow}
                 onSelectRow={(rowName) =>
-                  setSelectedAttributeRow((prev) => (prev === rowName ? null : rowName))
+                  setSelectedAttributeRow((prev) =>
+                    prev === rowName ? null : rowName,
+                  )
                 }
               />
 
@@ -105,11 +104,13 @@ export default function AttributesPanel({ onClose }: AttributesPanelProps) {
                 headerClass="bg-sky-600"
                 selectedRowName={selectedExpertiseRow}
                 onSelectRow={(rowName) =>
-                  setSelectedExpertiseRow((prev) => (prev === rowName ? null : rowName))
+                  setSelectedExpertiseRow((prev) =>
+                    prev === rowName ? null : rowName,
+                  )
                 }
               />
 
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-6">
                 <button
                   type="button"
                   disabled={!selectedRollRow || isRolling}
@@ -119,44 +120,9 @@ export default function AttributesPanel({ onClose }: AttributesPanelProps) {
                   {isRolling
                     ? "Rolando..."
                     : selectedRollRow
-                      ? `Rolar ${selectedRollRow.name}`
+                      ? `Rolar ${selectedRollRow.label}`
                       : "Rolar Atributo"}
                 </button>
-
-                <div className="relative w-full sm:w-40">
-                  <select
-                    value={selectedDifficulty}
-                    onChange={(event) =>
-                      setSelectedDifficulty(
-                        event.target
-                          .value as (typeof DIFFICULTY_OPTIONS)[number],
-                      )
-                    }
-                    className="block w-full appearance-none rounded-lg border border-white/10 bg-slate-900/60 px-4 py-2 text-sm font-medium text-white shadow focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  >
-                    {DIFFICULTY_OPTIONS.map((label) => (
-                      <option key={label} value={label}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
-                  <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-white/70">
-                    <svg
-                      className="h-4 w-4"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M6 8l4 4 4-4"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                </div>
               </div>
 
               {rollError && (
@@ -166,21 +132,38 @@ export default function AttributesPanel({ onClose }: AttributesPanelProps) {
               {sidebarRoll && (
                 <div className="mt-3 space-y-1 rounded-lg border border-white/10 bg-slate-900/60 p-3 text-xs text-slate-200">
                   <p className="font-semibold text-white">
-                    {sidebarRoll.attributeAbbreviation} • Sucessos{" "}
-                    {sidebarRoll.successes}/{sidebarRoll.diceCount}
+                    {sidebarRoll.attributeAbbreviation} • Resultado{" "}
+                    {sidebarRoll.total}
                   </p>
                   <p className="uppercase tracking-wide text-white/70">
                     {sidebarRoll.attributeName}
                   </p>
                   <p>
-                    Rolagens:{" "}
+                    D20: {sidebarRoll.baseRoll} • Mod Total:{" "}
+                    {sidebarRoll.modifiersTotal >= 0 ? "+" : "-"}
+                    {Math.abs(sidebarRoll.modifiersTotal)}
+                  </p>
+                  <p>
+                    Atributo: {sidebarRoll.attributeValue} • Perícia:{" "}
+                    {sidebarRoll.expertiseValue} • Outros:{" "}
+                    {sidebarRoll.miscBonus}
+                  </p>
+                  {difficultyTarget !== null && (
+                    <p>
+                      Dificuldade {difficultyTarget} •{" "}
+                      {sidebarRoll.total >= difficultyTarget
+                        ? "Sucesso"
+                        : "Falha"}{" "}
+                      (Margem{" "}
+                      {sidebarRoll.total - difficultyTarget >= 0 ? "+" : ""}
+                      {sidebarRoll.total - difficultyTarget})
+                    </p>
+                  )}
+                  <p>
+                    Rolagem:{" "}
                     {sidebarRoll.rolls.length > 0
                       ? sidebarRoll.rolls.join(", ")
                       : "—"}
-                  </p>
-                  <p>
-                    Dificuldade {sidebarRoll.difficulty} • Limiar ≥{" "}
-                    {sidebarRoll.threshold}
                   </p>
                 </div>
               )}

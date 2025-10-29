@@ -8,15 +8,19 @@ import {
 import type { Attributes, CharacterAttribute } from "@/types/models";
 import { resolveAbbreviation } from "../utils";
 
-const DIFFICULTY_OPTIONS = ["Fácil", "Médio", "Difícil"] as const;
-export type Difficulty = (typeof DIFFICULTY_OPTIONS)[number];
-
 type AttributeRow = {
   name: string;
   base: number;
   inventory: number;
   extra: number;
   total: number;
+};
+
+type SelectedRollRow = null | {
+  label: string;
+  total: number;
+  attribute?: AttributeRow;
+  expertise?: AttributeRow;
 };
 
 interface UseAttributesPanelProps {
@@ -55,8 +59,6 @@ export function useAttributesPanel({
   const [selectedExpertiseRow, setSelectedExpertiseRow] = useState<
     string | null
   >(null);
-  const [selectedDifficulty, setSelectedDifficulty] =
-    useState<Difficulty>("Médio");
   const [isRolling, setIsRolling] = useState(false);
   const [rollError, setRollError] = useState<string | null>(null);
 
@@ -109,34 +111,44 @@ export function useAttributesPanel({
   const selectedRollRow = useMemo(() => {
     if (!attributeTables) return null;
 
-    const selectedAttr = attributeTables.attributes.find(
-      (attr) => attr.name === selectedAttributeRow,
-    );
-    const selectedExp = attributeTables.expertises.find(
-      (exp) => exp.name === selectedExpertiseRow,
-    );
+    const selectedAttr = selectedAttributeRow
+      ? (attributeTables.attributes.find(
+          (attr) => attr.name === selectedAttributeRow,
+        ) ?? null)
+      : null;
+    const selectedExp = selectedExpertiseRow
+      ? (attributeTables.expertises.find(
+          (exp) => exp.name === selectedExpertiseRow,
+        ) ?? null)
+      : null;
 
-    if (selectedAttr && selectedExp) {
-      return {
-        name: `${selectedAttr.name} + ${selectedExp.name}`,
-        total: selectedAttr.total + selectedExp.total,
-        kind: "combined" as const,
-      };
-    }
-    if (selectedAttr) {
-      return { ...selectedAttr, kind: "attribute" as const };
-    }
-    if (selectedExp) {
-      return { ...selectedExp, kind: "expertise" as const };
-    }
-    return null;
+    if (!selectedAttr && !selectedExp) return null;
+
+    const labelParts = [
+      selectedAttr?.name,
+      selectedExp?.name && selectedExp.name !== selectedAttr?.name
+        ? selectedExp.name
+        : null,
+    ].filter(Boolean) as string[];
+
+    const label = labelParts.join(" + ") || selectedAttr?.name || "Rolagem";
+    const total = (selectedAttr?.total ?? 0) + (selectedExp?.total ?? 0);
+
+    return {
+      label,
+      total,
+      attribute: selectedAttr ?? undefined,
+      expertise: selectedExp ?? undefined,
+    };
   }, [attributeTables, selectedAttributeRow, selectedExpertiseRow]);
 
   const handleRoll = useCallback(async () => {
     if (!selectedRollRow || !sidebarCharacterId || !campaignId) return;
 
-    const diceCount = Math.max(1, Math.floor(selectedRollRow.total));
-    const attributeAbbreviation = resolveAbbreviation(selectedRollRow.name);
+    const attributeAbbreviation = resolveAbbreviation(selectedRollRow.label);
+    const attributeValue = selectedRollRow.attribute?.total ?? 0;
+    const expertiseValue = selectedRollRow.expertise?.total ?? 0;
+    const expertiseName = selectedRollRow.expertise?.name ?? null;
 
     setIsRolling(true);
     setRollError(null);
@@ -144,10 +156,11 @@ export function useAttributesPanel({
       const result = await rollDifficultyRequest({
         campaignId,
         characterId: sidebarCharacterId,
-        attributeName: selectedRollRow.name,
+        attributeName: selectedRollRow.label,
         attributeAbbreviation,
-        diceCount,
-        difficulty: selectedDifficulty,
+        attributeValue,
+        expertiseName,
+        expertiseValue,
       });
       onRoll(result); // Notifica o componente pai sobre a nova rolagem
     } catch (error) {
@@ -156,13 +169,7 @@ export function useAttributesPanel({
     } finally {
       setIsRolling(false);
     }
-  }, [
-    selectedRollRow,
-    sidebarCharacterId,
-    campaignId,
-    selectedDifficulty,
-    onRoll,
-  ]);
+  }, [selectedRollRow, sidebarCharacterId, campaignId, onRoll]);
 
   const isLoading =
     Boolean(isOpen && sidebarCharacterId) &&
@@ -182,8 +189,5 @@ export function useAttributesPanel({
     isRolling,
     rollError,
     handleRoll,
-    selectedDifficulty,
-    setSelectedDifficulty,
-    DIFFICULTY_OPTIONS,
   };
 }

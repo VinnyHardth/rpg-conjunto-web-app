@@ -16,7 +16,7 @@ export default function CharacterBoard() {
       removingId,
       handleDetachCharacter,
     },
-    useDiceRolls: { rollsByCharacter },
+    useDiceRolls: { rollsByCharacter, difficultyTarget },
     useHubInterface: { boardRef, openSelection },
     useSelectCharacter: { focusedCardId, handleFocusCard },
   } = useCampaignHub();
@@ -80,7 +80,12 @@ export default function CharacterBoard() {
               const cardRollSummary = characterRoll
                 ? {
                     label: characterRoll.attributeAbbreviation,
-                    successes: characterRoll.successes,
+                    total: characterRoll.total,
+                    ...(difficultyTarget !== null
+                      ? {
+                          isSuccess: characterRoll.total >= difficultyTarget,
+                        }
+                      : {}),
                   }
                 : null;
 

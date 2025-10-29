@@ -8,16 +8,14 @@ import {
   CharacterType,
   CreateCharacterAttribute,
   AttributeKind,
-  STEPS_NAMES
+  STEPS_NAMES,
 } from "@/types/models";
 
 // APIs and services
 import { fetchAttributeKinds } from "@/lib/api";
 
 // Utilities
-import {
-  calculateStatus,
-} from "@/lib/characterCalculations";
+import { calculateStatus } from "@/lib/characterCalculations";
 
 // Components
 import StepIndicator from "./character-creation/StepIndicator";
@@ -31,8 +29,6 @@ import { useCharacters } from "@/hooks/useCharacters";
 import type { AxiosError } from "axios";
 
 // Constants
-
-
 
 const initialCharacterData: CreateFullCharacter = {
   info: {
@@ -129,7 +125,9 @@ export default function CharacterCreationModal({
         setExpertises(expertisesData);
 
         // Ordenar os atributos e perícias
-        setAttributes(attributesData.sort((a, b) => a.name.localeCompare(b.name)));
+        setAttributes(
+          attributesData.sort((a, b) => a.name.localeCompare(b.name)),
+        );
 
         // Definir ATTRIBUTE_KEYS dinamicamente com base nos nomes dos atributos do banco
         const dynamicAttributeKeys = attributesData.map((attr) => attr.name);
@@ -233,8 +231,6 @@ export default function CharacterCreationModal({
 
   const totalSteps = STEPS_NAMES.length;
 
-  
-
   const handleNext = () => {
     if (currentStep < totalSteps - 1) {
       setCurrentStep(currentStep + 1);
@@ -317,10 +313,7 @@ export default function CharacterCreationModal({
     }
   };
 
-  const handleExpertiseChange = (
-    expertiseId: string,
-    newValue: number,
-  ) => {
+  const handleExpertiseChange = (expertiseId: string, newValue: number) => {
     setCharacterData((prev) => {
       const updatedExpertises = prev.expertises.map((exp) => {
         if (exp.attributeId === expertiseId) {
@@ -331,8 +324,6 @@ export default function CharacterCreationModal({
       return { ...prev, expertises: updatedExpertises };
     });
   };
-
-  
 
   const validateCharacterInfo = (): string | null => {
     const trimmedName = characterData.info.name?.trim() ?? "";
@@ -485,10 +476,7 @@ export default function CharacterCreationModal({
         );
       case 3:
         return (
-          <StepFour
-            characterData={characterData}
-            derivedStats={derivedStats}
-          />
+          <StepFour characterData={characterData} derivedStats={derivedStats} />
         );
       default:
         return null;

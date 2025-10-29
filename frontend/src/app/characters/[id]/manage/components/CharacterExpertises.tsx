@@ -33,7 +33,9 @@ const CharacterExpertises: React.FC<CharacterExpertisesProps> = ({
   const handleEditSave = () => {
     if (editingId !== null) {
       const updatedAttributes = allCharacterAttributes.map((attr) =>
-        attr.attributeId === editingId ? { ...attr, valueBase: editValue } : attr,
+        attr.attributeId === editingId
+          ? { ...attr, valueBase: editValue }
+          : attr,
       );
       setAllCharacterAttributes(updatedAttributes);
       onAttributesUpdate(updatedAttributes);
@@ -124,13 +126,13 @@ const CharacterExpertises: React.FC<CharacterExpertisesProps> = ({
     )
     .sort((a, b) => a.name.localeCompare(b.name));
 
-
   return (
     <div className="mb-8">
       <div className="mb-4">
         <h2 className="text-2xl font-bold text-gray-800 mb-2">Perícias</h2>
         <p className="text-gray-600 text-sm ">
-          Habilidades que podem ser aprimoradas. Clique no valor base para editar.
+          Habilidades que podem ser aprimoradas. Clique no valor base para
+          editar.
         </p>
       </div>
 
@@ -201,7 +203,11 @@ const CharacterExpertises: React.FC<CharacterExpertisesProps> = ({
               </option>
             ))}
           </select>
-          <button onClick={handleAddExpertise} disabled={!newExpertiseId} className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed">
+          <button
+            onClick={handleAddExpertise}
+            disabled={!newExpertiseId}
+            className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+          >
             Adicionar
           </button>
         </div>

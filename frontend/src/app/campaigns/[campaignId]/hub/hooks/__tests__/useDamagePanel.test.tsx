@@ -138,7 +138,7 @@ describe("useDamagePanel", () => {
   it("aplica alteração para alvo único e invalida cache", async () => {
     rollCustomMock.mockResolvedValueOnce(rollResponse);
     applyEffectTurnMock.mockResolvedValueOnce({
-      immediate: { results: [{ delta: -8 }] },
+      immediate: { results: [{ delta: -5 }] },
     });
     const { result } = renderHook(() => useDamagePanel(baseProps));
 
@@ -161,7 +161,7 @@ describe("useDamagePanel", () => {
     expect(mutateMock).toHaveBeenCalledWith(statusCacheKey("char-1"));
     expect(result.current.roll).toBeNull();
     expect(result.current.message).toBe(
-      "Dano Físico (10 ➔ 8) em Herói aplicado com sucesso.",
+      "Dano Físico (10 ➔ 5) em Herói aplicado com sucesso.",
     );
   });
 

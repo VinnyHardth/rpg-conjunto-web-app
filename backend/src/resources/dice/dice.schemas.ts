@@ -5,8 +5,10 @@ export const rollDifficultySchema = Joi.object({
   characterId: Joi.string().required(),
   attributeName: Joi.string().required(),
   attributeAbbreviation: Joi.string().required(),
-  diceCount: Joi.number().integer().min(1).required(),
-  difficulty: Joi.string().valid("Fácil", "Médio", "Difícil").required()
+  attributeValue: Joi.number().required(),
+  expertiseName: Joi.string().allow(null, ""),
+  expertiseValue: Joi.number().allow(null),
+  miscBonus: Joi.number().allow(null)
 });
 
 export const rollCustomSchema = Joi.object({

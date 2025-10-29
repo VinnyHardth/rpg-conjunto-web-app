@@ -4,16 +4,11 @@ import AttributeRow, { AttributeRowData } from "./AttributeRow";
 import React, { useState, useEffect } from "react";
 
 import { useAttributes } from "../hooks/useAttributes";
-import type {
-  Archetype,
-  CharacterAttribute,
-} from "@/types/models";
+import type { Archetype, CharacterAttribute } from "@/types/models";
 
 import { STATUS_NAMES, Status } from "@/types/models";
 
-import {
-  calculateStatus,
-} from "@/lib/characterCalculations";
+import { calculateStatus } from "@/lib/characterCalculations";
 
 interface CharacterAttributeProps {
   attributes: CharacterAttribute[];
@@ -265,7 +260,9 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
 
       {/* Resumo Estatístico */}
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-3">Visão Geral</h3>
+        <h3 className="text-lg font-semibold text-gray-800 mb-3">
+          Visão Geral
+        </h3>
         <div className="flex justify-around items-center">
           <div className="text-center">
             <div className="text-2xl font-bold text-blue-600">

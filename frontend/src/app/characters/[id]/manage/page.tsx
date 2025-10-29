@@ -32,7 +32,7 @@ export default function CharacterManagementPage({
   params,
 }: {
   params: Promise<{ id: string }>;
-}) { 
+}) {
   const { id } = React.use(params);
   const { data, isLoading, error } = useCharacterData(id);
   const [originalCharacterData, setOriginalCharacterData] =

@@ -9,18 +9,16 @@ export type RollOutcome = {
   rolls: number[];
 };
 
-export type DifficultyLabel = "Fácil" | "Médio" | "Difícil";
-
-export type DifficultyRollOutcome = RollOutcome & {
-  diceCount: number;
-  threshold: number;
-  difficulty: DifficultyLabel;
+export type ModifierBreakdown = {
+  attribute: number;
+  expertise: number;
+  misc: number;
 };
 
-const DIFFICULTY_THRESHOLDS: Record<DifficultyLabel, number> = {
-  Fácil: 2,
-  Médio: 3,
-  Difícil: 4
+export type AbilityRollOutcome = RollOutcome & {
+  baseRoll: number;
+  modifiers: ModifierBreakdown;
+  modifiersTotal: number;
 };
 
 const dice = new Dice();
@@ -59,34 +57,93 @@ export const rollExpression = (expression: string): RollOutcome => {
   };
 };
 
-const normalizeDiceCount = (diceCount: number): number => {
-  if (!Number.isFinite(diceCount)) return 0;
-  return Math.max(0, Math.floor(diceCount));
+const normalizeModifier = (value: number | null | undefined): number => {
+  if (typeof value !== "number") return 0;
+  if (!Number.isFinite(value)) return 0;
+  return value;
 };
 
-const normalizeDifficulty = (difficulty: DifficultyLabel): DifficultyLabel => {
-  return DIFFICULTY_THRESHOLDS[difficulty] ? difficulty : "Médio";
+const formatModifier = (value: number): string => {
+  const absolute = Math.abs(value);
+  if (absolute === 0) return "";
+  const sign = value >= 0 ? "+" : "-";
+  return `${sign} ${absolute}`;
 };
 
-export const rollDifficulty = (
-  diceCount: number,
-  difficulty: DifficultyLabel
-): DifficultyRollOutcome => {
-  const sanitizedDifficulty = normalizeDifficulty(difficulty);
-  const threshold = DIFFICULTY_THRESHOLDS[sanitizedDifficulty];
-  const normalizedCount = normalizeDiceCount(diceCount);
-
-  if (normalizedCount <= 0) {
-    throw new Error("diceCount must be a positive integer");
+const buildExpression = (modifiers: ModifierBreakdown): string => {
+  const segments = ["1d20"];
+  if (modifiers.attribute !== 0) {
+    segments.push(formatModifier(modifiers.attribute));
   }
+  if (modifiers.expertise !== 0) {
+    segments.push(formatModifier(modifiers.expertise));
+  }
+  if (modifiers.misc !== 0) {
+    segments.push(formatModifier(modifiers.misc));
+  }
+  return segments
+    .join(" ")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+};
 
-  const expression = `${normalizedCount}d6>=${threshold}`;
-  const outcome = rollExpression(expression);
+const buildRenderedExpression = (
+  baseRenderedExpression: string,
+  modifiers: ModifierBreakdown
+): string => {
+  const segments = [baseRenderedExpression.trim()];
+  if (modifiers.attribute !== 0) {
+    segments.push(formatModifier(modifiers.attribute));
+  }
+  if (modifiers.expertise !== 0) {
+    segments.push(formatModifier(modifiers.expertise));
+  }
+  if (modifiers.misc !== 0) {
+    segments.push(formatModifier(modifiers.misc));
+  }
+  return segments
+    .join(" ")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+};
+
+export type AbilityRollOptions = {
+  attributeValue: number;
+  expertiseValue?: number | null;
+  miscBonus?: number | null;
+};
+
+export const rollDifficulty = ({
+  attributeValue,
+  expertiseValue = 0,
+  miscBonus = 0
+}: AbilityRollOptions): AbilityRollOutcome => {
+  const modifiers: ModifierBreakdown = {
+    attribute: normalizeModifier(attributeValue),
+    expertise: normalizeModifier(expertiseValue),
+    misc: normalizeModifier(miscBonus)
+  };
+
+  const baseOutcome = rollExpression("1d20");
+  const baseRoll = baseOutcome.rolls[0] ?? baseOutcome.total;
+
+  const modifiersTotal =
+    modifiers.attribute + modifiers.expertise + modifiers.misc;
+  const total = baseRoll + modifiersTotal;
+
+  const expression = buildExpression(modifiers);
+  const renderedExpression = buildRenderedExpression(
+    baseOutcome.renderedExpression,
+    modifiers
+  );
 
   return {
-    ...outcome,
-    diceCount: normalizedCount,
-    threshold,
-    difficulty: sanitizedDifficulty
+    ...baseOutcome,
+    expression,
+    renderedExpression,
+    total,
+    baseRoll,
+    modifiers,
+    modifiersTotal
   };
 };

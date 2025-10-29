@@ -30,7 +30,7 @@ export default function ResourceDisplay({
   return (
     <div className="p-4 border border-teal-200 rounded-lg bg-teal-50">
       <h3 className="font-bold text-xl mb-3 text-teal-700 flex items-center">
-        <span className="mr-2">❤️‍🔥</span> Status 
+        <span className="mr-2">❤️‍🔥</span> Status
       </h3>
       <div className="grid grid-cols-2 gap-3">
         {resources.map(({ label, value, unit = "", color, icon }) => (

@@ -125,7 +125,6 @@ function buildAttributeMap(
   return attributeMap;
 }
 
-
 function logDebugInfo(
   characterData: CreateCharacter,
   attributeMap: Record<string, number>,

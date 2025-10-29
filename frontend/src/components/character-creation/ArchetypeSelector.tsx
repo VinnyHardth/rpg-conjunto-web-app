@@ -92,9 +92,7 @@ export default function ArchetypeSelector({
         disabled={archetypes.length === 0}
         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border bg-white focus:border-purple-500 focus:ring-purple-500 text-base"
       >
-        <option value="">
-          None
-        </option> 
+        <option value="">None</option>
 
         {archetypes.map((archetype) => (
           <option key={archetype.id} value={archetype.id}>

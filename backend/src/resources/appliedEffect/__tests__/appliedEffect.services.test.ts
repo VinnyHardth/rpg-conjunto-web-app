@@ -21,6 +21,7 @@ const prismaMock = vi.hoisted(() => {
     },
     status: {
       findUnique: vi.fn(),
+      findMany: vi.fn(),
       update: vi.fn()
     },
     characterAttribute: {
@@ -66,6 +67,8 @@ const { tx, reset } = prismaMock;
 describe("applyEffectTurn", () => {
   beforeEach(() => {
     reset();
+    tx.status.findMany.mockResolvedValue([]);
+    tx.characterAttribute.findFirst.mockResolvedValue(null);
   });
 
   it("applies instantaneous damage with resistance mitigation", async () => {
@@ -81,6 +84,15 @@ describe("applyEffectTurn", () => {
         }
       ]
     });
+    tx.status.findMany.mockResolvedValue([
+      {
+        id: "status-res-fisica",
+        name: "Resistência Física",
+        valueActual: { toNumber: () => 3 },
+        valueBonus: { toNumber: () => 0 },
+        valueMax: { toNumber: () => 0 }
+      }
+    ]);
     tx.status.findUnique.mockResolvedValue({
       id: "status-hp",
       valueActual: 20,
@@ -88,11 +100,6 @@ describe("applyEffectTurn", () => {
       valueBonus: 0
     });
     tx.status.update.mockResolvedValue({});
-    tx.characterAttribute.findFirst.mockResolvedValue({
-      valueBase: 2,
-      valueInv: 1,
-      valueExtra: 1
-    });
 
     const result = await applyEffectTurn({
       characterId: "char-1",
@@ -104,31 +111,79 @@ describe("applyEffectTurn", () => {
       valuePerStack: -8
     });
 
-    expect(tx.characterAttribute.findFirst).toHaveBeenCalledWith({
-      where: {
-        characterId: "char-1",
-        attribute: { name: "Res. Física" }
-      },
-      include: { attribute: true }
+    expect(tx.status.findMany).toHaveBeenCalledWith({
+      where: { characterId: "char-1" }
     });
     expect(tx.status.update).toHaveBeenCalledWith({
       where: { id: "status-hp" },
-      data: { valueActual: 16 }
+      data: { valueActual: 15 }
     });
+    expect(tx.characterAttribute.findFirst).not.toHaveBeenCalled();
     expect(result).toMatchObject({
       applied: null,
       immediate: {
         results: [
           {
             target: "HP",
-            delta: -4,
+            delta: -5,
             initialValue: 20,
-            finalValue: 16
+            finalValue: 15
           }
         ]
       }
     });
     expect(tx.appliedEffect.create).not.toHaveBeenCalled();
+  });
+
+  it("falls back to resistance expertise when status is absent", async () => {
+    tx.effect.findUnique.mockResolvedValue({
+      id: "effect-attribute",
+      stackingPolicy: StackingPolicy.REPLACE,
+      damageType: "MAGIC",
+      targets: [
+        {
+          componentType: "STATUS",
+          componentName: "HP",
+          operationType: "ADD"
+        }
+      ]
+    });
+    tx.status.findMany.mockResolvedValue([]);
+    tx.status.findUnique.mockResolvedValue({
+      id: "status-hp",
+      valueActual: 15,
+      valueMax: 25,
+      valueBonus: 0
+    });
+    tx.characterAttribute.findFirst.mockResolvedValue({
+      valueBase: 1,
+      valueInv: 1,
+      valueExtra: 1
+    });
+
+    await applyEffectTurn({
+      characterId: "char-2",
+      effectId: "effect-attribute",
+      sourceType: SourceType.OTHER,
+      currentTurn: 2,
+      duration: 0,
+      valuePerStack: -6
+    });
+
+    expect(tx.status.findMany).toHaveBeenCalledWith({
+      where: { characterId: "char-2" }
+    });
+    expect(tx.characterAttribute.findFirst).toHaveBeenCalledWith({
+      where: {
+        characterId: "char-2",
+        attribute: { name: "Res. Mágica" }
+      },
+      include: { attribute: true }
+    });
+    expect(tx.status.update).toHaveBeenCalledWith({
+      where: { id: "status-hp" },
+      data: { valueActual: 12 }
+    });
   });
 
   it("creates a new stacking effect when none exists", async () => {

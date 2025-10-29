@@ -36,7 +36,7 @@ const ATTRIBUTES_DATA = [
   { name: "Adestrar", kind: AttributeKind.EXPERTISE },
   { name: "Psicanálise", kind: AttributeKind.EXPERTISE },
   { name: "Pontaria", kind: AttributeKind.EXPERTISE },
-  { name: "Sentidos", kind: AttributeKind.EXPERTISE },
+  { name: "Sentidos", kind: AttributeKind.EXPERTISE }
 ];
 
 export const seedAttributes = async (prisma: PrismaClient) => {
