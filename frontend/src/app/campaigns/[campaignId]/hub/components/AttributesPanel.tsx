@@ -93,26 +93,20 @@ export default function AttributesPanel({ onClose }: AttributesPanelProps) {
                 rows={attributeTables.attributes}
                 headerClass="bg-red-600"
                 selectedRowName={selectedAttributeRow}
-                onSelectRow={(rowName) => {
-                  setSelectedExpertiseRow(null);
-                  setSelectedAttributeRow((prev) =>
-                    prev === rowName ? null : rowName,
-                  );
-                }}
+                onSelectRow={(rowName) =>
+                  setSelectedAttributeRow((prev) => (prev === rowName ? null : rowName))
+                }
               />
 
               <AttributeTable
                 title="Perícias"
                 firstColumnLabel="Perícia"
-                rows={attributeTables.expertises}
+                rows={attributeTables.expertises.filter((exp) => exp.total > 0)}
                 headerClass="bg-sky-600"
                 selectedRowName={selectedExpertiseRow}
-                onSelectRow={(rowName) => {
-                  setSelectedAttributeRow(null);
-                  setSelectedExpertiseRow((prev) =>
-                    prev === rowName ? null : rowName,
-                  );
-                }}
+                onSelectRow={(rowName) =>
+                  setSelectedExpertiseRow((prev) => (prev === rowName ? null : rowName))
+                }
               />
 
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">

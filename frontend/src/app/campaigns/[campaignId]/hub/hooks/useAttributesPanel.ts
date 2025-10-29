@@ -109,20 +109,26 @@ export function useAttributesPanel({
   const selectedRollRow = useMemo(() => {
     if (!attributeTables) return null;
 
-    if (selectedAttributeRow) {
-      const match = attributeTables.attributes.find(
-        (row) => row.name === selectedAttributeRow,
-      );
-      if (match) return { ...match, kind: "attribute" as const };
-    }
+    const selectedAttr = attributeTables.attributes.find(
+      (attr) => attr.name === selectedAttributeRow,
+    );
+    const selectedExp = attributeTables.expertises.find(
+      (exp) => exp.name === selectedExpertiseRow,
+    );
 
-    if (selectedExpertiseRow) {
-      const match = attributeTables.expertises.find(
-        (row) => row.name === selectedExpertiseRow,
-      );
-      if (match) return { ...match, kind: "expertise" as const };
+    if (selectedAttr && selectedExp) {
+      return {
+        name: `${selectedAttr.name} + ${selectedExp.name}`,
+        total: selectedAttr.total + selectedExp.total,
+        kind: "combined" as const,
+      };
     }
-
+    if (selectedAttr) {
+      return { ...selectedAttr, kind: "attribute" as const };
+    }
+    if (selectedExp) {
+      return { ...selectedExp, kind: "expertise" as const };
+    }
     return null;
   }, [attributeTables, selectedAttributeRow, selectedExpertiseRow]);
 
