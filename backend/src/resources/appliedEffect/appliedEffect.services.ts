@@ -7,6 +7,39 @@ import {
 
 import prisma from "../../prisma";
 
+const toNumeric = (value: unknown): number => {
+  if (value == null) return 0;
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : 0;
+  }
+  if (typeof value === "bigint") {
+    return Number(value);
+  }
+  if (
+    typeof value === "object" &&
+    value !== null &&
+    "toNumber" in value &&
+    typeof (value as { toNumber?: () => number }).toNumber === "function"
+  ) {
+    const result = (value as { toNumber: () => number }).toNumber();
+    return Number.isFinite(result) ? result : 0;
+  }
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+};
+
+const normalizeStatusName = (value: string): string =>
+  value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]/gi, "")
+    .toUpperCase();
+
+const RESISTANCE_STATUS_KEYS = {
+  PHISICAL: ["RESISTENCIAFISICA", "RESFISICA", "RF"],
+  MAGIC: ["RESISTENCIAMAGICA", "RESMAGICA", "RM"]
+} as const;
+
 export const createAppliedEffect = async (
   data: CreateAppliedEffectDTO
 ): Promise<AppliedEffectDTO> => {
@@ -67,6 +100,48 @@ export async function applyEffectTurn(p: ApplyParams) {
     });
     if (!effect) throw new Error("Effect not found");
 
+    const statusList = await tx.status.findMany({
+      where: { characterId }
+    });
+    const statusByNormalizedName = new Map(
+      statusList.map((status) => [normalizeStatusName(status.name), status])
+    );
+
+    const resolveResistance = async (damageType: string): Promise<number> => {
+      if (damageType !== "PHISICAL" && damageType !== "MAGIC") return 0;
+      const keys =
+        damageType === "PHISICAL"
+          ? RESISTANCE_STATUS_KEYS.PHISICAL
+          : RESISTANCE_STATUS_KEYS.MAGIC;
+      for (const key of keys) {
+        const status = statusByNormalizedName.get(key);
+        if (status) {
+          const actual = toNumeric(status.valueActual);
+          const maxVal = toNumeric(status.valueMax);
+          const bonus = toNumeric(status.valueBonus);
+          const baseValue = Math.max(actual, maxVal);
+          return baseValue + bonus;
+        }
+      }
+      const resistanceAttrName =
+        damageType === "PHISICAL" ? "Res. Física" : "Res. Mágica";
+      const resistanceAttr = await tx.characterAttribute.findFirst({
+        where: {
+          characterId,
+          attribute: { name: resistanceAttrName }
+        },
+        include: { attribute: true }
+      });
+      if (resistanceAttr) {
+        return (
+          toNumeric(resistanceAttr.valueBase) +
+          toNumeric(resistanceAttr.valueInv) +
+          toNumeric(resistanceAttr.valueExtra)
+        );
+      }
+      return 0;
+    };
+
     // ----------- EFEITO INSTANTÂNEO ----------- //
     if (duration <= 0) {
       const immediateResults: any[] = [];
@@ -91,22 +166,8 @@ export async function applyEffectTurn(p: ApplyParams) {
           delta < 0 && // Agora esta verificação funciona
           (effect.damageType === "PHISICAL" || effect.damageType === "MAGIC")
         ) {
-          const resistanceAttrName =
-            effect.damageType === "PHISICAL" ? "Res. Física" : "Res. Mágica";
-          // Busca o valor da perícia de resistência, que já está calculado e salvo no DB.
-          const resistanceAttr = await tx.characterAttribute.findFirst({
-            where: {
-              characterId,
-              attribute: { name: resistanceAttrName }
-            },
-            include: { attribute: true }
-          });
-
-          if (resistanceAttr) {
-            const resistanceValue =
-              resistanceAttr.valueBase +
-              resistanceAttr.valueInv +
-              resistanceAttr.valueExtra;
+          const resistanceValue = await resolveResistance(effect.damageType);
+          if (resistanceValue !== 0) {
             delta = Math.min(0, delta + resistanceValue);
           }
         }

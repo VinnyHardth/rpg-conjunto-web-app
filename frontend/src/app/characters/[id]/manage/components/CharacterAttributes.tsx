@@ -1,20 +1,14 @@
 "use client";
 
+import AttributeRow, { AttributeRowData } from "./AttributeRow";
 import React, { useState, useEffect } from "react";
 
 import { useAttributes } from "../hooks/useAttributes";
-import type {
-  Archetype,
-  AttributeKey,
-  CharacterAttribute,
-} from "@/types/models";
+import type { Archetype, CharacterAttribute } from "@/types/models";
 
-import { SKILL_NAME_MAPPING, STATUS_NAMES, Status } from "@/types/models";
+import { STATUS_NAMES, Status } from "@/types/models";
 
-import {
-  calculateExpertises,
-  calculateStatus,
-} from "@/lib/characterCalculations";
+import { calculateStatus } from "@/lib/characterCalculations";
 
 interface CharacterAttributeProps {
   attributes: CharacterAttribute[];
@@ -23,17 +17,6 @@ interface CharacterAttributeProps {
   onAttributesUpdate: (attributes: CharacterAttribute[]) => void;
   onStatusUpdate: (status: Status[]) => void;
 }
-
-// Mapeamento reverso para encontrar a key pelo nome
-const REVERSE_SKILL_MAPPING: Record<string, string> = Object.entries(
-  SKILL_NAME_MAPPING,
-).reduce(
-  (acc, [key, value]) => {
-    acc[value] = key;
-    return acc;
-  },
-  {} as Record<string, string>,
-);
 
 // Mapeamento reverso para encontrar a key pelo nome
 const REVERSE_STATUS_MAPPING: Record<string, string> = Object.entries(
@@ -101,16 +84,14 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
     };
   });
 
-  // Separar por kind
-  const baseAttributes = allAttributes.filter(
-    (attr) => attr.kind === "ATTRIBUTE",
-  );
-  const expertises = allAttributes.filter((attr) => attr.kind === "EXPERTISE");
+  // Separar por kind e ordenar alfabeticamente
+  const baseAttributes = allAttributes
+    .filter((attr) => attr.kind === "ATTRIBUTE")
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   console.log("Base attributes:", baseAttributes);
-  console.log("Expertises:", expertises);
 
-  const handleEditStart = (attribute: (typeof allAttributes)[0]) => {
+  const handleEditStart = (attribute: AttributeRowData) => {
     setEditingId(attribute.attributeId);
     setEditValue(attribute.valueBase);
   };
@@ -146,44 +127,9 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
 
       console.log("Attribute record para cálculo:", attributeRecord);
 
-      // 3. Calcular novas perícias
-      const newExpertises = calculateExpertises(attributeRecord);
-      console.log("Novas perícias calculadas:", newExpertises);
-
       // 3.2 Calcular novo status
       const newStatus = calculateStatus(attributeRecord, archetype);
       console.log("Novo status calculado:", newStatus);
-
-      // 4. Atualizar as perícias com os valores calculados
-      const updatedExpertises: CharacterAttribute[] = expertises.map((exp) => {
-        const skillKey = REVERSE_SKILL_MAPPING[exp.name];
-
-        if (skillKey && newExpertises[skillKey as AttributeKey] !== undefined) {
-          const calculatedValue = newExpertises[skillKey as AttributeKey];
-          const originalExp = localAttributes.find(
-            (a) => a.attributeId === exp.attributeId,
-          );
-
-          return {
-            id: originalExp?.id || "",
-            characterId: originalExp?.characterId || "",
-            attributeId: exp.attributeId,
-            valueBase: calculatedValue,
-            valueInv: originalExp?.valueInv || 0,
-            valueExtra: originalExp?.valueExtra || 0,
-            createdAt: originalExp?.createdAt || new Date(),
-            updatedAt: new Date(),
-            deletedAt: null,
-          };
-        }
-
-        const originalExp = localAttributes.find(
-          (a) => a.attributeId === exp.attributeId,
-        );
-        return originalExp || exp;
-      });
-
-      console.log("Perícias atualizadas:", updatedExpertises);
 
       // 4.2 Atualizar o status
       const updatedStatus: Status[] = status.map((s) => {
@@ -219,21 +165,11 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
 
       console.log("Status atualizado:", updatedStatus);
 
-      // 5. Combinar todos os atributos
-      const finalAttributes: CharacterAttribute[] = [
-        ...updatedBaseAttributes.filter((attr) =>
-          baseAttributes.some(
-            (baseAttr) => baseAttr.attributeId === attr.attributeId,
-          ),
-        ),
-        ...updatedExpertises,
-      ];
-
-      console.log("Atributos finais para update:", finalAttributes);
+      console.log("Atributos finais para update:", updatedBaseAttributes);
 
       // 6. Atualizar estado local E chamar callback
-      setLocalAttributes(finalAttributes);
-      onAttributesUpdate(finalAttributes);
+      setLocalAttributes(updatedBaseAttributes);
+      onAttributesUpdate(updatedBaseAttributes);
       onStatusUpdate(updatedStatus);
     }
     setEditingId(null);
@@ -253,74 +189,6 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
     }
   };
 
-  const AttributeRow = ({
-    attribute,
-    editable = false,
-  }: {
-    attribute: (typeof allAttributes)[0];
-    editable?: boolean;
-  }) => (
-    <tr className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
-      <td className="py-3 px-4 text-gray-800 font-medium">{attribute.name}</td>
-      <td className="py-3 px-4 text-center">
-        {editable && editingId === attribute.attributeId ? (
-          <div className="flex items-center justify-center space-x-2">
-            <input
-              type="number"
-              min="0"
-              value={editValue}
-              onChange={(e) => setEditValue(Number(e.target.value))}
-              onKeyDown={handleKeyPress}
-              className="w-20 px-2 py-1 border border-gray-300 rounded text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
-              autoFocus
-            />
-            <button
-              onClick={handleEditSave}
-              className="p-1 text-green-600 hover:text-green-800"
-              title="Salvar"
-            >
-              ✓
-            </button>
-            <button
-              onClick={handleEditCancel}
-              className="p-1 text-red-600 hover:text-red-800"
-              title="Cancelar"
-            >
-              ✕
-            </button>
-          </div>
-        ) : (
-          <div
-            className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-semibold cursor-pointer transition-colors ${
-              editable
-                ? "bg-blue-100 text-blue-800 hover:bg-blue-200"
-                : "bg-blue-100 text-blue-800"
-            }`}
-            onClick={editable ? () => handleEditStart(attribute) : undefined}
-          >
-            <span>{attribute.valueBase}</span>
-            {editable && <span className="text-xs opacity-70">✏️</span>}
-          </div>
-        )}
-      </td>
-      <td className="py-3 px-4 text-center">
-        <span className="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
-          {attribute.valueInv}
-        </span>
-      </td>
-      <td className="py-3 px-4 text-center">
-        <span className="inline-block bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-semibold">
-          {attribute.valueExtra}
-        </span>
-      </td>
-      <td className="py-3 px-4 text-center">
-        <span className="inline-block bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm font-semibold">
-          {attribute.valueBase + attribute.valueInv + attribute.valueExtra}
-        </span>
-      </td>
-    </tr>
-  );
-
   const TableSection = ({
     title,
     data,
@@ -329,7 +197,7 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
   }: {
     title: string;
     data: typeof allAttributes;
-    description?: string;
+    description: string;
     editable?: boolean;
   }) => (
     <div className="mb-8">
@@ -346,10 +214,10 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
                 Nome
               </th>
               <th className="py-3 px-4 text-center text-gray-700 font-semibold">
-                Base {editable && "(Clique para editar)"}
+                Base {editable}
               </th>
               <th className="py-3 px-4 text-center text-gray-700 font-semibold">
-                Bônus
+                Equip. Bônus
               </th>
               <th className="py-3 px-4 text-center text-gray-700 font-semibold">
                 Extra
@@ -365,6 +233,13 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
                 key={attribute.attributeId || index}
                 attribute={attribute}
                 editable={editable}
+                isEditing={editingId === attribute.attributeId}
+                editValue={editValue}
+                onEditValueChange={setEditValue}
+                onEditStart={handleEditStart}
+                onEditSave={handleEditSave}
+                onEditCancel={handleEditCancel}
+                onKeyPress={handleKeyPress}
               />
             ))}
           </tbody>
@@ -383,28 +258,17 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
         editable={true}
       />
 
-      {/* Perícias - Apenas leitura */}
-      <TableSection
-        title="Perícias"
-        data={expertises}
-        description="Habilidades calculadas automaticamente a partir dos atributos"
-      />
-
       {/* Resumo Estatístico */}
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-3">Resumo</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <h3 className="text-lg font-semibold text-gray-800 mb-3">
+          Visão Geral
+        </h3>
+        <div className="flex justify-around items-center">
           <div className="text-center">
             <div className="text-2xl font-bold text-blue-600">
               {baseAttributes.length}
             </div>
             <div className="text-sm text-gray-600">Atributos</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">
-              {expertises.length}
-            </div>
-            <div className="text-sm text-gray-600">Perícias</div>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-purple-600">
@@ -414,7 +278,7 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-orange-600">
-              {allAttributes.reduce(
+              {baseAttributes.reduce(
                 (sum, attr) =>
                   sum + attr.valueBase + attr.valueInv + attr.valueExtra,
                 0,

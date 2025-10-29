@@ -10,7 +10,7 @@ export default function AttributeInputs({
   onAttributeChange,
 }: AttributeInputsProps) {
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-2 gap-4 mb-6">
       {attributeKeys.map((attr) => (
         <div
           key={attr}
@@ -19,9 +19,9 @@ export default function AttributeInputs({
           <label className="text-sm font-semibold text-gray-700">{attr}:</label>
           <input
             type="number"
-            value={getAttributeValue(attr)}
+            value={getAttributeValue(attr) || ""}
             onChange={(e) =>
-              onAttributeChange(attr, parseInt(e.target.value) || "")
+              onAttributeChange(attr, parseInt(e.target.value) || 0)
             }
             placeholder="0"
             min="0"

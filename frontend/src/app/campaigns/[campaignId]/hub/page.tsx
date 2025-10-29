@@ -1,6 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  type ChangeEvent,
+} from "react";
 import { useParams } from "next/navigation";
 import useSWR, { mutate as mutateCache } from "swr";
 
@@ -221,6 +227,8 @@ export default function CampaignHubByIdPage() {
     rollError,
     activeRollEntries,
     handleClearRolls,
+    difficultyTarget,
+    setDifficultyTarget,
     socketHandlers: diceRollSocketHandlers,
   } = diceRolls;
 
@@ -266,6 +274,29 @@ export default function CampaignHubByIdPage() {
   const showPlayerSelectButton = !isMaster && canSelect;
 
   const socketUrl = useMemo(() => getSocketUrl(), []);
+
+  const difficultyInputValue =
+    difficultyTarget === null ? "" : String(difficultyTarget);
+
+  const handleDifficultyInputChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const rawValue = event.target.value;
+      if (rawValue.trim() === "") {
+        setDifficultyTarget(null);
+        return;
+      }
+
+      const parsed = Number(rawValue);
+      if (Number.isFinite(parsed)) {
+        setDifficultyTarget(Math.round(parsed));
+      }
+    },
+    [setDifficultyTarget],
+  );
+
+  const handleDifficultyClear = useCallback(() => {
+    setDifficultyTarget(null);
+  }, [setDifficultyTarget]);
 
   const handleCharacterLinked = useCallback(
     (payload: CampaignCharacterEventPayload) => {
@@ -390,14 +421,25 @@ export default function CampaignHubByIdPage() {
               </div>
               <div className="mt-1 text-xs text-slate-300">
                 <p>
-                  Sucessos: {roll.successes}/{roll.diceCount} • Limiar ≥{" "}
-                  {roll.threshold}
+                  Total: {roll.total} (d20: {roll.baseRoll}, Mod:{" "}
+                  {roll.modifiersTotal >= 0 ? "+" : "-"}
+                  {Math.abs(roll.modifiersTotal)})
                 </p>
                 <p>
-                  Rolagens:{" "}
-                  {roll.rolls.length > 0 ? roll.rolls.join(", ") : "—"}
+                  Modificadores • Atributo: {roll.attributeValue} • Perícia:{" "}
+                  {roll.expertiseValue} • Outros: {roll.miscBonus}
                 </p>
-                <p>Dificuldade {roll.difficulty}</p>
+                {difficultyTarget !== null && (
+                  <p>
+                    Dificuldade {difficultyTarget} •{" "}
+                    {roll.total >= difficultyTarget ? "Sucesso" : "Falha"}{" "}
+                    (Margem {roll.total - difficultyTarget >= 0 ? "+" : ""}
+                    {roll.total - difficultyTarget})
+                  </p>
+                )}
+                <p>
+                  Rolagem: {roll.rolls.length > 0 ? roll.rolls.join(", ") : "—"}
+                </p>
               </div>
             </li>
           ))}
@@ -526,6 +568,36 @@ export default function CampaignHubByIdPage() {
               </svg>
               Valor de Status
             </button>
+
+            {isMaster && (
+              <div className="flex items-center gap-2 rounded-lg border border-white/10 bg-slate-900/60 px-3 py-2 text-sm text-white shadow-sm">
+                <label
+                  htmlFor="hub-difficulty-input"
+                  className="text-xs font-semibold uppercase tracking-widest text-white/60"
+                >
+                  Dificuldade
+                </label>
+                <input
+                  id="hub-difficulty-input"
+                  type="number"
+                  inputMode="numeric"
+                  value={difficultyInputValue}
+                  onChange={handleDifficultyInputChange}
+                  className="w-20 rounded bg-slate-800 px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-rose-300"
+                  placeholder="--"
+                />
+                {difficultyTarget !== null && (
+                  <button
+                    type="button"
+                    onClick={handleDifficultyClear}
+                    className="rounded bg-transparent p-1 text-white/70 transition hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-300"
+                    aria-label="Limpar dificuldade"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+            )}
           </div>
 
           <CampaignHubHeader

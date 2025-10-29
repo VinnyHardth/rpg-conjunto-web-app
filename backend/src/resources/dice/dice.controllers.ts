@@ -2,15 +2,16 @@ import { Request, Response } from "express";
 import { ReasonPhrases, StatusCodes } from "http-status-codes";
 
 import { rollDifficulty, rollCustom } from "./dice.services";
-import { DifficultyLabel } from "../../utils/rollDice";
 
 type RollDifficultyRequestBody = {
   campaignId: string;
   characterId: string;
   attributeName: string;
   attributeAbbreviation: string;
-  diceCount: number;
-  difficulty: DifficultyLabel;
+  attributeValue: number;
+  expertiseName?: string | null;
+  expertiseValue?: number | null;
+  miscBonus?: number | null;
 };
 
 const handleServerError = (res: Response, error: unknown): void => {
@@ -26,8 +27,8 @@ export const rollByDifficulty = async (
 ): Promise<void> => {
   /*
     #swagger.tags = ['Dice']
-    #swagger.summary = 'Rola dados com base em um nível de dificuldade'
-    #swagger.description = 'Executa uma rolagem de dados Xd6 com limiares atrelados à dificuldade informada.'
+    #swagger.summary = 'Rola um teste de atributo/perícia'
+    #swagger.description = 'Executa uma rolagem de 1d20 somando os modificadores informados.'
     #swagger.requestBody = {
       required: true,
       content: {
@@ -39,10 +40,12 @@ export const rollByDifficulty = async (
               characterId: { type: 'string', format: 'uuid' },
               attributeName: { type: 'string' },
               attributeAbbreviation: { type: 'string' },
-              diceCount: { type: 'integer', minimum: 1 },
-              difficulty: { type: 'string', enum: ['Fácil','Médio','Difícil'] }
+              attributeValue: { type: 'number' },
+              expertiseName: { type: ['string', 'null'] },
+              expertiseValue: { type: 'number' },
+              miscBonus: { type: 'number' }
             },
-            required: ['campaignId','characterId','attributeName','attributeAbbreviation','diceCount','difficulty']
+            required: ['campaignId','characterId','attributeName','attributeAbbreviation','attributeValue']
           }
         }
       }
@@ -57,17 +60,27 @@ export const rollByDifficulty = async (
       characterId,
       attributeName,
       attributeAbbreviation,
-      diceCount,
-      difficulty
+      attributeValue,
+      expertiseName,
+      expertiseValue,
+      miscBonus
     } = req.body;
 
-    const result = rollDifficulty({ diceCount, difficulty });
+    const result = rollDifficulty({
+      attributeValue,
+      expertiseValue,
+      miscBonus
+    });
     const payload = {
       ...result,
       campaignId,
       characterId,
       attributeName,
-      attributeAbbreviation
+      attributeAbbreviation,
+      attributeValue: result.modifiers.attribute,
+      expertiseName: expertiseName ?? null,
+      expertiseValue: result.modifiers.expertise,
+      miscBonus: result.modifiers.misc
     };
     res.status(StatusCodes.OK).json(payload);
     if (req.io) {
@@ -75,13 +88,6 @@ export const rollByDifficulty = async (
       req.io.to(room).emit("dice:rolled", payload);
     }
   } catch (error) {
-    if (error instanceof Error && error.message.includes("diceCount")) {
-      res.status(StatusCodes.BAD_REQUEST).json({
-        error: error.message
-      });
-      return;
-    }
-
     handleServerError(res, error);
   }
 };

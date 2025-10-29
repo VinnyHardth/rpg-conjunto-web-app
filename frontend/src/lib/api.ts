@@ -221,18 +221,34 @@ export interface RollDifficultyPayload {
   characterId: string;
   attributeName: string;
   attributeAbbreviation: string;
-  diceCount: number;
-  difficulty: "Fácil" | "Médio" | "Difícil";
+  attributeValue: number;
+  expertiseName?: string | null;
+  expertiseValue?: number | null;
+  miscBonus?: number | null;
 }
 
-export interface RollDifficultyResponse extends RollDifficultyPayload {
+export interface RollDifficultyResponse {
+  campaignId: string;
+  characterId: string;
+  attributeName: string;
+  attributeAbbreviation: string;
+  attributeValue: number;
+  expertiseName: string | null;
+  expertiseValue: number;
+  miscBonus: number;
+  baseRoll: number;
+  modifiersTotal: number;
+  modifiers: {
+    attribute: number;
+    expertise: number;
+    misc: number;
+  };
   expression: string;
   renderedExpression: string;
   total: number;
   successes: number;
   failures: number;
   rolls: number[];
-  threshold: number;
 }
 
 export const rollDifficulty = async (

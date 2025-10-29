@@ -13,7 +13,8 @@ type CharacterCardProps = {
   nameSuffix?: string;
   rollSummary?: {
     label: string;
-    successes: number;
+    total: number;
+    isSuccess?: boolean;
   } | null;
 };
 
@@ -69,11 +70,7 @@ export default function CharacterCard({
           tpCurrent={tp?.valueActual ?? 0}
           tpMax={(tp?.valueMax ?? 0) + (tp?.valueBonus ?? 0)}
           avatarUrl={character.imageUrl || "/assets/placeholder.png"}
-          rollSummary={
-            rollSummary
-              ? { label: rollSummary.label, successes: rollSummary.successes }
-              : undefined
-          }
+          rollSummary={rollSummary ?? undefined}
         />
       </div>
     </div>

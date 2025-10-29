@@ -8,16 +8,14 @@ import {
   CharacterType,
   CreateCharacterAttribute,
   AttributeKind,
+  STEPS_NAMES,
 } from "@/types/models";
 
 // APIs and services
 import { fetchAttributeKinds } from "@/lib/api";
 
 // Utilities
-import {
-  calculateExpertises,
-  calculateStatus,
-} from "@/lib/characterCalculations";
+import { calculateStatus } from "@/lib/characterCalculations";
 
 // Components
 import StepIndicator from "./character-creation/StepIndicator";
@@ -25,26 +23,12 @@ import NavigationButtons from "./character-creation/NavigationButtons";
 import StepOne from "./character-creation/steps/StepOne";
 import StepTwo from "./character-creation/steps/StepTwo";
 import StepThree from "./character-creation/steps/StepThree";
+import StepFour from "./character-creation/steps/StepFour";
 
 import { useCharacters } from "@/hooks/useCharacters";
 import type { AxiosError } from "axios";
 
 // Constants
-export const STEP_NAMES = [
-  "Informações Básicas",
-  "Atributos & Estatísticas",
-  "Resumo Final",
-];
-
-const ATTRIBUTE_ORDER = [
-  "Strength",
-  "Dexterity",
-  "Intelligence",
-  "Wisdom",
-  "Constitution",
-  "Charisma",
-  "Destiny",
-];
 
 const initialCharacterData: CreateFullCharacter = {
   info: {
@@ -66,7 +50,7 @@ const initialCharacterData: CreateFullCharacter = {
   status: [],
   archetype: {
     id: "",
-    name: "",
+    name: "None",
     hp: 0,
     mp: 0,
     tp: 0,
@@ -96,6 +80,7 @@ const createCharacterAttribute = (
   return {
     characterId: "", // Será preenchido quando o personagem for criado
     attributeId: attributeId,
+    alias: attributeName,
     valueBase: valueBase,
     valueInv: 0,
     valueExtra: 0,
@@ -119,6 +104,11 @@ export default function CharacterCreationModal({
   // ATTRIBUTE_KEYS será definido dinamicamente com base no fetch
   const [attributeKeys, setAttributeKeys] = useState<string[]>([]);
 
+  const totalExpertisePoints = useMemo(
+    () => Math.floor(expertises.length / 2),
+    [expertises],
+  );
+
   // Buscar atributos e perícias do banco
   useEffect(() => {
     const fetchData = async () => {
@@ -136,10 +126,7 @@ export default function CharacterCreationModal({
 
         // Ordenar os atributos e perícias
         setAttributes(
-          attributesData.sort(
-            (a, b) =>
-              ATTRIBUTE_ORDER.indexOf(a.name) - ATTRIBUTE_ORDER.indexOf(b.name),
-          ),
+          attributesData.sort((a, b) => a.name.localeCompare(b.name)),
         );
 
         // Definir ATTRIBUTE_KEYS dinamicamente com base nos nomes dos atributos do banco
@@ -157,9 +144,15 @@ export default function CharacterCreationModal({
           createCharacterAttribute(attribute.id, attribute.name, 0),
         );
 
+        const initialExpertises = expertisesData.map((expertise) =>
+          createCharacterAttribute(expertise.id, expertise.name, 0),
+        );
+
         setCharacterData((prev) => ({
           ...prev,
           attributes: initialAttributes,
+          // Inicializa as perícias do personagem com valor 0
+          expertises: initialExpertises,
         }));
       } catch (error) {
         console.error("Erro ao buscar dados:", error);
@@ -206,26 +199,24 @@ export default function CharacterCreationModal({
 
   // Calcular estatísticas derivadas usando as novas funções
   const calculatedStats: CalculatedStats = useMemo(() => {
-    const expertises = calculateExpertises(attributesAsNumbers);
     const status = calculateStatus(
       attributesAsNumbers,
       characterData.archetype,
     );
 
-    return {
-      expertises,
-      status,
-    };
+    // Perícias não são mais calculadas aqui
+    return { expertises: {}, status };
   }, [attributesAsNumbers, characterData.archetype]);
 
   // Combinar com os modificadores do arquétipo
   const derivedStats = useMemo(() => {
     return {
-      pericias: calculatedStats.expertises,
       hp: calculatedStats.status.hp || 0,
       mp: calculatedStats.status.mp || 0,
       tp: calculatedStats.status.tp || 0,
       movimento: calculatedStats.status.mov || 0,
+      rf: calculatedStats.status.rf || 0,
+      rm: calculatedStats.status.rm || 0,
     };
   }, [calculatedStats]);
 
@@ -238,7 +229,7 @@ export default function CharacterCreationModal({
 
   if (!isOpen) return null;
 
-  const totalSteps = STEP_NAMES.length;
+  const totalSteps = STEPS_NAMES.length;
 
   const handleNext = () => {
     if (currentStep < totalSteps - 1) {
@@ -322,6 +313,18 @@ export default function CharacterCreationModal({
     }
   };
 
+  const handleExpertiseChange = (expertiseId: string, newValue: number) => {
+    setCharacterData((prev) => {
+      const updatedExpertises = prev.expertises.map((exp) => {
+        if (exp.attributeId === expertiseId) {
+          return { ...exp, valueBase: newValue };
+        }
+        return exp;
+      });
+      return { ...prev, expertises: updatedExpertises };
+    });
+  };
+
   const validateCharacterInfo = (): string | null => {
     const trimmedName = characterData.info.name?.trim() ?? "";
     if (trimmedName.length < 2) {
@@ -388,6 +391,7 @@ export default function CharacterCreationModal({
         baseInfo, // dados básicos
         characterData.archetype, // arquétipo selecionado
         characterData.attributes, // atributos do personagem
+        characterData.expertises, // perícias do personagem
         expertises, // perícias do banco
         attributes,
       );
@@ -465,8 +469,14 @@ export default function CharacterCreationModal({
         return (
           <StepThree
             characterData={characterData}
-            derivedStats={derivedStats}
+            allExpertises={expertises}
+            onExpertiseChange={handleExpertiseChange}
+            totalPoints={totalExpertisePoints}
           />
+        );
+      case 3:
+        return (
+          <StepFour characterData={characterData} derivedStats={derivedStats} />
         );
       default:
         return null;
@@ -493,7 +503,9 @@ export default function CharacterCreationModal({
 
         <StepIndicator currentStep={currentStep} totalSteps={totalSteps} />
 
-        <div className="min-h-[400px] mb-6">{renderCurrentStep()}</div>
+        <div className="min-h-[400px] max-h-[60vh] overflow-y-auto p-2 mb-6 border rounded-lg bg-gray-50/50">
+          {renderCurrentStep()}
+        </div>
 
         <NavigationButtons
           currentStep={currentStep}
@@ -501,7 +513,7 @@ export default function CharacterCreationModal({
           onBack={handleBack}
           onNext={handleNext}
           onFinish={handleFinish}
-          //isLoading={isLoading}
+          // isLoading={isLoading}
         />
       </div>
     </div>

@@ -17,6 +17,7 @@ export function useDiceRolls({
     Record<string, RollDifficultyResponse>
   >({});
   const [rollError, setRollError] = useState<string | null>(null);
+  const [difficultyTarget, setDifficultyTarget] = useState<number | null>(null);
 
   const activeRollEntries = useMemo(() => {
     return orderedCharacters
@@ -64,6 +65,10 @@ export function useDiceRolls({
     },
     [campaignId],
   );
+
+  useEffect(() => {
+    setDifficultyTarget(null);
+  }, [campaignId]);
 
   // Limpa rolagens de personagens que não estão mais na campanha
   useEffect(() => {
@@ -114,6 +119,8 @@ export function useDiceRolls({
     rollError,
     activeRollEntries,
     handleClearRolls,
+    difficultyTarget,
+    setDifficultyTarget,
     /**
      * Objeto estável contendo os handlers de socket para este hook.
      */

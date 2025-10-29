@@ -44,17 +44,33 @@ export const seedStatus = async (prisma: PrismaClient) => {
     const mpMax = 10 + Math.ceil((int + wis) / 2) * ch.archetype.mp;
     const tpMax = 10 + Math.ceil((dex + str) / 2) * ch.archetype.tp;
 
+    const physicalRes = 5;
+    const magicRes = 5;
+
     const statuses = [
       { name: "HP", valueMax: hpMax, valueActual: hpMax },
       { name: "MP", valueMax: mpMax, valueActual: mpMax },
-      { name: "TP", valueMax: tpMax, valueActual: tpMax }
+      { name: "TP", valueMax: tpMax, valueActual: tpMax },
+      {
+        name: "Resistência Física",
+        valueMax: physicalRes,
+        valueActual: physicalRes
+      },
+      {
+        name: "Resistência Mágica",
+        valueMax: magicRes,
+        valueActual: magicRes
+      }
     ];
 
     for (const status of statuses) {
       const data = { characterId: ch.id, ...status };
       await prisma.status.upsert({
         where: { characterId_name: { characterId: ch.id, name: status.name } },
-        update: { valueMax: data.valueMax }, // Atualiza o valor máximo se o arquétipo mudar
+        update: {
+          valueMax: data.valueMax,
+          valueActual: data.valueActual
+        }, // Atualiza valores caso mudem
         create: data
       });
     }

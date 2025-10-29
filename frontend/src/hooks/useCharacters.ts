@@ -5,7 +5,6 @@ import {
   CreateCharacter,
   Archetype,
   CreateCharacterAttribute,
-  SKILL_NAME_MAPPING,
 } from "@/types/models";
 import {
   calculateExpertises,
@@ -20,25 +19,9 @@ interface DatabaseAttribute {
   name: string;
 }
 
-interface DatabaseExpertise {
-  id: string;
-  name: string;
-}
-
 interface StatusData {
   name: string;
   value: number;
-}
-
-// Interface para a resposta da API de characterattributes
-interface CharacterAttributeResponse {
-  id: string;
-  characterId: string;
-  attributeId: string;
-  valueBase: number;
-  valueInv: number;
-  valueExtra: number;
-  // adicione outros campos conforme necessário
 }
 
 type CharactersMutator = KeyedMutator<Character[]>;
@@ -62,7 +45,8 @@ export function useCharacters(userId?: string) {
     characterData: CreateCharacter,
     archetype: Archetype,
     attributes: CreateCharacterAttribute[],
-    expertisesDb: DatabaseExpertise[],
+    expertises: CreateCharacterAttribute[],
+    expertisesDb: DatabaseAttribute[],
     attributesDb: DatabaseAttribute[],
   ): Promise<Character> => {
     try {
@@ -77,7 +61,7 @@ export function useCharacters(userId?: string) {
 
       // 2. Calcula stats derivadas
       const attributeMap = buildAttributeMap(attributes, attributesDb);
-      const calculatedExpertises = calculateExpertises(attributeMap);
+      const expertiseMap = buildAttributeMap(expertises, expertisesDb);
       const calculatedStatus = calculateStatus(attributeMap, archetype);
 
       // 3. Logs de debug (apenas em desenvolvimento)
@@ -85,7 +69,7 @@ export function useCharacters(userId?: string) {
         logDebugInfo(
           characterData,
           attributeMap,
-          calculatedExpertises,
+          expertiseMap,
           calculatedStatus,
           expertisesDb,
         );
@@ -100,11 +84,7 @@ export function useCharacters(userId?: string) {
       // 5. Cria atributos, perícias e status em paralelo
       await Promise.all([
         createCharacterAttributes(createdCharacter.id, attributes),
-        createCharacterExpertises(
-          createdCharacter.id,
-          calculatedExpertises,
-          expertisesDb,
-        ),
+        createCharacterAttributes(createdCharacter.id, expertises),
         createCharacterStatus(createdCharacter.id, calculatedStatus),
       ]);
 
@@ -150,7 +130,7 @@ function logDebugInfo(
   attributeMap: Record<string, number>,
   expertises: ReturnType<typeof calculateExpertises>,
   status: ReturnType<typeof calculateStatus>,
-  expertisesDb: DatabaseExpertise[],
+  expertisesDb: DatabaseAttribute[],
 ): void {
   console.group("🐛 Debug - Criação de Personagem");
   console.log("📝 Dados do personagem:", characterData);
@@ -188,76 +168,6 @@ async function createCharacterAttributes(
   );
 
   await Promise.all(requests);
-}
-
-async function createCharacterExpertises(
-  characterId: string,
-  calculatedExpertises: ReturnType<typeof calculateExpertises>,
-  expertisesDb: DatabaseExpertise[],
-): Promise<void> {
-  // Tipo para as requisições de perícia
-  type ExpertiseRequest = Promise<CharacterAttributeResponse>;
-
-  const expertiseRequests: ExpertiseRequest[] = Object.entries(
-    calculatedExpertises,
-  )
-    .map(([skillKey, skillValue]) => {
-      // Usa o mapeamento para encontrar o nome correto no banco
-      const mappedSkillName = SKILL_NAME_MAPPING[skillKey];
-
-      if (!mappedSkillName) {
-        console.warn(`❌ Nome de perícia não mapeado: ${skillKey}`);
-        console.log(
-          "📋 Perícias disponíveis para mapeamento:",
-          Object.keys(SKILL_NAME_MAPPING),
-        );
-        return null;
-      }
-
-      const expertiseFromDB = expertisesDb.find(
-        (exp) => exp.name === mappedSkillName,
-      );
-
-      if (!expertiseFromDB) {
-        console.warn(
-          `❌ Perícia não encontrada no banco: ${skillKey} → ${mappedSkillName}`,
-        );
-        console.log(
-          "🏷️ Perícias disponíveis no banco:",
-          expertisesDb.map((e) => e.name),
-        );
-        return null;
-      }
-
-      console.log(
-        `✅ Perícia encontrada: ${skillKey} → ${mappedSkillName} (ID: ${expertiseFromDB.id})`,
-      );
-
-      return api
-        .post<CharacterAttributeResponse>("/characterattributes", {
-          characterId,
-          attributeId: expertiseFromDB.id,
-          valueBase: skillValue,
-          valueInv: 0,
-          valueExtra: 0,
-        })
-        .then((res) => res.data);
-    })
-    .filter((request): request is ExpertiseRequest => request !== null);
-
-  const results = await Promise.allSettled(expertiseRequests);
-
-  // Log dos resultados
-  results.forEach((result, index) => {
-    if (result.status === "rejected") {
-      console.error(`❌ Erro ao criar perícia ${index}:`, result.reason);
-    }
-  });
-
-  const successfulResults = results.filter(
-    (r) => r.status === "fulfilled",
-  ) as PromiseFulfilledResult<CharacterAttributeResponse>[];
-  console.log(`✅ ${successfulResults.length} perícias criadas com sucesso`);
 }
 
 async function createCharacterStatus(

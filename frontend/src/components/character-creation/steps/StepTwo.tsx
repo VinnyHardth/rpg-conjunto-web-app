@@ -1,17 +1,17 @@
 import AttributeInputs from "../AttributeInputs";
 import ResourceDisplay from "../ResourceDisplay";
-import SkillsDisplay from "../SkillsDisplay";
 import ArchetypeSelector from "../ArchetypeSelector";
 import { CreateFullCharacter, Archetype, Attributes } from "@/types/models";
 
 interface StepTwoProps {
   characterData: CreateFullCharacter;
   derivedStats: {
-    pericias: Record<string, number>;
     hp: number;
     mp: number;
     tp: number;
     movimento: number;
+    rf: number;
+    rm: number;
   };
   onDataChange: (
     section: "atributos",
@@ -31,7 +31,6 @@ export default function StepTwo({
   onDataChange,
   onArchetypeSelect,
   getAttributeValue,
-  expertises,
   attributeKeys,
 }: StepTwoProps) {
   return (
@@ -55,17 +54,11 @@ export default function StepTwo({
           selectedArchetypeId={characterData.archetype.id}
           onSelectArchetype={onArchetypeSelect}
         />
-
-        <p className="text-xs text-gray-500 mt-4">
-          Altere os valores acima para ver o impacto em tempo real na coluna ao
-          lado.
-        </p>
       </div>
 
       {/* COLUNA 2: ESTATÍSTICAS CALCULADAS */}
       <div className="space-y-4">
         <ResourceDisplay derivedStats={derivedStats} />
-        <SkillsDisplay derivedStats={derivedStats} expertises={expertises} />
       </div>
     </div>
   );

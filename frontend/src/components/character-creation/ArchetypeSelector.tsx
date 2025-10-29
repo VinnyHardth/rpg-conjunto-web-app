@@ -22,7 +22,8 @@ export default function ArchetypeSelector({
       try {
         setIsLoading(true);
         const data = await fetchArchetypes();
-        setArchetypes(data);
+        // Ordena os arquétipos em ordem alfabética pelo nome
+        setArchetypes(data.sort((a, b) => a.name.localeCompare(b.name)));
       } catch (err) {
         console.error("Erro ao carregar arquétipos:", err);
         setError("Não foi possível carregar os arquétipos do servidor.");
@@ -65,9 +66,15 @@ export default function ArchetypeSelector({
     );
   }
 
-  const selectedArchetype = archetypes.find(
-    (a) => a.id === selectedArchetypeId,
-  );
+  const selectedArchetype =
+    archetypes.find((a) => a.id === selectedArchetypeId) ||
+    ({
+      id: "",
+      name: "None",
+      hp: 0,
+      mp: 0,
+      tp: 0,
+    } as Archetype);
 
   return (
     <div className="space-y-2">
@@ -85,11 +92,7 @@ export default function ArchetypeSelector({
         disabled={archetypes.length === 0}
         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border bg-white focus:border-purple-500 focus:ring-purple-500 text-base"
       >
-        <option value="" disabled>
-          {archetypes.length === 0
-            ? "Nenhum arquétipo disponível"
-            : "--- Escolha um Arquétipo ---"}
-        </option>
+        <option value="">None</option>
 
         {archetypes.map((archetype) => (
           <option key={archetype.id} value={archetype.id}>
@@ -98,17 +101,15 @@ export default function ArchetypeSelector({
         ))}
       </select>
 
-      {selectedArchetype && (
-        <div className="p-3 mt-2 bg-purple-50 border border-purple-200 rounded-lg text-sm">
-          <p className="font-semibold text-purple-800">
-            Estatísticas Base de {selectedArchetype.name}:
-          </p>
-          <p className="text-gray-700">
-            HP: {selectedArchetype.hp} | MP: {selectedArchetype.mp} | TP:{" "}
-            {selectedArchetype.tp}
-          </p>
-        </div>
-      )}
+      <div className="p-3 mt-2 bg-purple-50 border border-purple-200 rounded-lg text-sm">
+        <p className="font-semibold text-purple-800">
+          Estatísticas Base de {selectedArchetype.name}:
+        </p>
+        <p className="text-gray-700">
+          HP: {selectedArchetype.hp} | MP: {selectedArchetype.mp} | TP:{" "}
+          {selectedArchetype.tp}
+        </p>
+      </div>
     </div>
   );
 }

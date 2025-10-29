@@ -12,7 +12,8 @@ interface StatusProps {
   avatarUrl: string;
   rollSummary?: {
     label: string;
-    successes: number;
+    total: number;
+    isSuccess?: boolean;
   };
 }
 
@@ -52,12 +53,25 @@ const StatusCard: React.FC<StatusProps> = ({
         />
         {rollSummary && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-950/70 text-center text-white">
-            <span className="text-3xl font-black leading-6 text-emerald-300">
-              {rollSummary.successes}
+            <span
+              className={`text-3xl font-black leading-6 ${
+                rollSummary.isSuccess === undefined
+                  ? "text-sky-300"
+                  : rollSummary.isSuccess
+                    ? "text-emerald-300"
+                    : "text-rose-300"
+              }`}
+            >
+              {rollSummary.total}
             </span>
             <span className="mt-0.5 rounded bg-white/10 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-widest">
               {rollSummary.label}
             </span>
+            {rollSummary.isSuccess !== undefined && (
+              <span className="mt-0.5 text-[10px] font-semibold uppercase tracking-widest text-white/80">
+                {rollSummary.isSuccess ? "Sucesso" : "Falha"}
+              </span>
+            )}
           </div>
         )}
       </div>

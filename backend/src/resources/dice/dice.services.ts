@@ -2,20 +2,16 @@ import {
   rollExpression,
   rollDifficulty as rollDifficultyInternal,
   RollOutcome,
-  DifficultyRollOutcome,
-  DifficultyLabel
+  AbilityRollOutcome,
+  AbilityRollOptions
 } from "../../utils/rollDice";
 
-export type DifficultyRollOptions = {
-  diceCount: number;
-  difficulty: DifficultyLabel;
-};
+export type DifficultyRollOptions = AbilityRollOptions;
 
-export const rollDifficulty = ({
-  diceCount,
-  difficulty
-}: DifficultyRollOptions): DifficultyRollOutcome => {
-  return rollDifficultyInternal(diceCount, difficulty);
+export const rollDifficulty = (
+  options: DifficultyRollOptions
+): AbilityRollOutcome => {
+  return rollDifficultyInternal(options);
 };
 
 export const rollCustom = (expression: string): RollOutcome => {
