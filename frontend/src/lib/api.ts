@@ -21,6 +21,23 @@ import {
   EffectDTO,
   CreateAppliedEffectDTO,
   AppliedEffectDTO,
+  ItemsDTO,
+  CreateCharacterHasItemDTO,
+  UpdateCharacterHasItemDTO,
+  CreateItemsDTO,
+  CreateItemHasEffectDTO,
+  CreateItemSkillsDTO,
+  CreateEffectDTO,
+  EffectModifierDTO,
+  CreateEffectModifierDTO,
+  UpdateEffectDTO,
+  UpdateEffectModifierDTO,
+  AbilitiesDTO,
+  CreateAbilitiesDTO,
+  UpdateAbilitiesDTO,
+  AbilityEffectDTO,
+  CreateAbilityEffectDTO,
+  UpdateAbilityEffectDTO,
 } from "@rpg/shared";
 
 import { Archetype } from "@/types/models";
@@ -44,6 +61,102 @@ export const fetchCharacterInventory = async (
 ): Promise<CharacterHasItemDTO[]> => {
   const { data } = await api.get(`/characterhasitems/character/${characterId}`);
   return data;
+};
+
+export const createCharacterInventoryItem = async (
+  payload: CreateCharacterHasItemDTO,
+): Promise<CharacterHasItemDTO> => {
+  const { data } = await api.post("/characterhasitems", payload);
+  return data;
+};
+
+export const updateCharacterInventoryItem = async (
+  id: string,
+  payload: UpdateCharacterHasItemDTO,
+): Promise<CharacterHasItemDTO> => {
+  const { data } = await api.put(`/characterhasitems/${id}`, payload);
+  return data;
+};
+
+export const deleteCharacterInventoryItem = async (
+  id: string,
+): Promise<CharacterHasItemDTO> => {
+  const { data } = await api.delete(`/characterhasitems/${id}`);
+  return data;
+};
+
+export const fetchItems = async (): Promise<ItemsDTO[]> => {
+  const { data } = await api.get("/items");
+  return data;
+};
+
+export const createItem = async (
+  payload: CreateItemsDTO,
+): Promise<ItemsDTO> => {
+  const { data } = await api.post("/items", payload);
+  return data;
+};
+
+export const createItemEffect = async (
+  payload: CreateItemHasEffectDTO,
+): Promise<void> => {
+  await api.post("/itemhaseffects", payload);
+};
+
+export const createItemSkill = async (
+  payload: CreateItemSkillsDTO,
+): Promise<void> => {
+  await api.post("/itemskills", payload);
+};
+
+// abilities ------------------------------------------------------------------
+
+export const fetchAbilities = async (): Promise<AbilitiesDTO[]> => {
+  const { data } = await api.get("/abilities");
+  return data;
+};
+
+export const createAbility = async (
+  payload: CreateAbilitiesDTO,
+): Promise<AbilitiesDTO> => {
+  const { data } = await api.post("/abilities", payload);
+  return data;
+};
+
+export const updateAbility = async (
+  id: string,
+  payload: UpdateAbilitiesDTO,
+): Promise<AbilitiesDTO> => {
+  const { data } = await api.put(`/abilities/${id}`, payload);
+  return data;
+};
+
+export const deleteAbility = async (id: string): Promise<void> => {
+  await api.delete(`/abilities/${id}`);
+};
+
+export const fetchAbilityEffects = async (): Promise<AbilityEffectDTO[]> => {
+  const { data } = await api.get("/abilityeffects");
+  return data;
+};
+
+export const createAbilityEffect = async (
+  payload: CreateAbilityEffectDTO,
+): Promise<AbilityEffectDTO> => {
+  const { data } = await api.post("/abilityeffects", payload);
+  return data;
+};
+
+export const updateAbilityEffect = async (
+  id: string,
+  payload: UpdateAbilityEffectDTO,
+): Promise<AbilityEffectDTO> => {
+  const { data } = await api.put(`/abilityeffects/${id}`, payload);
+  return data;
+};
+
+export const deleteAbilityEffect = async (id: string): Promise<void> => {
+  await api.delete(`/abilityeffects/${id}`);
 };
 
 export const fetchCharacterSkills = async (
@@ -283,6 +396,49 @@ export const clearDiceRolls = async (campaignId: string): Promise<void> => {
 export const fetchEffects = async (): Promise<EffectDTO[]> => {
   const { data } = await api.get("/effects");
   return data;
+};
+
+export const createEffect = async (
+  payload: CreateEffectDTO,
+): Promise<EffectDTO> => {
+  const { data } = await api.post("/effects", payload);
+  return data;
+};
+
+export const updateEffect = async (
+  id: string,
+  payload: UpdateEffectDTO,
+): Promise<EffectDTO> => {
+  const { data } = await api.put(`/effects/${id}`, payload);
+  return data;
+};
+
+export const deleteEffect = async (id: string): Promise<void> => {
+  await api.delete(`/effects/${id}`);
+};
+
+export const fetchEffectModifiers = async (): Promise<EffectModifierDTO[]> => {
+  const { data } = await api.get("/effectmodifiers");
+  return data;
+};
+
+export const createEffectModifier = async (
+  payload: CreateEffectModifierDTO,
+): Promise<EffectModifierDTO> => {
+  const { data } = await api.post("/effectmodifiers", payload);
+  return data;
+};
+
+export const updateEffectModifier = async (
+  id: string,
+  payload: UpdateEffectModifierDTO,
+): Promise<EffectModifierDTO> => {
+  const { data } = await api.put(`/effectmodifiers/${id}`, payload);
+  return data;
+};
+
+export const deleteEffectModifier = async (id: string): Promise<void> => {
+  await api.delete(`/effectmodifiers/${id}`);
 };
 
 export const createAppliedEffect = async (

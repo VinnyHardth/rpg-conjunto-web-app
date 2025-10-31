@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 
 interface UseHubInterfaceProps {
   disableSelection: boolean;
@@ -54,23 +54,41 @@ export function useHubInterface({
     setIsSelecting(false);
   }, []);
 
-  return {
-    // State
-    isAttributesOpen,
-    setAttributesOpen,
-    isDamageOpen,
-    setDamageOpen,
-    isSelecting,
-    actionError,
-    setActionError,
-    // Refs
-    boardRef,
-    attributesButtonRef,
-    attributesPanelRef,
-    damageButtonRef,
-    damagePanelRef,
-    // Handlers
-    openSelection,
-    closeSelection,
-  };
+  return useMemo(
+    () => ({
+      // State
+      isAttributesOpen,
+      setAttributesOpen,
+      isDamageOpen,
+      setDamageOpen,
+      isSelecting,
+      actionError,
+      setActionError,
+      // Refs
+      boardRef,
+      attributesButtonRef,
+      attributesPanelRef,
+      damageButtonRef,
+      damagePanelRef,
+      // Handlers
+      openSelection,
+      closeSelection,
+    }),
+    [
+      isAttributesOpen,
+      setAttributesOpen,
+      isDamageOpen,
+      setDamageOpen,
+      isSelecting,
+      actionError,
+      setActionError,
+      boardRef,
+      attributesButtonRef,
+      attributesPanelRef,
+      damageButtonRef,
+      damagePanelRef,
+      openSelection,
+      closeSelection,
+    ],
+  );
 }

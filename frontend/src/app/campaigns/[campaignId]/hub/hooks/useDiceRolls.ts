@@ -113,17 +113,28 @@ export function useDiceRolls({
     [handleDiceRolled, handleDiceCleared, handleCharacterUnlinked],
   );
 
-  return {
-    rollsByCharacter,
-    setRollsByCharacter,
-    rollError,
-    activeRollEntries,
-    handleClearRolls,
-    difficultyTarget,
-    setDifficultyTarget,
-    /**
-     * Objeto estável contendo os handlers de socket para este hook.
-     */
-    socketHandlers,
-  };
+  return useMemo(
+    () => ({
+      rollsByCharacter,
+      setRollsByCharacter,
+      rollError,
+      activeRollEntries,
+      difficultyTarget,
+      setDifficultyTarget,
+      handleClearRolls,
+      /**
+       * Objeto estável contendo os handlers de socket para este hook.
+       */
+      socketHandlers,
+    }),
+    [
+      rollsByCharacter,
+      rollError,
+      activeRollEntries,
+      difficultyTarget,
+      setDifficultyTarget,
+      handleClearRolls,
+      socketHandlers,
+    ],
+  );
 }
