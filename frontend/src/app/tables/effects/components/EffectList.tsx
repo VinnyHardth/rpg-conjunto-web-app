@@ -106,6 +106,12 @@ export function EffectList({
                         Dano: {effect.damageType} • Acúmulo:{" "}
                         {effect.stackingPolicy}
                       </p>
+                      <p className="text-xs text-gray-500">
+                        Duração base:{" "}
+                        {effect.baseDuration > 0
+                          ? `${effect.baseDuration} turno(s)`
+                          : "Instantâneo"}
+                      </p>
                       {effect.description && (
                         <p className="text-xs text-gray-600">
                           {effect.description}

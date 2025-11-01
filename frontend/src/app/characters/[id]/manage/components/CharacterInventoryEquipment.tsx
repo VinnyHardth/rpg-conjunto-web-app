@@ -12,6 +12,7 @@ type CharacterInventoryEquipmentProps = {
   onEquipItem?: (item: CharacterHasItemDTO) => void;
   onUnequipItem?: (item: CharacterHasItemDTO) => void;
   itemsCatalog?: ItemsDTO[] | undefined;
+  isProcessingEquipment?: boolean;
 };
 
 const formatSlotLabel = (slot: CharacterHasItemDTO["equipped_slot"]) => {
@@ -27,6 +28,7 @@ export default function CharacterInventoryEquipment({
   onEquipItem,
   onUnequipItem,
   itemsCatalog,
+  isProcessingEquipment = false,
 }: CharacterInventoryEquipmentProps) {
   const items = inventory ?? [];
   const equipments = items.filter((item) => item.is_equipped);
@@ -140,6 +142,7 @@ export default function CharacterInventoryEquipment({
                         <button
                           type="button"
                           onClick={() => onUnequipItem?.(item)}
+                          disabled={isProcessingEquipment}
                           className="inline-flex items-center gap-1 rounded-md border border-indigo-200 px-3 py-1 text-xs font-semibold text-indigo-700 transition hover:bg-indigo-50"
                         >
                           Remover do personagem
@@ -148,6 +151,7 @@ export default function CharacterInventoryEquipment({
                         <button
                           type="button"
                           onClick={() => onEquipItem?.(item)}
+                          disabled={isProcessingEquipment}
                           className="inline-flex items-center gap-1 rounded-md border border-emerald-200 px-3 py-1 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-50"
                         >
                           Equipar
@@ -205,6 +209,7 @@ export default function CharacterInventoryEquipment({
                       <button
                         type="button"
                         onClick={() => onUnequipItem?.(item)}
+                        disabled={isProcessingEquipment}
                         className="inline-flex items-center gap-1 rounded-md border border-indigo-200 px-2 py-0.5 text-[11px] font-semibold text-indigo-700 transition hover:bg-indigo-50"
                       >
                         Remover

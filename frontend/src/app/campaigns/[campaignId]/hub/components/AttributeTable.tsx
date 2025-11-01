@@ -1,4 +1,5 @@
 type AttributeRow = {
+  id: string | null;
   name: string;
   base: number;
   inventory: number;
@@ -13,6 +14,14 @@ interface AttributeTableProps {
   headerClass: string;
   selectedRowName: string | null;
   onSelectRow: (rowName: string) => void;
+  canEditExtra?: boolean;
+  editingRowId?: string | null;
+  draftExtraValue?: number;
+  onStartEditExtra?: (row: AttributeRow) => void;
+  onDraftExtraChange?: (nextValue: number) => void;
+  onSubmitExtra?: () => void;
+  onCancelExtra?: () => void;
+  isSubmittingExtra?: boolean;
 }
 
 const AttributeTable = ({
@@ -22,6 +31,14 @@ const AttributeTable = ({
   headerClass,
   selectedRowName,
   onSelectRow,
+  canEditExtra = false,
+  editingRowId,
+  draftExtraValue,
+  onStartEditExtra,
+  onDraftExtraChange,
+  onSubmitExtra,
+  onCancelExtra,
+  isSubmittingExtra,
 }: AttributeTableProps) => (
   <div className="mb-6 overflow-hidden rounded-xl border border-white/10 bg-slate-900/40">
     <div
@@ -65,7 +82,68 @@ const AttributeTable = ({
               </td>
               <td className="px-3 py-1.5 text-right">{row.base}</td>
               <td className="px-3 py-1.5 text-right">{row.inventory}</td>
-              <td className="px-3 py-1.5 text-right">{row.extra}</td>
+              <td className="px-3 py-1.5 text-right">
+                {editingRowId === row.id ? (
+                  <div
+                    className="flex items-center justify-end gap-1"
+                    onClick={(event) => event.stopPropagation()}
+                  >
+                    <input
+                      type="number"
+                      className="w-16 rounded border border-white/20 bg-slate-900 px-1 py-0.5 text-right text-xs text-white focus:border-blue-300 focus:outline-none focus:ring-1 focus:ring-blue-400"
+                      value={draftExtraValue ?? 0}
+                      onChange={(event) => {
+                        const parsed = Number(event.target.value);
+                        onDraftExtraChange?.(Number.isNaN(parsed) ? 0 : parsed);
+                      }}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter") {
+                          event.preventDefault();
+                          onSubmitExtra?.();
+                        }
+                        if (event.key === "Escape") {
+                          event.preventDefault();
+                          onCancelExtra?.();
+                        }
+                      }}
+                      disabled={isSubmittingExtra}
+                      autoFocus
+                    />
+                    <button
+                      type="button"
+                      className="rounded bg-blue-600 px-1.5 py-0.5 text-[11px] font-semibold text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:bg-blue-900"
+                      onClick={onSubmitExtra}
+                      disabled={isSubmittingExtra}
+                    >
+                      OK
+                    </button>
+                    <button
+                      type="button"
+                      className="rounded bg-transparent px-1 py-0.5 text-[11px] font-semibold text-slate-300 transition hover:text-white disabled:cursor-not-allowed"
+                      onClick={onCancelExtra}
+                      disabled={isSubmittingExtra}
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    className={`block w-full rounded px-1 text-right text-xs ${
+                      canEditExtra && row.id
+                        ? "text-blue-200 transition hover:bg-slate-900/40 hover:text-white"
+                        : "cursor-default text-slate-200"
+                    }`}
+                    onClick={() => {
+                      if (!canEditExtra || !row.id) return;
+                      onStartEditExtra?.(row);
+                    }}
+                    disabled={!canEditExtra || !row.id}
+                  >
+                    {row.extra}
+                  </button>
+                )}
+              </td>
               <td className="px-3 py-1.5 text-right font-semibold text-white">
                 {row.total}
               </td>

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { isAxiosError } from "axios";
+import useSWR from "swr";
 
 import {
   createAbility,
@@ -11,16 +12,26 @@ import {
   updateAbility,
   updateAbilityEffect,
 } from "@/lib/api";
+import { fetchEffectModifiers } from "@/lib/api";
+import { FormulaInput } from "@/components/formula/FormulaInput";
+import { useFormulaCatalog } from "@/hooks/useFormulaCatalog";
+import {
+  parseEffectLinkFormula,
+  buildEffectLinkFormula,
+} from "@/utils/effectFormula";
 import type {
   AbilitiesDTO,
   AbilityEffectDTO,
   CreateAbilitiesDTO,
+  EffectModifierDTO,
 } from "@rpg/shared";
-import { CostType } from "@/types/models";
+import { CostType, ComponentType } from "@/types/models";
+import { DYNAMIC_COMPONENT_PLACEHOLDER } from "@/constants/effects";
 
 import { useAbilitiesTables } from "../contexts/AbilitiesTablesContext";
 
 type CostTypeLiteral = (typeof CostType)[keyof typeof CostType];
+type ComponentTypeLiteral = (typeof ComponentType)[keyof typeof ComponentType];
 
 const COST_TYPE_OPTIONS = Object.values(CostType ?? {});
 const DEFAULT_COST_TYPE = (COST_TYPE_OPTIONS[0] ?? "NONE") as CostTypeLiteral;
@@ -30,6 +41,7 @@ type AbilityEffectRow = {
   id?: string;
   effectId: string;
   formula: string;
+  target: string;
 };
 
 type AbilityFormProps = {
@@ -45,6 +57,12 @@ export function AbilityForm({
 }: AbilityFormProps) {
   const { mutateAbilities, mutateAbilityEffects, effects, loadingEffects } =
     useAbilitiesTables();
+
+  const {
+    tokens: formulaTokens,
+    loading: loadingFormulaCatalog,
+    error: formulaCatalogError,
+  } = useFormulaCatalog();
 
   const effectOptions = useMemo(
     () =>
@@ -85,11 +103,15 @@ export function AbilityForm({
     setHpCost(selectedAbility.hp_cost ?? 0);
     setCooldown(selectedAbility.cooldown_value ?? 0);
     setEffectRows(
-      selectedAbilityEffects.map((abilityEffect) => ({
-        id: abilityEffect.id,
-        effectId: abilityEffect.effectId,
-        formula: abilityEffect.formula ?? "",
-      })),
+      selectedAbilityEffects.map((abilityEffect) => {
+        const parsed = parseEffectLinkFormula(abilityEffect.formula ?? "");
+        return {
+          id: abilityEffect.id,
+          effectId: abilityEffect.effectId,
+          formula: parsed.expr,
+          target: parsed.target,
+        };
+      }),
     );
     setRemovedEffectIds([]);
   }, [selectedAbility, selectedAbilityEffects]);
@@ -99,10 +121,63 @@ export function AbilityForm({
     setSaveMessage(null);
   }, [selectedAbility?.id]);
 
+  useEffect(() => {
+    if (!formulaCatalogError) return;
+    console.warn(
+      "Falha ao carregar variáveis de fórmula:",
+      formulaCatalogError,
+    );
+  }, [formulaCatalogError]);
+
   const canAddEffectRow = useMemo(() => {
     if (effectOptions.length === 0) return false;
     return effectRows.every((row) => row.effectId);
   }, [effectOptions.length, effectRows]);
+
+  const { data: effectModifiers } = useSWR<EffectModifierDTO[]>(
+    "effect-modifiers",
+    fetchEffectModifiers,
+    {
+      revalidateOnFocus: false,
+    },
+  );
+
+  const statusTargetTokens = useMemo(
+    () =>
+      formulaTokens
+        .filter((token) => token.meta?.kind === "STATUS")
+        .sort((a, b) => a.label.localeCompare(b.label, "pt-BR")),
+    [formulaTokens],
+  );
+
+  const attributeTargetTokens = useMemo(
+    () =>
+      formulaTokens
+        .filter((token) => token.meta?.kind === "ATTRIBUTE")
+        .sort((a, b) => a.label.localeCompare(b.label, "pt-BR")),
+    [formulaTokens],
+  );
+
+  const combinedTargetTokens = useMemo(
+    () => [...statusTargetTokens, ...attributeTargetTokens],
+    [statusTargetTokens, attributeTargetTokens],
+  );
+
+  const effectDynamicTargetMap = useMemo(() => {
+    const map = new Map<string, ComponentTypeLiteral>();
+    (effectModifiers ?? []).forEach((modifier) => {
+      if (
+        modifier.componentName?.trim().toUpperCase() ===
+        DYNAMIC_COMPONENT_PLACEHOLDER
+      ) {
+        map.set(
+          modifier.effectId,
+          modifier.componentType as ComponentTypeLiteral,
+        );
+      }
+    });
+    return map;
+  }, [effectModifiers]);
 
   const resetForm = () => {
     setName("");
@@ -126,6 +201,7 @@ export function AbilityForm({
           ? {
               ...row,
               effectId,
+              target: "",
             }
           : row,
       ),
@@ -143,6 +219,7 @@ export function AbilityForm({
       {
         effectId: availableEffect?.id ?? "",
         formula: "",
+        target: "",
       },
     ]);
   };
@@ -190,6 +267,19 @@ export function AbilityForm({
 
     if (!validateForm()) return;
 
+    for (const row of effectRows) {
+      if (!row.effectId) continue;
+      if (effectDynamicTargetMap.has(row.effectId) && !row.target.trim()) {
+        const effectName =
+          effectOptions.find((option) => option.id === row.effectId)?.name ??
+          "efeito";
+        const message = `Defina o alvo para o efeito "${effectName}".`;
+        setFormError(message);
+        toast.error(message);
+        return;
+      }
+    }
+
     const validRows = effectRows.filter((row) => row.effectId);
 
     setIsSubmitting(true);
@@ -203,10 +293,16 @@ export function AbilityForm({
 
       const effectResults = await Promise.all(
         validRows.map((row) => {
+          const needsTarget = effectDynamicTargetMap.has(row.effectId);
+          const targetValue = needsTarget ? row.target.trim() : "";
+          const formulaValue = buildEffectLinkFormula(
+            row.formula,
+            targetValue,
+          ).trim();
           const payload = {
             abilityId: abilityResult.id,
             effectId: row.effectId,
-            formula: row.formula.trim() || null,
+            formula: formulaValue || null,
           };
 
           return row.id
@@ -490,54 +586,110 @@ export function AbilityForm({
             </p>
           ) : (
             <ul className="space-y-2">
-              {effectRows.map((row, index) => (
-                <li
-                  key={row.id ?? `new-${index}`}
-                  className="rounded-lg border border-purple-200 bg-white px-3 py-2"
-                >
-                  <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
-                    <select
-                      className="rounded-md border border-gray-300 px-2 py-1 text-xs focus:border-purple-500 focus:outline-none"
-                      value={row.effectId}
-                      disabled={isSubmitting}
-                      onChange={(event) =>
-                        assignEffectToRow(index, event.target.value)
-                      }
-                    >
-                      {effectOptions.map((effect) => (
-                        <option key={effect.id} value={effect.id}>
-                          {effect.name}
-                        </option>
-                      ))}
-                    </select>
-                    <input
-                      type="text"
-                      placeholder="Fórmula (opcional)"
-                      className="rounded-md border border-gray-300 px-2 py-1 text-xs focus:border-purple-500 focus:outline-none"
-                      value={row.formula}
-                      disabled={isSubmitting}
-                      onChange={(event) => {
-                        const value = event.target.value;
-                        setEffectRows((prev) =>
-                          prev.map((current, rowIndex) =>
-                            rowIndex === index
-                              ? { ...current, formula: value }
-                              : current,
-                          ),
-                        );
-                      }}
-                    />
-                    <button
-                      type="button"
-                      className="self-start rounded-md border border-red-200 px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-red-600 transition hover:bg-red-50 disabled:opacity-60"
-                      disabled={isSubmitting}
-                      onClick={() => handleRemoveEffectRow(index)}
-                    >
-                      Remover
-                    </button>
-                  </div>
-                </li>
-              ))}
+              {effectRows.map((row, index) => {
+                const needsTarget = effectDynamicTargetMap.has(row.effectId);
+                const expectedType = effectDynamicTargetMap.get(row.effectId);
+                const availableTargets = needsTarget
+                  ? expectedType === ComponentType.STATUS
+                    ? statusTargetTokens
+                    : expectedType === ComponentType.ATTRIBUTE
+                      ? attributeTargetTokens
+                      : combinedTargetTokens
+                  : [];
+
+                const gridTemplate = needsTarget
+                  ? "sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]"
+                  : "sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]";
+
+                return (
+                  <li
+                    key={row.id ?? `new-${index}`}
+                    className="rounded-lg border border-purple-200 bg-white px-3 py-2"
+                  >
+                    <div className={`grid gap-2 ${gridTemplate}`}>
+                      <select
+                        className="rounded-md border border-gray-300 px-2 py-1 text-xs focus:border-purple-500 focus:outline-none"
+                        value={row.effectId}
+                        disabled={isSubmitting}
+                        onChange={(event) =>
+                          assignEffectToRow(index, event.target.value)
+                        }
+                      >
+                        {effectOptions.map((effect) => (
+                          <option key={effect.id} value={effect.id}>
+                            {effect.name}
+                          </option>
+                        ))}
+                      </select>
+                      {needsTarget && (
+                        <div>
+                          <input
+                            type="text"
+                            list={`ability-effect-target-${index}`}
+                            className="w-full rounded-md border border-gray-300 px-2 py-1 text-xs focus:border-purple-500 focus:outline-none"
+                            placeholder="Selecione o alvo"
+                            value={row.target}
+                            disabled={isSubmitting}
+                            onChange={(event) => {
+                              const value = event.target.value;
+                              setEffectRows((prev) =>
+                                prev.map((current, rowIndex) =>
+                                  rowIndex === index
+                                    ? { ...current, target: value }
+                                    : current,
+                                ),
+                              );
+                            }}
+                          />
+                          <datalist id={`ability-effect-target-${index}`}>
+                            {availableTargets.map((option) => (
+                              <option key={option.token} value={option.token}>
+                                {option.label}
+                              </option>
+                            ))}
+                            {row.target &&
+                              !availableTargets.some(
+                                (option) => option.token === row.target,
+                              ) && (
+                                <option value={row.target}>{row.target}</option>
+                              )}
+                          </datalist>
+                        </div>
+                      )}
+                      <FormulaInput
+                        value={row.formula}
+                        onChange={(nextValue) => {
+                          setEffectRows((prev) =>
+                            prev.map((current, rowIndex) =>
+                              rowIndex === index
+                                ? { ...current, formula: nextValue }
+                                : current,
+                            ),
+                          );
+                        }}
+                        tokens={formulaTokens}
+                        disabled={isSubmitting}
+                        placeholder="Fórmula (opcional)"
+                        inputClassName="w-full rounded-md border border-gray-300 px-2 py-1 text-xs focus:border-purple-500 focus:outline-none"
+                        containerClassName="space-y-1"
+                        loading={loadingFormulaCatalog}
+                        error={formulaCatalogError}
+                        helperLabel="Variáveis"
+                        helperTitle="Variáveis para fórmulas"
+                        helperDescription="Combine atributos e status para definir o impacto desta habilidade."
+                      />
+                      <button
+                        type="button"
+                        className="self-start rounded-md border border-red-200 px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-red-600 transition hover:bg-red-50 disabled:opacity-60"
+                        disabled={isSubmitting}
+                        onClick={() => handleRemoveEffectRow(index)}
+                      >
+                        Remover
+                      </button>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>

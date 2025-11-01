@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 
 import { ItemForm } from "./components/ItemForm";
@@ -11,7 +11,27 @@ import {
 } from "./contexts/ItemsTablesContext";
 
 function ItemsTablesContent() {
-  const { itemsError, effectsError } = useItemsTables();
+  const { items, itemsError, effectsError, itemEffectsError } =
+    useItemsTables();
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+
+  const activeItems = useMemo(
+    () => (items ?? []).filter((item) => item.deletedAt == null),
+    [items],
+  );
+
+  const selectedItem = useMemo(() => {
+    if (!selectedItemId) return null;
+    return activeItems.find((item) => item.id === selectedItemId) ?? null;
+  }, [activeItems, selectedItemId]);
+
+  useEffect(() => {
+    if (!selectedItemId) return;
+    const stillExists = activeItems.some((item) => item.id === selectedItemId);
+    if (!stillExists) {
+      setSelectedItemId(null);
+    }
+  }, [activeItems, selectedItemId]);
 
   useEffect(() => {
     if (!itemsError) return;
@@ -24,6 +44,15 @@ function ItemsTablesContent() {
     console.error("Falha ao carregar efeitos:", effectsError);
     toast.error("Não foi possível carregar a lista de efeitos.");
   }, [effectsError]);
+
+  useEffect(() => {
+    if (!itemEffectsError) return;
+    console.error(
+      "Falha ao carregar efeitos vinculados aos itens:",
+      itemEffectsError,
+    );
+    toast.error("Não foi possível carregar os vínculos de efeitos dos itens.");
+  }, [itemEffectsError]);
 
   return (
     <div className="space-y-6">
@@ -38,8 +67,22 @@ function ItemsTablesContent() {
       </header>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
-        <ItemForm />
-        <ItemList />
+        <ItemForm
+          selectedItem={selectedItem}
+          onEditingCompleted={(itemId) => {
+            setSelectedItemId(itemId);
+          }}
+        />
+        <ItemList
+          items={activeItems}
+          selectedItemId={selectedItemId}
+          onSelectItem={(item) => setSelectedItemId(item.id)}
+          onItemDeleted={(itemId) => {
+            setSelectedItemId((current) =>
+              current === itemId ? null : current,
+            );
+          }}
+        />
       </div>
     </div>
   );

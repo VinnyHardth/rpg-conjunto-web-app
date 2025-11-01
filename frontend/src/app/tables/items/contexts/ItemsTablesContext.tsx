@@ -4,7 +4,7 @@ import { createContext, type PropsWithChildren, useContext } from "react";
 
 import { useItemsTablesData } from "../hooks/useItemsTablesData";
 
-import type { EffectDTO, ItemsDTO } from "@rpg/shared";
+import type { EffectDTO, ItemHasEffectDTO, ItemsDTO } from "@rpg/shared";
 import type { KeyedMutator } from "swr";
 
 type ItemsTablesContextValue = {
@@ -15,6 +15,10 @@ type ItemsTablesContextValue = {
   effects: EffectDTO[] | undefined;
   effectsError: unknown;
   loadingEffects: boolean;
+  itemEffects: ItemHasEffectDTO[] | undefined;
+  itemEffectsError: unknown;
+  loadingItemEffects: boolean;
+  mutateItemEffects: KeyedMutator<ItemHasEffectDTO[]>;
 };
 
 const ItemsTablesContext = createContext<ItemsTablesContextValue | null>(null);

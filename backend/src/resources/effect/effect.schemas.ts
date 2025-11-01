@@ -12,7 +12,8 @@ export const createEffectSchema = Joi.object<CreateEffectDTO>({
     .required(),
   stackingPolicy: Joi.string()
     .valid(...Object.values(StackingPolicy))
-    .required()
+    .required(),
+  baseDuration: Joi.number().integer().min(0).default(0)
 });
 
 export const updateEffectSchema = Joi.object<UpdateEffectDTO>({
@@ -21,5 +22,6 @@ export const updateEffectSchema = Joi.object<UpdateEffectDTO>({
   description: Joi.string().max(1000),
   removableBy: Joi.string(),
   damageType: Joi.string().valid(...Object.values(DamageType)),
-  stackingPolicy: Joi.string().valid(...Object.values(StackingPolicy))
+  stackingPolicy: Joi.string().valid(...Object.values(StackingPolicy)),
+  baseDuration: Joi.number().integer().min(0)
 }).min(1);

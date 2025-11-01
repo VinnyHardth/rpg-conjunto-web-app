@@ -6,6 +6,31 @@ import toast from "react-hot-toast";
 
 import { useAbilitiesTables } from "../contexts/AbilitiesTablesContext";
 import { deleteAbility } from "@/lib/api";
+import { parseEffectLinkFormula } from "@/utils/effectFormula";
+
+const formatTargetLabel = (target: string): string => {
+  if (!target) return "";
+  if (target.startsWith("status.")) {
+    const [, slug, detail] = target.split(".");
+    const baseName = slug?.replace(/-/g, " ") ?? "Status";
+    const prettyName = baseName.toUpperCase();
+
+    let suffix = "";
+    if (detail === "current") suffix = " (atual)";
+    else if (detail === "max") suffix = " (máximo)";
+    else if (detail === "bonus") suffix = " (bônus)";
+
+    return `${prettyName}${suffix}`;
+  }
+
+  if (target.startsWith("attr.")) {
+    const [, slug] = target.split(".");
+    const baseName = slug?.replace(/-/g, " ") ?? "Atributo";
+    return baseName.replace(/(^|\s)\w/g, (match) => match.toUpperCase());
+  }
+
+  return target;
+};
 
 type AbilityListProps = {
   abilities: AbilitiesDTO[];
@@ -141,18 +166,33 @@ export function AbilityList({
                             Efeitos vinculados ({linkedEffects.length})
                           </p>
                           <ul className="mt-1 space-y-1">
-                            {linkedEffects.map((link) => (
-                              <li
-                                key={link.id}
-                                className="text-[11px] text-gray-600"
-                              >
-                                {effectNameLookup.get(link.effectId) ??
-                                  link.effectId}
-                                {link.formula
-                                  ? ` • Fórmula: ${link.formula}`
-                                  : ""}
-                              </li>
-                            ))}
+                            {linkedEffects.map((link) => {
+                              const parsed = parseEffectLinkFormula(
+                                link.formula ?? "",
+                              );
+                              const details: string[] = [];
+                              if (parsed.target) {
+                                details.push(
+                                  `Alvo: ${formatTargetLabel(parsed.target)}`,
+                                );
+                              }
+                              if (parsed.expr) {
+                                details.push(`Fórmula: ${parsed.expr}`);
+                              }
+
+                              return (
+                                <li
+                                  key={link.id}
+                                  className="text-[11px] text-gray-600"
+                                >
+                                  {effectNameLookup.get(link.effectId) ??
+                                    link.effectId}
+                                  {details.length > 0
+                                    ? ` • ${details.join(" • ")}`
+                                    : ""}
+                                </li>
+                              );
+                            })}
                           </ul>
                         </div>
                       )}

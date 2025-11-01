@@ -24,6 +24,8 @@ import {
 } from "@/types/models";
 
 import { useEffectsTables } from "../contexts/EffectsTablesContext";
+import { useFormulaCatalog } from "@/hooks/useFormulaCatalog";
+import { DYNAMIC_COMPONENT_PLACEHOLDER } from "@/constants/effects";
 
 const DAMAGE_TYPE_OPTIONS = Object.values(DamageType ?? {});
 const STACKING_POLICY_OPTIONS = Object.values(StackingPolicy ?? {});
@@ -50,6 +52,8 @@ type ModifierRow = {
   componentName: string;
   componentType: ComponentTypeLiteral;
   operationType: OperationTypeLiteral;
+  isDynamicTarget: boolean;
+  cachedComponentName?: string;
   isNew?: boolean;
 };
 
@@ -65,6 +69,25 @@ export function EffectForm({
   onEditingCompleted,
 }: EffectFormProps) {
   const { mutateEffects, mutateEffectModifiers } = useEffectsTables();
+  const { tokens: formulaTokens } = useFormulaCatalog();
+  const modifierTargetOptions = useMemo(() => {
+    const relevant = formulaTokens
+      .filter(
+        (token) =>
+          token.category === "status" || token.category === "attribute",
+      )
+      .sort((a, b) => a.label.localeCompare(b.label, "pt-BR"));
+
+    const deduped = new Map<string, (typeof relevant)[number]>();
+    relevant.forEach((token) => {
+      const key = token.meta?.displayName ?? token.token;
+      if (!deduped.has(key)) {
+        deduped.set(key, token);
+      }
+    });
+
+    return Array.from(deduped.values());
+  }, [formulaTokens]);
 
   const [name, setName] = useState("");
   const [imgUrl, setImgUrl] = useState("");
@@ -75,6 +98,7 @@ export function EffectForm({
   const [stackingPolicy, setStackingPolicy] = useState<StackingPolicyLiteral>(
     DEFAULT_STACKING_POLICY,
   );
+  const [baseDuration, setBaseDuration] = useState<number>(0);
   const [modifierRows, setModifierRows] = useState<ModifierRow[]>([]);
   const [removedModifierIds, setRemovedModifierIds] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -95,14 +119,22 @@ export function EffectForm({
     setRemovableBy(selectedEffect.removableBy ?? "");
     setDamageType(selectedEffect.damageType as DamageTypeLiteral);
     setStackingPolicy(selectedEffect.stackingPolicy as StackingPolicyLiteral);
+    setBaseDuration(selectedEffect.baseDuration ?? 0);
     setModifierRows(
-      selectedEffectModifiers.map((modifier) => ({
-        id: modifier.id,
-        componentName: modifier.componentName,
-        componentType: modifier.componentType as ComponentTypeLiteral,
-        operationType: modifier.operationType as OperationTypeLiteral,
-        isNew: false,
-      })),
+      selectedEffectModifiers.map((modifier) => {
+        const componentName = modifier.componentName ?? "";
+        const isDynamic =
+          componentName.trim().toUpperCase() === DYNAMIC_COMPONENT_PLACEHOLDER;
+        return {
+          id: modifier.id,
+          componentName,
+          componentType: modifier.componentType as ComponentTypeLiteral,
+          operationType: modifier.operationType as OperationTypeLiteral,
+          isDynamicTarget: isDynamic,
+          cachedComponentName: isDynamic ? "" : componentName,
+          isNew: false,
+        };
+      }),
     );
     setRemovedModifierIds([]);
   }, [selectedEffect, selectedEffectModifiers]);
@@ -113,7 +145,10 @@ export function EffectForm({
   }, [selectedEffect?.id]);
 
   const canAddModifier = useMemo(() => {
-    return modifierRows.every((row) => row.componentName.trim());
+    return modifierRows.every((row) => {
+      if (row.isDynamicTarget) return true;
+      return row.componentName.trim().length > 0;
+    });
   }, [modifierRows]);
 
   const resetForm = () => {
@@ -123,6 +158,7 @@ export function EffectForm({
     setRemovableBy("");
     setDamageType(DEFAULT_DAMAGE_TYPE);
     setStackingPolicy(DEFAULT_STACKING_POLICY);
+    setBaseDuration(0);
     setModifierRows([]);
     setRemovedModifierIds([]);
     setSaveMessage(null);
@@ -136,6 +172,8 @@ export function EffectForm({
         componentName: "",
         componentType: DEFAULT_COMPONENT_TYPE,
         operationType: DEFAULT_OPERATION_TYPE,
+        isDynamicTarget: false,
+        cachedComponentName: "",
         isNew: true,
       },
     ]);
@@ -158,6 +196,7 @@ export function EffectForm({
     removableBy: removableBy.trim() || undefined,
     damageType,
     stackingPolicy,
+    baseDuration,
   });
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -408,6 +447,35 @@ export function EffectForm({
               ))}
             </select>
           </div>
+
+          <div className="space-y-1">
+            <label
+              htmlFor="effect-base-duration"
+              className="text-sm font-medium text-gray-700"
+            >
+              Duração base (turnos)
+            </label>
+            <input
+              id="effect-base-duration"
+              type="number"
+              min={0}
+              step={1}
+              className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+              value={baseDuration}
+              disabled={isSubmitting}
+              onChange={(event) => {
+                const parsed = Number(event.target.value);
+                const normalized = Number.isFinite(parsed)
+                  ? Math.max(0, Math.floor(parsed))
+                  : 0;
+                setBaseDuration(normalized);
+              }}
+            />
+            <p className="text-xs text-gray-500">
+              Valor padrão usado ao aplicar este efeito. Use 0 para efeitos
+              instantâneos.
+            </p>
+          </div>
         </div>
 
         <div className="space-y-3 rounded-lg border border-indigo-200 bg-indigo-50/60 p-4">
@@ -443,23 +511,88 @@ export function EffectForm({
                   className="rounded-lg border border-indigo-200 bg-white px-3 py-2"
                 >
                   <div className="grid gap-2 sm:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]">
-                    <input
-                      type="text"
-                      className="rounded-md border border-gray-300 px-2 py-1 text-xs focus:border-indigo-500 focus:outline-none"
-                      placeholder="Componente (ex.: HP)"
-                      value={row.componentName}
-                      disabled={isSubmitting}
-                      onChange={(event) => {
-                        const value = event.target.value;
-                        setModifierRows((prev) =>
-                          prev.map((current, rowIndex) =>
-                            rowIndex === index
-                              ? { ...current, componentName: value }
-                              : current,
-                          ),
-                        );
-                      }}
-                    />
+                    <div className="space-y-1">
+                      <div className="space-y-1">
+                        <label className="flex items-center gap-1 text-[11px] font-medium text-indigo-700">
+                          <input
+                            type="checkbox"
+                            className="h-3 w-3"
+                            checked={row.isDynamicTarget}
+                            disabled={isSubmitting}
+                            onChange={(event) => {
+                              const checked = event.target.checked;
+                              setModifierRows((prev) =>
+                                prev.map((current, rowIndex) => {
+                                  if (rowIndex !== index) return current;
+
+                                  if (checked) {
+                                    const nextCached = current.isDynamicTarget
+                                      ? (current.cachedComponentName ?? "")
+                                      : current.componentName;
+                                    return {
+                                      ...current,
+                                      isDynamicTarget: true,
+                                      cachedComponentName: nextCached,
+                                      componentName:
+                                        DYNAMIC_COMPONENT_PLACEHOLDER,
+                                    };
+                                  }
+
+                                  const fallback =
+                                    current.cachedComponentName ?? "";
+                                  return {
+                                    ...current,
+                                    isDynamicTarget: false,
+                                    componentName: fallback,
+                                  };
+                                }),
+                              );
+                            }}
+                          />
+                          Definir alvo ao vincular
+                        </label>
+                        <input
+                          type="text"
+                          list={`effect-modifier-component-${index}`}
+                          className="w-full rounded-md border border-gray-300 px-2 py-1 text-xs focus:border-indigo-500 focus:outline-none"
+                          placeholder="Componente (ex.: HP)"
+                          value={row.componentName}
+                          disabled={isSubmitting || row.isDynamicTarget}
+                          onChange={(event) => {
+                            const value = event.target.value;
+                            setModifierRows((prev) =>
+                              prev.map((current, rowIndex) =>
+                                rowIndex === index
+                                  ? {
+                                      ...current,
+                                      componentName: value,
+                                      cachedComponentName: value,
+                                    }
+                                  : current,
+                              ),
+                            );
+                          }}
+                        />
+                        <datalist id={`effect-modifier-component-${index}`}>
+                          {modifierTargetOptions.map((option) => (
+                            <option
+                              key={option.token}
+                              value={option.meta?.displayName ?? option.token}
+                            >
+                              {option.label}
+                            </option>
+                          ))}
+                        </datalist>
+                        {row.componentName.trim().toUpperCase() ===
+                          DYNAMIC_COMPONENT_PLACEHOLDER && (
+                          <p className="text-[11px] text-indigo-600">
+                            Utilize este identificador para que o alvo seja
+                            definido ao vincular o efeito em itens ou
+                            habilidades.
+                          </p>
+                        )}
+                      </div>
+                    </div>
                     <select
                       className="rounded-md border border-gray-300 px-2 py-1 text-xs focus:border-indigo-500 focus:outline-none"
                       value={row.componentType}

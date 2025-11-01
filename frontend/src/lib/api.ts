@@ -25,7 +25,10 @@ import {
   CreateCharacterHasItemDTO,
   UpdateCharacterHasItemDTO,
   CreateItemsDTO,
+  UpdateItemsDTO,
   CreateItemHasEffectDTO,
+  UpdateItemHasEffectDTO,
+  ItemHasEffectDTO,
   CreateItemSkillsDTO,
   CreateEffectDTO,
   EffectModifierDTO,
@@ -38,6 +41,8 @@ import {
   AbilityEffectDTO,
   CreateAbilityEffectDTO,
   UpdateAbilityEffectDTO,
+  AttributesDTO,
+  StatusDTO,
 } from "@rpg/shared";
 
 import { Archetype } from "@/types/models";
@@ -97,16 +102,55 @@ export const createItem = async (
   return data;
 };
 
+export const updateItem = async (
+  id: string,
+  payload: UpdateItemsDTO,
+): Promise<ItemsDTO> => {
+  const { data } = await api.put(`/items/${id}`, payload);
+  return data;
+};
+
+export const deleteItem = async (id: string): Promise<void> => {
+  await api.delete(`/items/${id}`);
+};
+
 export const createItemEffect = async (
   payload: CreateItemHasEffectDTO,
 ): Promise<void> => {
   await api.post("/itemhaseffects", payload);
 };
 
+export const fetchItemEffects = async (): Promise<ItemHasEffectDTO[]> => {
+  const { data } = await api.get("/itemhaseffects");
+  return data;
+};
+
+export const updateItemEffect = async (
+  id: string,
+  payload: UpdateItemHasEffectDTO,
+): Promise<ItemHasEffectDTO> => {
+  const { data } = await api.put(`/itemhaseffects/${id}`, payload);
+  return data;
+};
+
+export const deleteItemEffect = async (id: string): Promise<void> => {
+  await api.delete(`/itemhaseffects/${id}`);
+};
+
 export const createItemSkill = async (
   payload: CreateItemSkillsDTO,
 ): Promise<void> => {
   await api.post("/itemskills", payload);
+};
+
+export const fetchAttributesCatalog = async (): Promise<AttributesDTO[]> => {
+  const { data } = await api.get("/attributes");
+  return data;
+};
+
+export const fetchStatusCatalog = async (): Promise<StatusDTO[]> => {
+  const { data } = await api.get("/status");
+  return data;
 };
 
 // abilities ------------------------------------------------------------------
@@ -185,6 +229,24 @@ export const fetchCharacterAttributes = async (
 ): Promise<CharacterAttribute[]> => {
   const { data } = await api.get(
     `/characterattributes/character/${characterId}`,
+  );
+  return data;
+};
+
+export type UpdateCharacterAttributePayload = Partial<
+  Pick<CharacterAttribute, "valueBase" | "valueInv" | "valueExtra">
+> & {
+  characterId?: string;
+  attributeId?: string;
+};
+
+export const updateCharacterAttribute = async (
+  characterAttributeId: string,
+  payload: UpdateCharacterAttributePayload,
+): Promise<CharacterAttribute> => {
+  const { data } = await api.put(
+    `/characterattributes/${characterAttributeId}`,
+    payload,
   );
   return data;
 };
@@ -452,6 +514,7 @@ export interface ApplyEffectTurnPayload {
   characterId: string;
   effectId: string;
   sourceType: string;
+  sourceId?: string;
   duration: number;
   valuePerStack?: number;
   stacksDelta?: number;

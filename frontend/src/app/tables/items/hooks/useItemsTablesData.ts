@@ -2,9 +2,9 @@
 
 import useSWR from "swr";
 
-import { fetchEffects, fetchItems } from "@/lib/api";
+import { fetchEffects, fetchItemEffects, fetchItems } from "@/lib/api";
 
-import type { EffectDTO, ItemsDTO } from "@rpg/shared";
+import type { EffectDTO, ItemHasEffectDTO, ItemsDTO } from "@rpg/shared";
 
 export function useItemsTablesData() {
   const {
@@ -24,6 +24,15 @@ export function useItemsTablesData() {
     revalidateOnFocus: false,
   });
 
+  const {
+    data: itemEffects,
+    error: itemEffectsError,
+    isLoading: loadingItemEffects,
+    mutate: mutateItemEffects,
+  } = useSWR<ItemHasEffectDTO[]>("item-effects", fetchItemEffects, {
+    revalidateOnFocus: false,
+  });
+
   return {
     items,
     itemsError,
@@ -32,5 +41,9 @@ export function useItemsTablesData() {
     effects,
     effectsError,
     loadingEffects,
+    itemEffects,
+    itemEffectsError,
+    loadingItemEffects,
+    mutateItemEffects,
   };
 }

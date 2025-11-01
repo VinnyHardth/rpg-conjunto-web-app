@@ -11,19 +11,25 @@ import CharacterAttributes from "./components/CharacterAttributes";
 import CharacterInventoryEquipment from "./components/CharacterInventoryEquipment";
 import AddInventoryItemDialog from "./components/AddInventoryItemDialog";
 import CharacterExpertises from "./components/CharacterExpertises";
+import { EquipItemDialog } from "./components/EquipItemDialog";
 
 import {
   CharacterBasicInfoUpdate,
   FullCharacterData,
   CharacterDTO,
 } from "@rpg/shared";
-import type { ItemsDTO } from "@rpg/shared";
+import type { CharacterHasItemDTO, ItemsDTO } from "@rpg/shared";
 
 import { CharacterAttribute, Status, EquipSlot } from "@/types/models";
 
 import api from "@/lib/axios";
 import { AxiosResponse } from "axios";
-import { createCharacterInventoryItem, fetchItems } from "@/lib/api";
+import {
+  createCharacterInventoryItem,
+  fetchItems,
+  updateCharacterInventoryItem,
+  deleteCharacterInventoryItem,
+} from "@/lib/api";
 
 const MANAGEMENT_TABS = [
   { id: "info", name: "Informações Básicas", icon: "📝" },
@@ -63,6 +69,13 @@ export default function CharacterManagementPage({
   >({});
   const [isAddItemOpen, setIsAddItemOpen] = useState(false);
   const [isAddingItem, setIsAddingItem] = useState(false);
+  const [itemToEquip, setItemToEquip] = useState<CharacterHasItemDTO | null>(
+    null,
+  );
+  const [selectedEquipSlot, setSelectedEquipSlot] = useState<EquipSlot>(
+    EquipSlot.HAND,
+  );
+  const [isUpdatingEquipment, setIsUpdatingEquipment] = useState(false);
 
   const {
     data: availableItems,
@@ -281,6 +294,85 @@ export default function CharacterManagementPage({
       setIsAddingItem(false);
     }
   };
+
+  const resolveItemName = (itemId: string) =>
+    availableItems?.find((item) => item.id === itemId)?.name ?? itemId;
+
+  const handleEquipItem = (item: CharacterHasItemDTO) => {
+    const initialSlot =
+      item.equipped_slot && item.equipped_slot !== EquipSlot.NONE
+        ? item.equipped_slot
+        : EquipSlot.HAND;
+    setSelectedEquipSlot(initialSlot);
+    setItemToEquip(item);
+  };
+
+  const handleConfirmEquip = async () => {
+    if (!itemToEquip) return;
+    try {
+      setIsUpdatingEquipment(true);
+      const baseItemDefinition = availableItems?.find(
+        (entry) => entry.id === itemToEquip.itemId,
+      );
+      const itemValue = itemToEquip.value ?? baseItemDefinition?.value ?? 0;
+
+      if (!itemToEquip.is_equipped && itemToEquip.quantity > 1) {
+        const remaining = itemToEquip.quantity - 1;
+
+        if (remaining > 0) {
+          await updateCharacterInventoryItem(itemToEquip.id, {
+            quantity: remaining,
+            is_equipped: false,
+            equipped_slot: EquipSlot.NONE,
+          });
+        } else {
+          await deleteCharacterInventoryItem(itemToEquip.id);
+        }
+
+        await createCharacterInventoryItem({
+          characterId: id,
+          itemId: itemToEquip.itemId,
+          quantity: 1,
+          is_equipped: true,
+          equipped_slot: selectedEquipSlot,
+          value: itemValue,
+        });
+      } else {
+        await updateCharacterInventoryItem(itemToEquip.id, {
+          is_equipped: true,
+          equipped_slot: selectedEquipSlot,
+        });
+      }
+
+      toast.success("Item equipado com sucesso.");
+      setItemToEquip(null);
+      setSelectedEquipSlot(EquipSlot.HAND);
+      await mutate();
+    } catch (err) {
+      console.error("Erro ao equipar item:", err);
+      toast.error("Não foi possível equipar o item.");
+    } finally {
+      setIsUpdatingEquipment(false);
+    }
+  };
+
+  const handleUnequipItem = async (item: CharacterHasItemDTO) => {
+    try {
+      setIsUpdatingEquipment(true);
+      await updateCharacterInventoryItem(item.id, {
+        is_equipped: false,
+        equipped_slot: EquipSlot.NONE,
+      });
+      toast.success("Equipamento removido do personagem.");
+      setSelectedEquipSlot(EquipSlot.HAND);
+      await mutate();
+    } catch (err) {
+      console.error("Erro ao remover equipamento:", err);
+      toast.error("Não foi possível remover o equipamento.");
+    } finally {
+      setIsUpdatingEquipment(false);
+    }
+  };
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -404,13 +496,10 @@ export default function CharacterManagementPage({
           <CharacterInventoryEquipment
             inventory={characterData.inventory}
             onAddItem={() => setIsAddItemOpen(true)}
-            onEquipItem={() =>
-              toast("Função de equipar item ainda não implementada.")
-            }
-            onUnequipItem={() =>
-              toast("Função de remover equipamento ainda não implementada.")
-            }
+            onEquipItem={handleEquipItem}
+            onUnequipItem={handleUnequipItem}
             itemsCatalog={availableItems ?? []}
+            isProcessingEquipment={isUpdatingEquipment}
           />
         )}
       </div>
@@ -422,6 +511,20 @@ export default function CharacterManagementPage({
         isLoadingItems={isLoadingItems}
         isSubmitting={isAddingItem}
         onSubmit={handleAddItem}
+      />
+      <EquipItemDialog
+        open={Boolean(itemToEquip)}
+        inventoryItem={itemToEquip}
+        itemName={itemToEquip ? resolveItemName(itemToEquip.itemId) : undefined}
+        isSubmitting={isUpdatingEquipment}
+        selectedSlot={selectedEquipSlot}
+        onSelectSlot={(slot) => setSelectedEquipSlot(slot)}
+        onClose={() => {
+          if (isUpdatingEquipment) return;
+          setItemToEquip(null);
+          setSelectedEquipSlot(EquipSlot.HAND);
+        }}
+        onConfirm={handleConfirmEquip}
       />
     </div>
   );
