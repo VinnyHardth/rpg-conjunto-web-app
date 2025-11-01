@@ -16,8 +16,14 @@ const prismaMock = vi.hoisted(() => {
       findMany: vi.fn(),
       updateMany: vi.fn()
     },
+    abilityEffect: {
+      findFirst: vi.fn()
+    },
     effect: {
       findUnique: vi.fn()
+    },
+    itemHasEffect: {
+      findFirst: vi.fn()
     },
     status: {
       findUnique: vi.fn(),
@@ -32,7 +38,9 @@ const prismaMock = vi.hoisted(() => {
 
   const tx = {
     appliedEffect: prisma.appliedEffect,
+    abilityEffect: prisma.abilityEffect,
     effect: prisma.effect,
+    itemHasEffect: prisma.itemHasEffect,
     status: prisma.status,
     characterAttribute: prisma.characterAttribute
   };
@@ -42,7 +50,9 @@ const prismaMock = vi.hoisted(() => {
   const reset = () => {
     for (const delegate of [
       prisma.appliedEffect,
+      prisma.abilityEffect,
       prisma.effect,
+      prisma.itemHasEffect,
       prisma.status,
       prisma.characterAttribute
     ]) {
@@ -69,6 +79,8 @@ describe("applyEffectTurn", () => {
     reset();
     tx.status.findMany.mockResolvedValue([]);
     tx.characterAttribute.findFirst.mockResolvedValue(null);
+    tx.abilityEffect.findFirst.mockResolvedValue(null);
+    tx.itemHasEffect.findFirst.mockResolvedValue(null);
   });
 
   it("applies instantaneous damage with resistance mitigation", async () => {
@@ -76,6 +88,7 @@ describe("applyEffectTurn", () => {
       id: "effect-1",
       stackingPolicy: StackingPolicy.REPLACE,
       damageType: "PHISICAL",
+      baseDuration: 0,
       targets: [
         {
           componentType: "STATUS",
@@ -91,14 +104,15 @@ describe("applyEffectTurn", () => {
         valueActual: { toNumber: () => 3 },
         valueBonus: { toNumber: () => 0 },
         valueMax: { toNumber: () => 0 }
+      },
+      {
+        id: "status-hp",
+        name: "HP",
+        valueActual: 20,
+        valueMax: 30,
+        valueBonus: 0
       }
     ]);
-    tx.status.findUnique.mockResolvedValue({
-      id: "status-hp",
-      valueActual: 20,
-      valueMax: 30,
-      valueBonus: 0
-    });
     tx.status.update.mockResolvedValue({});
 
     const result = await applyEffectTurn({
@@ -140,6 +154,7 @@ describe("applyEffectTurn", () => {
       id: "effect-attribute",
       stackingPolicy: StackingPolicy.REPLACE,
       damageType: "MAGIC",
+      baseDuration: 0,
       targets: [
         {
           componentType: "STATUS",
@@ -148,13 +163,15 @@ describe("applyEffectTurn", () => {
         }
       ]
     });
-    tx.status.findMany.mockResolvedValue([]);
-    tx.status.findUnique.mockResolvedValue({
-      id: "status-hp",
-      valueActual: 15,
-      valueMax: 25,
-      valueBonus: 0
-    });
+    tx.status.findMany.mockResolvedValue([
+      {
+        id: "status-hp",
+        name: "HP",
+        valueActual: 15,
+        valueMax: 25,
+        valueBonus: 0
+      }
+    ]);
     tx.characterAttribute.findFirst.mockResolvedValue({
       valueBase: 1,
       valueInv: 1,
@@ -191,6 +208,7 @@ describe("applyEffectTurn", () => {
       id: "effect-2",
       stackingPolicy: StackingPolicy.REFRESH,
       damageType: "NONE",
+      baseDuration: 0,
       targets: [
         {
           componentType: "STATUS",
@@ -207,12 +225,15 @@ describe("applyEffectTurn", () => {
       expiresAt: 15,
       duration: 5
     });
-    tx.status.findUnique.mockResolvedValue({
-      id: "status-mp",
-      valueActual: 5,
-      valueMax: 20,
-      valueBonus: 0
-    });
+    tx.status.findMany.mockResolvedValue([
+      {
+        id: "status-mp",
+        name: "MP",
+        valueActual: 5,
+        valueMax: 20,
+        valueBonus: 0
+      }
+    ]);
 
     const result = await applyEffectTurn({
       characterId: "char-2",
@@ -250,11 +271,68 @@ describe("applyEffectTurn", () => {
     expect(result.immediate).toBeNull();
   });
 
+  it("uses the effect baseDuration when duration is not provided", async () => {
+    tx.effect.findUnique.mockResolvedValue({
+      id: "effect-base-duration",
+      stackingPolicy: StackingPolicy.REFRESH,
+      damageType: "NONE",
+      baseDuration: 4,
+      targets: [
+        {
+          componentType: "STATUS",
+          componentName: "MP",
+          operationType: "ADD"
+        }
+      ]
+    });
+    tx.appliedEffect.findFirst.mockResolvedValue(null);
+    tx.appliedEffect.create.mockResolvedValue({
+      id: "applied-duration",
+      stacks: 1,
+      value: 0,
+      expiresAt: 14,
+      duration: 4
+    });
+    tx.status.findUnique.mockResolvedValue(null);
+
+    const result = await applyEffectTurn({
+      characterId: "char-4",
+      effectId: "effect-base-duration",
+      sourceType: SourceType.SKILL,
+      currentTurn: 10,
+      duration: 0,
+      stacksDelta: 1,
+      valuePerStack: 0
+    });
+
+    expect(tx.appliedEffect.create).toHaveBeenCalledWith({
+      data: {
+        characterId: "char-4",
+        effectId: "effect-base-duration",
+        sourceType: SourceType.SKILL,
+        duration: 4,
+        startedAt: 10,
+        expiresAt: 14,
+        stacks: 1,
+        value: 0
+      }
+    });
+    expect(result.applied).toEqual({
+      id: "applied-duration",
+      stacks: 1,
+      value: 0,
+      expiresAt: 14,
+      duration: 4
+    });
+    expect(result.immediate).toBeNull();
+  });
+
   it("stacks an existing effect according to policy", async () => {
     tx.effect.findUnique.mockResolvedValue({
       id: "effect-3",
       stackingPolicy: StackingPolicy.STACK,
       damageType: "NONE",
+      baseDuration: 0,
       targets: [
         {
           componentType: "STATUS",
@@ -276,12 +354,15 @@ describe("applyEffectTurn", () => {
       expiresAt: 14,
       value: 6
     });
-    tx.status.findUnique.mockResolvedValue({
-      id: "status-mp",
-      valueActual: 10,
-      valueMax: 40,
-      valueBonus: 0
-    });
+    tx.status.findMany.mockResolvedValue([
+      {
+        id: "status-mp",
+        name: "MP",
+        valueActual: 10,
+        valueMax: 40,
+        valueBonus: 0
+      }
+    ]);
 
     const result = await applyEffectTurn({
       characterId: "char-3",
@@ -312,6 +393,117 @@ describe("applyEffectTurn", () => {
       duration: 4,
       expiresAt: 14,
       value: 6
+    });
+  });
+
+  it("resolves dynamic status targets from ability links", async () => {
+    tx.effect.findUnique.mockResolvedValue({
+      id: "effect-dynamic",
+      stackingPolicy: StackingPolicy.REPLACE,
+      damageType: "NONE",
+      baseDuration: 0,
+      targets: [
+        {
+          componentType: "STATUS",
+          componentName: "TO_DEFINE",
+          operationType: "ADD"
+        }
+      ]
+    });
+
+    tx.abilityEffect.findFirst.mockResolvedValue({
+      id: "ability-effect-1",
+      abilityId: "ability-1",
+      effectId: "effect-dynamic",
+      formula: JSON.stringify({ target: "status.hp.current" })
+    });
+
+    tx.status.findMany.mockResolvedValue([
+      {
+        id: "status-hp",
+        name: "HP",
+        valueActual: 10,
+        valueMax: 20,
+        valueBonus: 0
+      }
+    ]);
+
+    const result = await applyEffectTurn({
+      characterId: "char-dyn",
+      effectId: "effect-dynamic",
+      sourceType: SourceType.SKILL,
+      sourceId: "ability-1",
+      currentTurn: 0,
+      duration: 0,
+      valuePerStack: 5
+    });
+
+    expect(tx.abilityEffect.findFirst).toHaveBeenCalledWith({
+      where: {
+        abilityId: "ability-1",
+        effectId: "effect-dynamic",
+        deletedAt: null
+      }
+    });
+    expect(tx.status.update).toHaveBeenCalledWith({
+      where: { id: "status-hp" },
+      data: { valueActual: 15 }
+    });
+    expect(result.immediate?.results?.[0]).toMatchObject({
+      target: "HP",
+      finalValue: 15
+    });
+  });
+
+  it("updates status max values when dynamic target points to max", async () => {
+    tx.effect.findUnique.mockResolvedValue({
+      id: "effect-dynamic-max",
+      stackingPolicy: StackingPolicy.REPLACE,
+      damageType: "NONE",
+      baseDuration: 0,
+      targets: [
+        {
+          componentType: "STATUS",
+          componentName: "TO_DEFINE",
+          operationType: "ADD"
+        }
+      ]
+    });
+
+    tx.abilityEffect.findFirst.mockResolvedValue({
+      id: "ability-effect-max",
+      abilityId: "ability-max",
+      effectId: "effect-dynamic-max",
+      formula: JSON.stringify({ target: "status.hp.max" })
+    });
+
+    tx.status.findMany.mockResolvedValue([
+      {
+        id: "status-hp",
+        name: "HP",
+        valueActual: 12,
+        valueMax: 20,
+        valueBonus: 0
+      }
+    ]);
+
+    const result = await applyEffectTurn({
+      characterId: "char-dyn",
+      effectId: "effect-dynamic-max",
+      sourceType: SourceType.SKILL,
+      sourceId: "ability-max",
+      currentTurn: 0,
+      duration: 0,
+      valuePerStack: 5
+    });
+
+    expect(tx.status.update).toHaveBeenCalledWith({
+      where: { id: "status-hp" },
+      data: { valueMax: 25 }
+    });
+    expect(result.immediate?.results?.[0]).toMatchObject({
+      target: "HP (máximo)",
+      finalValue: 25
     });
   });
 });

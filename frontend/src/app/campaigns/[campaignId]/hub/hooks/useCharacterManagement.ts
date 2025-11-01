@@ -26,6 +26,7 @@ interface UseCharacterManagementProps {
   user: User | null;
   userCharacters: Character[];
   memberIds: string[];
+  onRecover?: () => void | Promise<void>;
 }
 
 export function useCharacterManagement({
@@ -36,6 +37,7 @@ export function useCharacterManagement({
   user,
   userCharacters,
   memberIds,
+  onRecover,
 }: UseCharacterManagementProps) {
   const [characterMap, setCharacterMap] = useState<Record<string, Character>>(
     {},
@@ -215,12 +217,22 @@ export function useCharacterManagement({
       } catch (error) {
         console.error("Falha ao vincular personagem:", error);
         setActionError("Não foi possível adicionar o personagem.");
+        if (onRecover) {
+          await onRecover();
+        }
         throw error; // Re-throw para que o chamador possa lidar com isso (ex: não fechar o modal)
       } finally {
         setIsSaving(false);
       }
     },
-    [campaignId, isSaving, isMaster, userHasCharacter, mutateRelations],
+    [
+      campaignId,
+      isSaving,
+      isMaster,
+      userHasCharacter,
+      mutateRelations,
+      onRecover,
+    ],
   );
 
   const handleDetachCharacter = useCallback(
@@ -244,24 +256,42 @@ export function useCharacterManagement({
       } catch (error) {
         console.error("Falha ao remover personagem:", error);
         setActionError("Não foi possível remover o personagem.");
+        if (onRecover) {
+          await onRecover();
+        }
       } finally {
         setRemovingId(null);
       }
     },
-    [removingId, mutateRelations],
+    [removingId, mutateRelations, onRecover],
   );
 
-  return {
-    orderedCharacters,
-    characterMap,
-    charactersLoading,
-    memberCharsLoading,
-    availableCharacters,
-    userHasCharacter,
-    isSaving,
-    removingId,
-    actionError,
-    handleAttachCharacter,
-    handleDetachCharacter,
-  };
+  return useMemo(
+    () => ({
+      orderedCharacters,
+      characterMap,
+      charactersLoading,
+      memberCharsLoading,
+      availableCharacters,
+      userHasCharacter,
+      isSaving,
+      removingId,
+      actionError,
+      handleAttachCharacter,
+      handleDetachCharacter,
+    }),
+    [
+      orderedCharacters,
+      characterMap,
+      charactersLoading,
+      memberCharsLoading,
+      availableCharacters,
+      userHasCharacter,
+      isSaving,
+      removingId,
+      actionError,
+      handleAttachCharacter,
+      handleDetachCharacter,
+    ],
+  );
 }

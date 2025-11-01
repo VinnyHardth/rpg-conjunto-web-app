@@ -1,4 +1,4 @@
-import { SourceType, StackingPolicy } from "@prisma/client";
+import { SourceType, StackingPolicy, Prisma } from "@prisma/client";
 import {
   CreateAppliedEffectDTO,
   UpdateAppliedEffectDTO,
@@ -40,6 +40,124 @@ const RESISTANCE_STATUS_KEYS = {
   MAGIC: ["RESISTENCIAMAGICA", "RESMAGICA", "RM"]
 } as const;
 
+const DYNAMIC_COMPONENT_PLACEHOLDER = "TO_DEFINE";
+
+type StatusFieldKey = "valueActual" | "valueMax" | "valueBonus";
+
+type DynamicStatusOverride = {
+  token: string;
+  normalizedKey: string;
+  field: StatusFieldKey;
+};
+
+const STATUS_FIELD_LABEL: Record<StatusFieldKey, string> = {
+  valueActual: "atual",
+  valueMax: "máximo",
+  valueBonus: "bônus"
+};
+
+const isDynamicPlaceholder = (value?: string | null): boolean =>
+  (value ?? "").trim().toUpperCase() === DYNAMIC_COMPONENT_PLACEHOLDER;
+
+const extractTargetFromFormula = (formula?: string | null): string => {
+  if (!formula) return "";
+
+  const trimmed = formula.trim();
+  if (!trimmed) return "";
+
+  try {
+    const parsed = JSON.parse(trimmed);
+    if (
+      parsed &&
+      typeof parsed === "object" &&
+      !Array.isArray(parsed) &&
+      typeof parsed.target === "string"
+    ) {
+      return parsed.target.trim();
+    }
+  } catch {
+    // not JSON – continue with fallback parsing
+  }
+
+  const targetMatch = trimmed.match(/target\s*=\s*([^;]+)/i);
+  if (targetMatch?.[1]) {
+    return targetMatch[1].trim();
+  }
+
+  return "";
+};
+
+const parseStatusTargetToken = (
+  token: string
+): DynamicStatusOverride | null => {
+  const trimmed = token.trim();
+  if (!trimmed.toLowerCase().startsWith("status.")) return null;
+
+  const [, slugPart, fieldPart] = trimmed.split(".");
+  if (!slugPart) return null;
+
+  const normalizedKey = slugPart.replace(/[^a-z0-9]/gi, "").toUpperCase();
+
+  let field: StatusFieldKey = "valueActual";
+  switch ((fieldPart ?? "").toLowerCase()) {
+    case "max":
+      field = "valueMax";
+      break;
+    case "bonus":
+      field = "valueBonus";
+      break;
+    case "actual":
+    case "current":
+    default:
+      field = "valueActual";
+      break;
+  }
+
+  return {
+    token: trimmed,
+    normalizedKey,
+    field
+  };
+};
+
+const resolveDynamicStatusOverride = async (
+  tx: Prisma.TransactionClient,
+  effectId: string,
+  sourceType: SourceType,
+  sourceId?: string
+): Promise<DynamicStatusOverride | null> => {
+  if (!sourceId) return null;
+
+  let formula: string | null | undefined = null;
+
+  if (sourceType === SourceType.SKILL) {
+    const abilityEffect = await tx.abilityEffect.findFirst({
+      where: {
+        abilityId: sourceId,
+        effectId,
+        deletedAt: null
+      }
+    });
+    formula = abilityEffect?.formula ?? null;
+  } else if (sourceType === SourceType.ITEM) {
+    const itemEffect = await tx.itemHasEffect.findFirst({
+      where: {
+        itemId: sourceId,
+        effectsId: effectId,
+        deletedAt: null
+      }
+    });
+    formula = itemEffect?.formula ?? null;
+  }
+
+  if (!formula) return null;
+
+  const targetToken = extractTargetFromFormula(formula);
+  if (!targetToken) return null;
+
+  return parseStatusTargetToken(targetToken);
+};
+
 export const createAppliedEffect = async (
   data: CreateAppliedEffectDTO
 ): Promise<AppliedEffectDTO> => {
@@ -80,6 +198,7 @@ type ApplyParams = {
   duration: number; // em turnos
   stacksDelta?: number; // default 1
   valuePerStack?: number; // default 0 (para NONE/buffs)
+  sourceId?: string;
 };
 
 export async function applyEffectTurn(p: ApplyParams) {
@@ -90,7 +209,8 @@ export async function applyEffectTurn(p: ApplyParams) {
     currentTurn,
     duration,
     stacksDelta = 1,
-    valuePerStack = 0
+    valuePerStack = 0,
+    sourceId
   } = p;
 
   return prisma.$transaction(async (tx) => {
@@ -100,12 +220,79 @@ export async function applyEffectTurn(p: ApplyParams) {
     });
     if (!effect) throw new Error("Effect not found");
 
+    const hasDynamicStatusTarget = effect.targets.some(
+      (target) =>
+        target.componentType === "STATUS" &&
+        isDynamicPlaceholder(target.componentName)
+    );
+
+    const dynamicStatusOverride = hasDynamicStatusTarget
+      ? await resolveDynamicStatusOverride(tx, effectId, sourceType, sourceId)
+      : null;
+
+    if (hasDynamicStatusTarget && !dynamicStatusOverride) {
+      throw new Error(
+        `Effect ${effectId} requires a status target definition for source ${sourceType}.`
+      );
+    }
+
+    const baseDuration =
+      typeof effect.baseDuration === "number" ? effect.baseDuration : 0;
+    const effectiveDuration = duration > 0 ? duration : baseDuration;
+
     const statusList = await tx.status.findMany({
       where: { characterId }
     });
     const statusByNormalizedName = new Map(
       statusList.map((status) => [normalizeStatusName(status.name), status])
     );
+    const statusByUppercaseName = new Map(
+      statusList.map((status) => [status.name.toUpperCase(), status])
+    );
+
+    const refreshStatusMaps = (status: (typeof statusList)[number]): void => {
+      statusByUppercaseName.set(status.name.toUpperCase(), status);
+      statusByNormalizedName.set(normalizeStatusName(status.name), status);
+    };
+
+    type EffectTarget = (typeof effect.targets)[number];
+
+    const resolveStatusTarget = (
+      modifier: EffectTarget
+    ): {
+      status: (typeof statusList)[number];
+      field: StatusFieldKey;
+    } | null => {
+      if (modifier.componentType !== "STATUS") return null;
+
+      if (isDynamicPlaceholder(modifier.componentName)) {
+        if (!dynamicStatusOverride) return null;
+        const status =
+          statusByNormalizedName.get(dynamicStatusOverride.normalizedKey) ??
+          null;
+        if (!status) return null;
+        return {
+          status,
+          field: dynamicStatusOverride.field
+        };
+      }
+
+      const componentName = modifier.componentName ?? "";
+      const upperName = componentName.toUpperCase();
+      const normalizedName = componentName
+        ? normalizeStatusName(componentName)
+        : "";
+
+      const status =
+        statusByUppercaseName.get(upperName) ??
+        (normalizedName
+          ? (statusByNormalizedName.get(normalizedName) ?? null)
+          : null);
+
+      if (!status) return null;
+
+      return { status, field: "valueActual" };
+    };
 
     const resolveResistance = async (damageType: string): Promise<number> => {
       if (damageType !== "PHISICAL" && damageType !== "MAGIC") return 0;
@@ -143,28 +330,35 @@ export async function applyEffectTurn(p: ApplyParams) {
     };
 
     // ----------- EFEITO INSTANTÂNEO ----------- //
-    if (duration <= 0) {
+    if (effectiveDuration <= 0) {
       const immediateResults: any[] = [];
 
       // Aplicação imediata em STATUS, se houver targets
       for (const t of effect.targets) {
         if (t.componentType !== "STATUS") continue;
-        const targetName = t.componentName.toUpperCase();
-        const status = await tx.status.findUnique({
-          where: { characterId_name: { characterId, name: targetName } }
-        });
-        if (!status) continue;
 
-        let delta = valuePerStack * stacksDelta; // Calcula o valor base do efeito
-        const op = t.operationType;
+        const resolution = resolveStatusTarget(t);
+        if (!resolution) {
+          if (isDynamicPlaceholder(t.componentName)) {
+            throw new Error(
+              `Effect ${effectId} requires a dynamic status target but none was provided.`
+            );
+          }
+          continue;
+        }
 
-        // --- LÓGICA DE RESISTÊNCIA ---
-        // Se o efeito for de dano (ADD com valor negativo) e o alvo for HP
+        const { status, field } = resolution;
+        const statusNormalized = normalizeStatusName(status.name);
+        const operation = t.operationType;
+
+        let delta = valuePerStack * stacksDelta;
+
         if (
-          op === "ADD" &&
-          targetName === "HP" &&
-          delta < 0 && // Agora esta verificação funciona
-          (effect.damageType === "PHISICAL" || effect.damageType === "MAGIC")
+          operation === "ADD" &&
+          field === "valueActual" &&
+          delta < 0 &&
+          (effect.damageType === "PHISICAL" || effect.damageType === "MAGIC") &&
+          statusNormalized === "HP"
         ) {
           const resistanceValue = await resolveResistance(effect.damageType);
           if (resistanceValue !== 0) {
@@ -172,28 +366,49 @@ export async function applyEffectTurn(p: ApplyParams) {
           }
         }
 
-        const initialValue = status.valueActual;
-        let newValue = status.valueActual;
-        if (op === "ADD") newValue += delta;
-        else if (op === "MULT") newValue *= delta;
-        else if (op === "SET") newValue = delta;
+        const initialValue = toNumeric((status as any)[field]);
+        let newValue = initialValue;
 
-        const max = status.valueMax + status.valueBonus;
-        if (targetName === "HP") {
-          newValue = Math.min(newValue, max); // HP pode ser negativo
-        } else {
-          newValue = Math.min(Math.max(0, newValue), max); // Outros status não
+        if (operation === "ADD") {
+          newValue += delta;
+        } else if (operation === "MULT") {
+          newValue *= delta;
+          delta = newValue - initialValue;
+        } else if (operation === "SET") {
+          newValue = delta;
+          delta = newValue - initialValue;
         }
 
+        if (field === "valueActual") {
+          const max = toNumeric(status.valueMax) + toNumeric(status.valueBonus);
+          if (statusNormalized === "HP") {
+            newValue = Math.min(newValue, max);
+          } else {
+            newValue = Math.min(Math.max(0, newValue), max);
+          }
+        } else {
+          newValue = Math.max(newValue, 0);
+        }
+
+        const updateData: Record<string, number> = { [field]: newValue };
         await tx.status.update({
           where: { id: status.id },
-          data: { valueActual: newValue }
+          data: updateData
         });
 
+        (status as any)[field] = newValue;
+        refreshStatusMaps(status);
+
+        const fieldLabel =
+          field === "valueActual" ? null : STATUS_FIELD_LABEL[field];
+        const targetLabel = fieldLabel
+          ? `${status.name} (${fieldLabel})`
+          : status.name;
+
         immediateResults.push({
-          target: targetName,
+          target: targetLabel,
           delta,
-          initialValue: initialValue,
+          initialValue,
           finalValue: newValue
         });
       }
@@ -227,9 +442,9 @@ export async function applyEffectTurn(p: ApplyParams) {
           characterId,
           effectId,
           sourceType,
-          duration,
+          duration: effectiveDuration,
           startedAt: currentTurn,
-          expiresAt: currentTurn + duration,
+          expiresAt: currentTurn + effectiveDuration,
           stacks,
           value: stacks * valuePerStack
         }
@@ -240,8 +455,8 @@ export async function applyEffectTurn(p: ApplyParams) {
           applied = await tx.appliedEffect.update({
             where: { id: existing.id },
             data: {
-              duration,
-              expiresAt: currentTurn + duration,
+              duration: effectiveDuration,
+              expiresAt: currentTurn + effectiveDuration,
               value: existing.stacks * valuePerStack
             }
           });
@@ -252,8 +467,11 @@ export async function applyEffectTurn(p: ApplyParams) {
             where: { id: existing.id },
             data: {
               stacks,
-              duration,
-              expiresAt: Math.max(existing.expiresAt, currentTurn + duration),
+              duration: effectiveDuration,
+              expiresAt: Math.max(
+                existing.expiresAt,
+                currentTurn + effectiveDuration
+              ),
               value: stacks * valuePerStack
             }
           });
@@ -264,9 +482,9 @@ export async function applyEffectTurn(p: ApplyParams) {
             where: { id: existing.id },
             data: {
               stacks: Math.max(1, stacksDelta),
-              duration,
+              duration: effectiveDuration,
               startedAt: currentTurn,
-              expiresAt: currentTurn + duration,
+              expiresAt: currentTurn + effectiveDuration,
               value: stacksDelta * valuePerStack
             }
           });
@@ -277,34 +495,54 @@ export async function applyEffectTurn(p: ApplyParams) {
     // Aplicar efeitos acumulativos em STATUS, se aplicável
     for (const t of effect.targets) {
       if (t.componentType !== "STATUS") continue;
-      const targetName = t.componentName.toUpperCase();
-      const status = await tx.status.findUnique({
-        where: { characterId_name: { characterId, name: targetName } }
-      });
-      if (!status) continue;
 
-      // Esta lógica de aplicação de valor de buff/debuff só deve rodar se o valor for diferente de zero.
-      // Efeitos instantâneos já foram tratados e retornados.
-      if (valuePerStack !== 0) {
-        const delta = valuePerStack * applied.stacks;
-        let newValue = status.valueActual;
-
-        if (t.operationType === "ADD") newValue += delta;
-        else if (t.operationType === "MULT") newValue *= delta;
-        else if (t.operationType === "SET") newValue = delta;
-
-        const max = status.valueMax + status.valueBonus;
-        if (targetName === "HP") {
-          newValue = Math.min(newValue, max); // HP pode ser negativo
-        } else {
-          newValue = Math.min(Math.max(0, newValue), max); // Outros status não
+      const resolution = resolveStatusTarget(t);
+      if (!resolution) {
+        if (isDynamicPlaceholder(t.componentName)) {
+          throw new Error(
+            `Effect ${effectId} requires a dynamic status target but none was provided.`
+          );
         }
-
-        await tx.status.update({
-          where: { id: status.id },
-          data: { valueActual: newValue }
-        });
+        continue;
       }
+
+      if (valuePerStack === 0) continue;
+
+      const { status, field } = resolution;
+      const operation = t.operationType;
+
+      const delta = valuePerStack * applied.stacks;
+      const initialValue = toNumeric((status as any)[field]);
+      let newValue = initialValue;
+
+      if (operation === "ADD") {
+        newValue += delta;
+      } else if (operation === "MULT") {
+        newValue *= delta;
+      } else if (operation === "SET") {
+        newValue = delta;
+      }
+
+      if (field === "valueActual") {
+        const max = toNumeric(status.valueMax) + toNumeric(status.valueBonus);
+        const statusNormalized = normalizeStatusName(status.name);
+        if (statusNormalized === "HP") {
+          newValue = Math.min(newValue, max);
+        } else {
+          newValue = Math.min(Math.max(0, newValue), max);
+        }
+      } else {
+        newValue = Math.max(newValue, 0);
+      }
+
+      const updateData: Record<string, number> = { [field]: newValue };
+      await tx.status.update({
+        where: { id: status.id },
+        data: updateData
+      });
+
+      (status as any)[field] = newValue;
+      refreshStatusMaps(status);
     }
 
     return { applied, immediate: null };

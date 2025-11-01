@@ -15,6 +15,7 @@ export interface EffectDTO {
   removableBy: string | null;
   damageType: DamageType;
   stackingPolicy: StackingPolicy;
+  baseDuration: number;
   createdAt: DateTime;
   updatedAt: DateTime;
   deletedAt: DateTime | null;
@@ -27,6 +28,7 @@ export interface CreateEffectDTO {
   damageType: DamageType;
   stackingPolicy: StackingPolicy;
   removableBy?: string | null;
+  baseDuration?: number;
 }
 
 export type UpdateEffectDTO = Partial<CreateEffectDTO>;

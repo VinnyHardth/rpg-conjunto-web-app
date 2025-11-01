@@ -9,6 +9,7 @@ import type { Archetype, CharacterAttribute } from "@/types/models";
 import { STATUS_NAMES, Status } from "@/types/models";
 
 import { calculateStatus } from "@/lib/characterCalculations";
+import type { StatusCalculationResult } from "@rpg/shared";
 
 interface CharacterAttributeProps {
   attributes: CharacterAttribute[];
@@ -112,13 +113,16 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
       // 2. Criar record de atributos para cálculos
       const attributeRecord = baseAttributes.reduce<Record<string, number>>(
         (acc, attr) => {
+          const equipBonus = attr.valueInv ?? 0;
+
           if (attr.attributeId === editingId) {
-            acc[attr.name] = editValue;
+            acc[attr.name] = editValue + equipBonus;
           } else {
             const updatedAttr = updatedBaseAttributes.find(
               (a) => a.attributeId === attr.attributeId,
             );
-            acc[attr.name] = updatedAttr?.valueBase || attr.valueBase;
+            const baseValue = updatedAttr?.valueBase ?? attr.valueBase ?? 0;
+            acc[attr.name] = baseValue + equipBonus;
           }
           return acc;
         },
@@ -135,8 +139,12 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
       const updatedStatus: Status[] = status.map((s) => {
         const statusKey = REVERSE_STATUS_MAPPING[s.name];
 
-        if (statusKey && newStatus[statusKey] !== undefined) {
-          const calculatedValue = newStatus[statusKey];
+        if (statusKey) {
+          const typedKey = statusKey as keyof StatusCalculationResult;
+          const calculatedValue = newStatus[typedKey];
+          if (typeof calculatedValue !== "number") {
+            return s;
+          }
           const originalStatus = status.find((a) => a.id === s.id);
 
           return {

@@ -9,6 +9,7 @@ import type { Attributes, CharacterAttribute } from "@/types/models";
 import { resolveAbbreviation } from "../utils";
 
 type AttributeRow = {
+  id: string | null;
   name: string;
   base: number;
   inventory: number;
@@ -89,6 +90,7 @@ export function useAttributesPanel({
         const inventory = item?.valueInv ?? 0;
         const extra = item?.valueExtra ?? 0;
         return {
+          id: item?.id ?? null,
           name,
           base,
           inventory,
