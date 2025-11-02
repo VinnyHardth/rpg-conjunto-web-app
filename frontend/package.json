@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack -H 0.0.0.0 -p 4000",
     "build": "next build --turbopack",
+    "release": "next build --turbopack && next start -p 4000",
     "start": "next start -p 4000",
     "lint": "eslint",
     "test": "vitest run",

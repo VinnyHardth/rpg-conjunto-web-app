@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "npx nodemon --watch src src/index.ts",
     "build": "tsc",
-    "start": "node build/index.js",
+    "release": "npm run build && npm run start",
+    "start": "node build/src/index.js",
     "test": "vitest run",
     "seed": "ts-node prisma/seed.ts",
     "swagger": "ts-node src/swagger.ts"

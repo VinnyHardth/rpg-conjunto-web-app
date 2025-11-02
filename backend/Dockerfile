@@ -15,9 +15,6 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-# prepara variáveis para evitar prompts
-ENV NODE_ENV=development
-
 # arquivos de deps do backend
 COPY backend/package*.json ./
 
@@ -31,10 +28,13 @@ RUN npm install /tmp/shared.tgz && rm /tmp/shared.tgz
 # copia o código do backend
 COPY backend/ .
 
+# define ambiente de execução como produção apenas após instalar deps de build
+ENV NODE_ENV=production
+
 # gera os artefatos do Prisma
 RUN npx prisma generate
 
 EXPOSE 3000
 
 # roda migrate + seed e inicia o servidor (expondo logs no stdout)
-CMD ["sh", "-c", "wait-port mysql:3306 && npx prisma migrate deploy && npm run seed && npm run dev"]
+CMD ["sh", "-c", "wait-port mysql:3306 && npx prisma migrate deploy && npm run seed && npm run release"]

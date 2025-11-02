@@ -1,0 +1,7 @@
+services:
+  backend:
+    volumes: []
+    command: sh -c "wait-port mysql:3306 && npx prisma migrate deploy && npm run seed && npm run release"
+
+  frontend:
+    volumes: []

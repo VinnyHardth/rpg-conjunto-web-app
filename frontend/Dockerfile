@@ -15,9 +15,6 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-# prepara variáveis para evitar prompts
-ENV NODE_ENV=development
-
 # instala dependências do frontend
 COPY frontend/package*.json ./
 RUN npm install
@@ -29,7 +26,10 @@ RUN npm install /tmp/shared.tgz && rm /tmp/shared.tgz
 # copia o código do frontend
 COPY frontend/ .
 
+# define ambiente de execução como produção após instalar dependências necessárias para o build
+ENV NODE_ENV=production
+
 EXPOSE 4000
 
 ENV HOST 0.0.0.0
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "release"]
