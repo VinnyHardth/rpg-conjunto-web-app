@@ -67,6 +67,8 @@ services:
       - /app/.next
     environment:
       - NEXT_TELEMETRY_DISABLED=1
+      - NEXT_PUBLIC_API_URL=/api
+      - NEXT_PUBLIC_SOCKET_URL=/socket.io
     stdin_open: true
     tty: true
     networks:
