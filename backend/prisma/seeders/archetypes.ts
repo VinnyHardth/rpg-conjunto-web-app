@@ -8,6 +8,7 @@ const ARCHETYPES_DATA = [
   { name: "Tank", hp: 9, mp: 2, tp: 5 },
   { name: "Tank-Support", hp: 8, mp: 5, tp: 3 },
   { name: "Melee-Magic", hp: 4, mp: 6, tp: 6 },
+  { name: "Melee-Ranged", hp: 3, mp: 2, tp: 11 },
   { name: "Ranged-Magic", hp: 3, mp: 5, tp: 8 },
   { name: "Magic-Support", hp: 2, mp: 12, tp: 2 },
   { name: "Tank-Melee", hp: 7, mp: 3, tp: 6 },
