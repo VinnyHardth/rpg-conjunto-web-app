@@ -416,6 +416,7 @@ const doc = {
 
       damageType: Object.values(DamageType)[0],
       stackingPolicy: Object.values(StackingPolicy)[0],
+      baseDuration: 3,
 
       createdAt: "2023-10-01T12:00:00Z",
       updatedAt: "2023-10-01T12:00:00Z",
@@ -427,7 +428,8 @@ const doc = {
       imgUrl: "http://example.com/images/poison.png",
       removableBy: "Item",
       damageType: Object.values(DamageType)[0],
-      stackingPolicy: Object.values(StackingPolicy)[0]
+      stackingPolicy: Object.values(StackingPolicy)[0],
+      baseDuration: 3
     },
     UpdateEffectDTO: {
       name: "Bleeding",
@@ -435,7 +437,8 @@ const doc = {
       imgUrl: "http://example.com/images/bleeding.png",
       removableBy: "Item",
       damageType: Object.values(DamageType)[1],
-      stackingPolicy: Object.values(StackingPolicy)[1]
+      stackingPolicy: Object.values(StackingPolicy)[1],
+      baseDuration: 1
     },
     DeleteEffectDTO: {
       id: "uuid"

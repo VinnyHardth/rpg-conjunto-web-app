@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { mutate as mutateCache } from "swr";
 import {
   fetchCharacterStatus,
@@ -117,11 +117,14 @@ export function useRestActions({
     [characters, mutateRelations, clearState],
   );
 
-  return {
-    isResting,
-    restError,
-    restMessage,
-    handleRest,
-    clearState,
-  };
+  return useMemo(
+    () => ({
+      isResting,
+      restError,
+      restMessage,
+      handleRest,
+      clearState,
+    }),
+    [isResting, restError, restMessage, handleRest, clearState],
+  );
 }

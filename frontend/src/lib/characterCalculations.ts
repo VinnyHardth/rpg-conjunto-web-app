@@ -1,4 +1,8 @@
-import { AttributeKey, Archetype } from "@/types/models";
+import type { AttributeKey, Archetype } from "@/types/models";
+import {
+  calculateStatus as sharedCalculateStatus,
+  type StatusCalculationResult,
+} from "@rpg/shared";
 
 export const calculateExpertises = (
   attributes: Record<AttributeKey, number>,
@@ -27,26 +31,19 @@ export const calculateExpertises = (
 export const calculateStatus = (
   attributes: Record<AttributeKey, number>,
   archetype: Archetype,
-): Record<string, number> => {
-  const str = attributes.Força || 0;
-  const dex = attributes.Destreza || 0;
-  const int = attributes.Inteligência || 0;
-  const wis = attributes.Sabedoria || 0;
-  const con = attributes.Constituição || 0;
-  const des = attributes.Destino || 0;
-
-  const rm = Math.floor((int + con) / 2);
-  const rf = Math.floor((str + con) / 2);
-  const det = Math.floor((con + des) / 2);
-
-  return {
-    hp:
-      10 +
-      Math.ceil((con + 0.25 * (str + dex) + 0.25 * (int + wis)) * archetype.hp),
-    mp: 10 + Math.ceil((int + wis) / 2) * archetype.mp,
-    tp: 10 + Math.ceil((dex + str) / 2) * archetype.tp,
-    mov: Math.ceil((dex + con + rf + rm + det) / 2),
-    rm,
-    rf,
+): StatusCalculationResult => {
+  const normalized = {
+    strength: attributes["Força"] ?? 0,
+    dexterity: attributes["Destreza"] ?? 0,
+    intelligence: attributes["Inteligência"] ?? 0,
+    wisdom: attributes["Sabedoria"] ?? 0,
+    constitution: attributes["Constituição"] ?? 0,
+    destiny: attributes["Destino"] ?? 0,
   };
+
+  return sharedCalculateStatus(normalized, {
+    hp: archetype?.hp,
+    mp: archetype?.mp,
+    tp: archetype?.tp,
+  });
 };

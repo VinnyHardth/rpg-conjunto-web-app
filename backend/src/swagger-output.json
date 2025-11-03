@@ -6369,6 +6369,10 @@
             "type": "string",
             "example": "REFRESH"
           },
+          "baseDuration": {
+            "type": "integer",
+            "example": 3
+          },
           "createdAt": {
             "type": "string",
             "example": "2023-10-01T12:00:00Z"
@@ -6409,6 +6413,10 @@
           "stackingPolicy": {
             "type": "string",
             "example": "REFRESH"
+          },
+          "baseDuration": {
+            "type": "integer",
+            "example": 3
           }
         },
         "xml": {
@@ -6441,6 +6449,10 @@
           "stackingPolicy": {
             "type": "string",
             "example": "REPLACE"
+          },
+          "baseDuration": {
+            "type": "integer",
+            "example": 1
           }
         },
         "xml": {
