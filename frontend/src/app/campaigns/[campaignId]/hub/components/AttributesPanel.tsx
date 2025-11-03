@@ -1,6 +1,7 @@
-import AttributeTable from "./AttributeTable";
+import AttributeTable, { type AttributeRow } from "./AttributeTable";
 import { useAttributesPanel } from "../hooks/useAttributesPanel";
 import { useCampaignHub } from "../contexts/CampaignHubContext";
+import { useAttributeExtraEditor } from "../hooks/useAttributeExtraEditor";
 
 type AttributesPanelProps = {
   onClose: () => void;
@@ -40,6 +41,22 @@ export default function AttributesPanel({ onClose }: AttributesPanelProps) {
     expertiseDefinitions,
     onRoll: socketHandlers.onDiceRolled,
   });
+
+  const extraEditor = useAttributeExtraEditor({
+    sidebarCharacterId,
+  });
+
+  const canEditExtra =
+    Boolean(sidebarCharacterId) &&
+    (isMaster || sidebarCharacter?.userId === user?.id);
+
+  const handleStartEditExtra = (row: AttributeRow) => {
+    extraEditor.startEditing({
+      id: row.id ?? undefined,
+      name: row.name,
+      currentValue: row.extra,
+    });
+  };
 
   if (!isAttributesOpen) return null;
 
@@ -95,6 +112,14 @@ export default function AttributesPanel({ onClose }: AttributesPanelProps) {
                     prev === rowName ? null : rowName,
                   )
                 }
+                canEditExtra={canEditExtra}
+                editingRowId={extraEditor.editing?.id ?? null}
+                draftExtraValue={extraEditor.draftValue}
+                onStartEditExtra={(row) => handleStartEditExtra(row)}
+                onDraftExtraChange={(value) => extraEditor.setDraftValue(value)}
+                onSubmitExtra={() => extraEditor.submit()}
+                onCancelExtra={() => extraEditor.cancelEditing()}
+                isSubmittingExtra={extraEditor.isSaving}
               />
 
               <AttributeTable
@@ -108,6 +133,14 @@ export default function AttributesPanel({ onClose }: AttributesPanelProps) {
                     prev === rowName ? null : rowName,
                   )
                 }
+                canEditExtra={canEditExtra}
+                editingRowId={extraEditor.editing?.id ?? null}
+                draftExtraValue={extraEditor.draftValue}
+                onStartEditExtra={(row) => handleStartEditExtra(row)}
+                onDraftExtraChange={(value) => extraEditor.setDraftValue(value)}
+                onSubmitExtra={() => extraEditor.submit()}
+                onCancelExtra={() => extraEditor.cancelEditing()}
+                isSubmittingExtra={extraEditor.isSaving}
               />
 
               <div className="mt-6">
@@ -166,6 +199,10 @@ export default function AttributesPanel({ onClose }: AttributesPanelProps) {
                       : "—"}
                   </p>
                 </div>
+              )}
+
+              {extraEditor.error && (
+                <p className="mt-2 text-xs text-red-300">{extraEditor.error}</p>
               )}
             </>
           ) : (

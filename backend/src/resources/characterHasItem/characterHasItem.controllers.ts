@@ -165,6 +165,10 @@ const update = async (req: Request, res: Response): Promise<void> => {
     );
     res.status(StatusCodes.OK).json(updatedCharacterHasItem);
   } catch (err) {
+    if (err instanceof Error && err.message.includes("Slot já ocupado")) {
+      res.status(StatusCodes.CONFLICT).json({ message: err.message });
+      return;
+    }
     handleError(res, err, "Error updating characterhasitem");
   }
 };

@@ -36,6 +36,7 @@ export const applyEffectSchema = Joi.object({
   sourceType: Joi.string()
     .valid(...Object.values(SourceType))
     .required(),
+  sourceId: Joi.string().uuid().optional(),
   currentTurn: Joi.number().integer().min(0).default(0),
   duration: Joi.number().integer().min(0).required(),
   stacksDelta: Joi.number().integer().default(1),
