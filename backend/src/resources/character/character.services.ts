@@ -51,8 +51,6 @@ const getFullCharacterData = async (id: string): Promise<FullCharacterData> => {
     })
   ]);
 
-  console.log("📊 Perícias encontradas:", attributes);
-
   // 3️⃣ Retornar o resultado formatado
   return {
     info: character,
