@@ -2,6 +2,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { use, useEffect, useState } from "react";
 import useSWR from "swr";
 import { useCharacterData } from "@/hooks/useCharacterData";
@@ -608,6 +609,17 @@ export default function CharacterManagementPage({
             </div>
           </div>
         </div>
+      )}
+
+      {/* Botão Flutuante para Visualização (aparece apenas sem alterações pendentes) */}
+      {!hasPendingChanges && (
+        <Link
+          href={`/home`}
+          title="Ver Ficha do Personagem"
+          className="fixed bottom-4 right-6 bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center text-3xl shadow-lg hover:bg-blue-700 transition-transform hover:scale-110 z-40"
+        >
+          🏠
+        </Link>
       )}
     </div>
   );
