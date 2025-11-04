@@ -41,7 +41,7 @@ const getFullCharacterData = async (id: string): Promise<FullCharacterData> => {
       where: { characterId: id }
     }),
     prisma.characterHasItem.findMany({
-      where: { characterId: id }
+      where: { characterId: id, deletedAt: null }
     }),
     prisma.skill.findMany({
       where: { characterId: id }
