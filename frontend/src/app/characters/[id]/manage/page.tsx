@@ -33,7 +33,7 @@ import {
 
 const MANAGEMENT_TABS = [
   { id: "info", name: "Informações Básicas", icon: "📝" },
-  { id: "attributes", name: "Atributos & Perícias", icon: "💪" },
+  { id: "attributes", name: "Atributos", icon: "💪" },
   { id: "expertises", name: "Perícias", icon: "📈" },
   { id: "inventory", name: "Inventário", icon: "🎒" },
 ] as const;
