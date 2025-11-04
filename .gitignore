@@ -35,3 +35,7 @@ coverage/
 # Misc
 *.tgz
 *.gz
+*.sql
+
+# ssl certificate
+certs/
