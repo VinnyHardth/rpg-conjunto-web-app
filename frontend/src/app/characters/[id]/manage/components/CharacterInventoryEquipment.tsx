@@ -11,8 +11,10 @@ type CharacterInventoryEquipmentProps = {
   onAddItem?: () => void;
   onEquipItem?: (item: CharacterHasItemDTO) => void;
   onUnequipItem?: (item: CharacterHasItemDTO) => void;
+  onDeleteItem?: (item: CharacterHasItemDTO) => void;
   itemsCatalog?: ItemsDTO[] | undefined;
   isProcessingEquipment?: boolean;
+  deletingItemId?: string | null;
 };
 
 const formatSlotLabel = (slot: CharacterHasItemDTO["equipped_slot"]) => {
@@ -27,8 +29,10 @@ export default function CharacterInventoryEquipment({
   onAddItem,
   onEquipItem,
   onUnequipItem,
+  onDeleteItem,
   itemsCatalog,
   isProcessingEquipment = false,
+  deletingItemId = null,
 }: CharacterInventoryEquipmentProps) {
   const items = inventory ?? [];
   const equipments = items.filter((item) => item.is_equipped);
@@ -157,6 +161,20 @@ export default function CharacterInventoryEquipment({
                           Equipar
                         </button>
                       ) : null}
+                      {!item.is_equipped && (
+                        <button
+                          type="button"
+                          onClick={() => onDeleteItem?.(item)}
+                          disabled={
+                            isProcessingEquipment || deletingItemId === item.id
+                          }
+                          className="inline-flex items-center gap-1 rounded-md border border-red-200 px-3 py-1 text-xs font-semibold text-red-600 transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          {deletingItemId === item.id
+                            ? "Removendo..."
+                            : "Excluir"}
+                        </button>
+                      )}
                     </div>
                   </li>
                 );

@@ -76,6 +76,7 @@ export default function CharacterManagementPage({
     EquipSlot.HAND,
   );
   const [isUpdatingEquipment, setIsUpdatingEquipment] = useState(false);
+  const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
 
   const {
     data: availableItems,
@@ -373,6 +374,25 @@ export default function CharacterManagementPage({
       setIsUpdatingEquipment(false);
     }
   };
+
+  const handleDeleteInventoryItem = async (item: CharacterHasItemDTO) => {
+    if (item.is_equipped) {
+      toast.error("Desquipe o item antes de removê-lo do inventário.");
+      return;
+    }
+
+    try {
+      setDeletingItemId(item.id);
+      await deleteCharacterInventoryItem(item.id);
+      toast.success("Item removido do inventário.");
+      await mutate();
+    } catch (err) {
+      console.error("Erro ao remover item do inventário:", err);
+      toast.error("Não foi possível remover o item.");
+    } finally {
+      setDeletingItemId(null);
+    }
+  };
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -498,8 +518,10 @@ export default function CharacterManagementPage({
             onAddItem={() => setIsAddItemOpen(true)}
             onEquipItem={handleEquipItem}
             onUnequipItem={handleUnequipItem}
+            onDeleteItem={handleDeleteInventoryItem}
             itemsCatalog={availableItems ?? []}
             isProcessingEquipment={isUpdatingEquipment}
+            deletingItemId={deletingItemId}
           />
         )}
       </div>

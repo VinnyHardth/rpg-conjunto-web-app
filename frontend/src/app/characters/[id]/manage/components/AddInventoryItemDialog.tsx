@@ -21,16 +21,42 @@ export default function AddInventoryItemDialog({
   const [selectedItemId, setSelectedItemId] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(1);
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
+  const filteredItems = useMemo(() => {
+    const normalizedQuery = searchTerm.trim().toLowerCase();
+    if (!normalizedQuery) return items;
+    return items.filter((item) =>
+      item.name.toLowerCase().includes(normalizedQuery),
+    );
+  }, [items, searchTerm]);
 
   const hasItems = items.length > 0;
+  const hasFilteredItems = filteredItems.length > 0;
 
   useEffect(() => {
     if (!open) return;
 
     setError(null);
     setQuantity(1);
-    setSelectedItemId(hasItems ? items[0].id : "");
-  }, [open, hasItems, items]);
+    setSearchTerm("");
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    if (!hasFilteredItems) {
+      setSelectedItemId("");
+      return;
+    }
+
+    const isCurrentValid = filteredItems.some(
+      (item) => item.id === selectedItemId,
+    );
+    if (!isCurrentValid) {
+      setSelectedItemId(filteredItems[0].id);
+    }
+  }, [open, filteredItems, hasFilteredItems, selectedItemId]);
 
   const selectedItem = useMemo(() => {
     return items.find((item) => item.id === selectedItemId) ?? null;
@@ -77,6 +103,14 @@ export default function AddInventoryItemDialog({
             <label htmlFor="item" className="text-sm font-medium text-gray-700">
               Item
             </label>
+            <input
+              type="search"
+              placeholder="Pesquisar por nome"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+              disabled={!hasItems || isSubmitting || isLoadingItems}
+            />
             <select
               id="item"
               name="item"
@@ -85,8 +119,10 @@ export default function AddInventoryItemDialog({
               disabled={!hasItems || isSubmitting || isLoadingItems}
               onChange={(event) => setSelectedItemId(event.target.value)}
             >
-              {!hasItems && <option value="">Nenhum item disponível</option>}
-              {items.map((item) => (
+              {!hasFilteredItems && (
+                <option value="">Nenhum item encontrado</option>
+              )}
+              {filteredItems.map((item) => (
                 <option key={item.id} value={item.id}>
                   {item.name}
                 </option>
@@ -95,6 +131,11 @@ export default function AddInventoryItemDialog({
             {!hasItems && (
               <p className="text-xs text-gray-500">
                 Cadastre novos itens em <strong>Tabelas &gt; Itens</strong>.
+              </p>
+            )}
+            {hasItems && !hasFilteredItems && (
+              <p className="text-xs text-gray-500">
+                Nenhum item corresponde à sua busca. Tente outro termo.
               </p>
             )}
           </div>
@@ -155,7 +196,7 @@ export default function AddInventoryItemDialog({
             </button>
             <button
               type="submit"
-              disabled={!hasItems || isSubmitting}
+              disabled={!hasFilteredItems || isSubmitting}
               className="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isSubmitting ? "Adicionando..." : "Adicionar"}

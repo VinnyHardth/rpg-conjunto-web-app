@@ -13,7 +13,8 @@ const ARCHETYPES_DATA = [
   { name: "Tank-Melee", hp: 7, mp: 3, tp: 6 },
   { name: "Tank-Ranged", hp: 7, mp: 2, tp: 7 },
   { name: "Tank-Magic", hp: 7, mp: 7, tp: 2 },
-  { name: "None", hp: 6, mp: 5, tp: 5 }
+  { name: "None", hp: 6, mp: 5, tp: 5 },
+  { name: "Melee-Ranged", hp: 3, mp: 2, tp: 11 }
 ];
 
 export const seedArchetypes = async (prisma: PrismaClient) => {
