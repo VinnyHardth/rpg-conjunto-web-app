@@ -2,6 +2,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { use, useEffect, useState } from "react";
 import useSWR from "swr";
 import { useCharacterData } from "@/hooks/useCharacterData";
@@ -20,7 +21,7 @@ import {
 } from "@rpg/shared";
 import type { CharacterHasItemDTO, ItemsDTO } from "@rpg/shared";
 
-import { CharacterAttribute, Status, EquipSlot } from "@/types/models";
+import { CharacterAttribute, Status, EquipSlot, Archetype } from "@/types/models";
 
 import api from "@/lib/axios";
 import { AxiosResponse } from "axios";
@@ -30,10 +31,12 @@ import {
   updateCharacterInventoryItem,
   deleteCharacterInventoryItem,
 } from "@/lib/api";
+import { calculateStatus } from "@/lib/characterCalculations";
+import { AttributesDTO } from "@rpg/shared";
 
 const MANAGEMENT_TABS = [
   { id: "info", name: "Informações Básicas", icon: "📝" },
-  { id: "attributes", name: "Atributos & Perícias", icon: "💪" },
+  { id: "attributes", name: "Atributos", icon: "💪" },
   { id: "expertises", name: "Perícias", icon: "📈" },
   { id: "inventory", name: "Inventário", icon: "🎒" },
 ] as const;
@@ -85,6 +88,18 @@ export default function CharacterManagementPage({
     revalidateOnFocus: false,
   });
 
+  const {
+    data: archetypes,
+    error: archetypesError,
+  } = useSWR<Archetype[]>("archetypes", () => api.get("/archetypes").then(res => res.data));
+
+  const {
+    data: attributesDefinitions,
+    //isLoading: isLoadingAttributes,
+    error: attributesError,
+  } = useSWR<AttributesDTO[]>("attributes", () => api.get("/attributes").then(res => res.data));
+
+
   useEffect(() => {
     if (data) {
       setLocalCharacterData(data);
@@ -107,6 +122,18 @@ export default function CharacterManagementPage({
     toast.error("Não foi possível carregar a lista de itens.");
   }, [itemsError]);
 
+  useEffect(() => {
+    if (!archetypesError) return;
+    console.error("Falha ao carregar arquétipos:", archetypesError);
+    toast.error("Não foi possível carregar a lista de arquétipos.");
+  }, [archetypesError]);
+
+  useEffect(() => {
+    if (!attributesError) return;
+    console.error("Falha ao carregar definições de atributos:", attributesError);
+    toast.error("Não foi possível carregar as definições de atributos.");
+  }, [attributesError]);
+
   const handleBasicInfoUpdate = (updates: CharacterBasicInfoUpdate) => {
     setPendingUpdates(
       (prev): Partial<FullCharacterData> => ({
@@ -119,6 +146,52 @@ export default function CharacterManagementPage({
         },
       }),
     );
+
+    // Recalcula os status em tempo real se o arquétipo foi alterado
+    if (updates.archetypeId !== undefined && archetypes && attributesDefinitions && localCharacterData) {
+      const newArchetype = archetypes.find(arch => arch.id === updates.archetypeId);
+
+      if (newArchetype) {
+        const attributeIdToNameMap = attributesDefinitions.reduce<Record<string, string>>((acc, attrDef) => {
+          acc[attrDef.id] = attrDef.name;
+          return acc;
+        }, {});
+
+        const attributeRecord = localCharacterData.attributes.reduce<Record<string, number>>((acc, attr) => {
+          const attrName = attributeIdToNameMap[attr.attributeId];
+          if (attrName) {
+            acc[attrName] = attr.valueBase + attr.valueInv;
+          }
+          return acc;
+        }, {});
+
+        const newStatusValues = calculateStatus(attributeRecord, newArchetype);
+
+        const updatedStatus = localCharacterData.status.map(s => {
+          let newMaxValue: number | undefined;
+          if (s.name === 'HP') newMaxValue = newStatusValues.hp;
+          if (s.name === 'MP') newMaxValue = newStatusValues.mp;
+          if (s.name === 'TP') newMaxValue = newStatusValues.tp;
+
+          if (newMaxValue !== undefined) {
+            const isAtMax = s.valueActual >= s.valueMax;
+            return {
+              ...s,
+              valueMax: newMaxValue,
+              valueActual: isAtMax ? newMaxValue : Math.min(s.valueActual, newMaxValue),
+            };
+          }
+          return s;
+        });
+
+        // Adiciona os status atualizados às pendências para serem salvos
+        setPendingUpdates(prev => ({ ...prev, status: updatedStatus }));
+
+        // Atualiza o estado local para refletir na UI imediatamente
+        setLocalCharacterData(prev => prev ? { ...prev, status: updatedStatus } : null);
+      }
+    }
+
     setLocalCharacterData((prevData) => {
       if (!prevData) return null; // Should not happen, but keeps type safety
       return {
@@ -131,26 +204,32 @@ export default function CharacterManagementPage({
     });
   };
 
-  const handleAttributesUpdate = (updates: CharacterAttribute[]) => {
-    setPendingUpdates((prev) => ({ ...prev, attributes: updates }));
+  const handleAttributesUpdate = (updatedAttribute: CharacterAttribute) => {
+    setPendingUpdates((prev) => {
+      const existingAttributes = prev.attributes || [];
+      const otherAttributes = existingAttributes.filter(
+        (attr) => attr.id !== updatedAttribute.id,
+      );
+      return {
+        ...prev,
+        attributes: [...otherAttributes, updatedAttribute],
+      };
+    });
+
     setLocalCharacterData((prevData) => {
       if (!prevData) return null; // Should not happen, but keeps type safety
+      const updatedAttributes = prevData.attributes.map((attr) =>
+        attr.id === updatedAttribute.id ? updatedAttribute : attr,
+      );
       return {
         ...prevData,
-        attributes: updates,
+        attributes: updatedAttributes,
       };
     });
   };
 
   const handleStatusUpdate = (updates: Status[]) => {
     setPendingUpdates((prev) => ({ ...prev, status: updates }));
-    setLocalCharacterData((prevData) => {
-      if (!prevData) return null; // Should not happen, but keeps type safety
-      return {
-        ...prevData,
-        status: updates,
-      };
-    });
   };
 
   const handleTabChange = (tabId: ManagementTab) => {
@@ -191,8 +270,9 @@ export default function CharacterManagementPage({
       }
 
       // 2️⃣ Atualiza atributos
-      if (pendingUpdates.attributes && pendingUpdates.attributes.length > 0) {
-        for (const attribute of pendingUpdates.attributes) {
+      const attributesToUpdate = pendingUpdates.attributes || [];
+      if (attributesToUpdate.length > 0) {
+        for (const attribute of attributesToUpdate) {
           promises.push(
             api.put(`/characterattributes/${attribute.id}`, {
               valueBase: attribute.valueBase,
@@ -200,10 +280,11 @@ export default function CharacterManagementPage({
           );
         }
       }
-
+      
       // 3️⃣ Atualiza status
-      if (pendingUpdates.status && pendingUpdates.status.length > 0) {
-        for (const status of pendingUpdates.status) {
+      const statusToUpdate = pendingUpdates.status || [];
+      if (statusToUpdate.length > 0) {
+        for (const status of statusToUpdate) {
           promises.push(
             api.put(`/status/${status.id}`, {
               valueMax: status.valueMax,
@@ -232,17 +313,9 @@ export default function CharacterManagementPage({
       const responses = await Promise.all(promises);
       console.log("✅ Atualizações realizadas com sucesso:", responses);
 
-      // Atualiza o estado local com os dados retornados (se quiser)
-      //const updatedData = responses.reduce((acc, res) => ({ ...acc, ...res.data }), {});
-
-      setLocalCharacterData((prev) => {
-        if (!prev) return prev;
-        return {
-          ...prev,
-          ...responses.reduce((acc, res) => ({ ...acc, ...res.data }), {}),
-        };
-      });
+      // Limpa as pendências e revalida os dados do SWR para buscar o estado mais recente do servidor
       setPendingUpdates({});
+      mutate();
       toast.success("Personagem atualizado com sucesso!");
     } catch (error) {
       console.error("❌ Erro ao atualizar personagem:", error);
@@ -424,23 +497,6 @@ export default function CharacterManagementPage({
                 TP: {tpStatus?.valueActual || 0}/{tpStatus?.valueMax || 0}
               </div>
             </div>
-
-            {hasPendingChanges && (
-              <div className="flex gap-2 mt-4 justify-end">
-                <button
-                  onClick={handleCancel}
-                  className="px-4 py-2 text-sm border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={handleSave}
-                  className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                >
-                  Salvar Alterações
-                </button>
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -471,6 +527,7 @@ export default function CharacterManagementPage({
           <CharacterBasicInfo
             character={characterData.info}
             archetype={characterData.archetype}
+            allArchetypes={archetypes ?? []}
             onUpdate={handleBasicInfoUpdate}
           />
         )}
@@ -526,6 +583,44 @@ export default function CharacterManagementPage({
         }}
         onConfirm={handleConfirmEquip}
       />
+
+      {/* Rodapé Fixo para Salvar/Cancelar */}
+      {hasPendingChanges && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-14">
+              <span className="text-gray-700 font-medium">
+                Você tem alterações não salvas.
+              </span>
+              <div className="flex gap-4">
+                <button
+                  onClick={handleCancel}
+                  className="px-6 py-2 text-sm border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleSave}
+                  className="px-6 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                >
+                  Salvar Alterações
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Botão Flutuante para Visualização (aparece apenas sem alterações pendentes) */}
+      {!hasPendingChanges && (
+        <Link
+          href={`/home`}
+          title="Ver Ficha do Personagem"
+          className="fixed bottom-4 right-6 bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center text-3xl shadow-lg hover:bg-blue-700 transition-transform hover:scale-110 z-40"
+        >
+          🏠
+        </Link>
+      )}
     </div>
   );
 }

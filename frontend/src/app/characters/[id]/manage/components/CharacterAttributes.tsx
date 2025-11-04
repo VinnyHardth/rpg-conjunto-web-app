@@ -15,7 +15,7 @@ interface CharacterAttributeProps {
   attributes: CharacterAttribute[];
   status: Status[];
   archetype: Archetype | null;
-  onAttributesUpdate: (attributes: CharacterAttribute[]) => void;
+  onAttributesUpdate: (attribute: CharacterAttribute) => void;
   onStatusUpdate: (status: Status[]) => void;
 }
 
@@ -175,9 +175,14 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
 
       console.log("Atributos finais para update:", updatedBaseAttributes);
 
-      // 6. Atualizar estado local E chamar callback
+      // 6. Encontrar o atributo específico que foi alterado
+      const attributeToUpdate = updatedBaseAttributes.find(
+        (attr) => attr.attributeId === editingId,
+      );
+
+      // 7. Atualizar estado local E chamar callback com o objeto alterado
       setLocalAttributes(updatedBaseAttributes);
-      onAttributesUpdate(updatedBaseAttributes);
+      if (attributeToUpdate) onAttributesUpdate(attributeToUpdate);
       onStatusUpdate(updatedStatus);
     }
     setEditingId(null);

@@ -8,15 +8,15 @@ import { CharacterBasicInfoUpdate } from "@rpg/shared";
 
 interface CharacterBasicInfoProps {
   character: Character;
-  archetype: Archetype | null;
-  // RENOMEADO: onSave para onUpdate, para indicar que é uma atualização local
+  archetype: Archetype | null; // O arquétipo atual, resolvido
+  allArchetypes: Archetype[]; // Lista de todos os arquétipos disponíveis
   onUpdate: (updates: CharacterBasicInfoUpdate) => void;
 }
 
 export default function CharacterBasicInfo({
   character,
-  archetype,
   // RENOMEADO
+  allArchetypes,
   onUpdate,
 }: CharacterBasicInfoProps) {
   const handleInputChange = (
@@ -30,6 +30,12 @@ export default function CharacterBasicInfo({
   const handleAvatarChange = (url: string) => {
     onUpdate({ imageUrl: url });
   };
+
+  // Encontra o arquétipo que está selecionado no momento no dropdown,
+  // para que os modificadores sejam exibidos dinamicamente.
+  const selectedArchetype = allArchetypes.find(
+    (arch) => arch.id === character.archetypeId,
+  );
 
   return (
     <div>
@@ -141,6 +147,24 @@ export default function CharacterBasicInfo({
               ))}
             </select>
           </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Dinheiro
+            </label>
+            <input
+              type="number"
+              value={character.money?.toString() || ""}
+              onChange={(e) =>
+                handleInputChange(
+                  "money",
+                  e.target.value ? parseFloat(e.target.value) : null,
+                )
+              }
+              className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+
         </div>
         <div className="sm:col-span-3">
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -155,29 +179,42 @@ export default function CharacterBasicInfo({
           />
         </div>
       </div>
-      {archetype && (
+      {selectedArchetype && (
         <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
-          <h3 className="font-semibold text-lg text-gray-800 mb-3">
-            Arquétipo: <span className="text-blue-600">{archetype.name}</span>
-          </h3>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="font-semibold text-lg text-gray-800">Arquétipo</h3>
+            <select
+              value={character.archetypeId || ""}
+              onChange={(e) =>
+                handleInputChange("archetypeId", e.target.value || null)
+              }
+              className="w-full max-w-xs p-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              {allArchetypes.map((arch) => (
+                <option key={arch.id} value={arch.id}>
+                  {arch.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center mt-4">
             <div className="bg-white p-3 rounded-md border">
               <div className="text-xs text-red-600 font-bold">HP MOD</div>
               <div className="text-xl font-bold text-red-500">
-                x{archetype.hp}
+                x{selectedArchetype.hp}
               </div>
             </div>
             <div className="bg-white p-3 rounded-md border">
               <div className="text-xs text-blue-600 font-bold">MP MOD</div>
               <div className="text-xl font-bold text-blue-500">
-                x{archetype.mp}
+                x{selectedArchetype.mp}
               </div>
             </div>
             <div className="bg-white p-3 rounded-md border">
               <div className="text-xs text-green-600 font-bold">TP MOD</div>
               <div className="text-xl font-bold text-green-500">
-                x{archetype.tp}
+                x{selectedArchetype.tp}
               </div>
             </div>
           </div>

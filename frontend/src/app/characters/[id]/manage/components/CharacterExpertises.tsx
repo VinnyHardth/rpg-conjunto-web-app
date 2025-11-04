@@ -7,7 +7,7 @@ import type { CharacterAttribute } from "@/types/models";
 
 interface CharacterExpertisesProps {
   attributes: CharacterAttribute[];
-  onAttributesUpdate: (attributes: CharacterAttribute[]) => void;
+  onAttributesUpdate: (attribute: CharacterAttribute) => void;
 }
 
 const CharacterExpertises: React.FC<CharacterExpertisesProps> = ({
@@ -32,13 +32,16 @@ const CharacterExpertises: React.FC<CharacterExpertisesProps> = ({
 
   const handleEditSave = () => {
     if (editingId !== null) {
-      const updatedAttributes = allCharacterAttributes.map((attr) =>
+      const updatedExpertises = allCharacterAttributes.map((attr) =>
         attr.attributeId === editingId
           ? { ...attr, valueBase: editValue }
           : attr,
       );
-      setAllCharacterAttributes(updatedAttributes);
-      onAttributesUpdate(updatedAttributes);
+      const attributeToUpdate = updatedExpertises.find(
+        (attr) => attr.attributeId === editingId,
+      );
+      setAllCharacterAttributes(updatedExpertises);
+      if (attributeToUpdate) onAttributesUpdate(attributeToUpdate);
       setEditingId(null);
     }
   };
@@ -59,14 +62,16 @@ const CharacterExpertises: React.FC<CharacterExpertisesProps> = ({
   const handleAddExpertise = () => {
     if (!newExpertiseId) return;
 
-    const updatedAttributes = allCharacterAttributes.map((attr) =>
+    const updatedExpertises = allCharacterAttributes.map((attr) =>
       attr.attributeId === newExpertiseId
         ? { ...attr, valueBase: 1 } // Inicia com valor 1
         : attr,
     );
-
-    setAllCharacterAttributes(updatedAttributes);
-    onAttributesUpdate(updatedAttributes);
+    const attributeToUpdate = updatedExpertises.find(
+      (attr) => attr.attributeId === newExpertiseId,
+    );
+    setAllCharacterAttributes(updatedExpertises);
+    if (attributeToUpdate) onAttributesUpdate(attributeToUpdate);
 
     // Reseta o select
     setNewExpertiseId("");
