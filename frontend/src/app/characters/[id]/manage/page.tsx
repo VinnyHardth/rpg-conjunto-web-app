@@ -424,23 +424,6 @@ export default function CharacterManagementPage({
                 TP: {tpStatus?.valueActual || 0}/{tpStatus?.valueMax || 0}
               </div>
             </div>
-
-            {hasPendingChanges && (
-              <div className="flex gap-2 mt-4 justify-end">
-                <button
-                  onClick={handleCancel}
-                  className="px-4 py-2 text-sm border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={handleSave}
-                  className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                >
-                  Salvar Alterações
-                </button>
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -526,6 +509,33 @@ export default function CharacterManagementPage({
         }}
         onConfirm={handleConfirmEquip}
       />
+
+      {/* Rodapé Fixo para Salvar/Cancelar */}
+      {hasPendingChanges && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-14">
+              <span className="text-gray-700 font-medium">
+                Você tem alterações não salvas.
+              </span>
+              <div className="flex gap-4">
+                <button
+                  onClick={handleCancel}
+                  className="px-6 py-2 text-sm border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleSave}
+                  className="px-6 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                >
+                  Salvar Alterações
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
