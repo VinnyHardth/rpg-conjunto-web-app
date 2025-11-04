@@ -27,9 +27,9 @@ RUN npm install /tmp/shared.tgz && rm /tmp/shared.tgz
 COPY frontend/ .
 
 # define ambiente de execução como produção após instalar dependências necessárias para o build
-ENV NODE_ENV=development
+ENV NODE_ENV=production
 
 EXPOSE 4000
 
 ENV HOST 0.0.0.0
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "release"]
