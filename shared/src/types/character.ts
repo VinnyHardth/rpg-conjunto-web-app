@@ -50,7 +50,7 @@ export interface DeleteCharacterDTO {
 export type CharacterBasicInfoUpdate = Partial<
   Pick<
     CharacterDTO,
-    "name" | "race" | "age" | "height" | "gender" | "annotations" | "imageUrl"
+    "name" | "race" | "age" | "height" | "gender" | "annotations" | "imageUrl" | "money" | "archetypeId"
   >
 >;
 
