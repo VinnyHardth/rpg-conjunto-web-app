@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 
 import type { ItemsDTO } from "@rpg/shared";
@@ -24,6 +24,21 @@ export function ItemList({
 }: ItemListProps) {
   const { loadingItems, mutateItems, mutateItemEffects } = useItemsTables();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredItems = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return items;
+    }
+    const lowercasedQuery = searchQuery.toLowerCase();
+    return items.filter(
+      (item) =>
+        item.name.toLowerCase().includes(lowercasedQuery) ||
+        (item.description &&
+          item.description.toLowerCase().includes(lowercasedQuery))
+    );
+  }, [items, searchQuery]);
 
   if (loadingItems) {
     return (
@@ -59,11 +74,27 @@ export function ItemList({
           Selecione um item para destacar e utilize a ação de exclusão quando
           necessário.
         </p>
+        <div className="pt-2">
+          <input
+            type="text"
+            placeholder="Buscar item por nome ou descrição..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+          />
+        </div>
       </header>
 
-      <ul className="space-y-3">
-        {items
-          .slice()
+      <ul
+        className="flex-1 space-y-3 overflow-y-auto pr-2"
+        style={{ maxHeight: "calc(100vh - 18rem)" }}
+      >
+        {filteredItems.length === 0 && (
+          <p className="px-4 py-6 text-center text-sm text-gray-500">
+            Nenhum item encontrado para sua busca.
+          </p>
+        )}
+        {filteredItems
           .sort((a, b) => a.name.localeCompare(b.name))
           .map((item) => {
             const isSelected = selectedItemId === item.id;
@@ -71,18 +102,14 @@ export function ItemList({
             return (
               <li key={item.id}>
                 <div
-                  className={`flex items-start justify-between gap-3 rounded-lg border px-4 py-3 shadow-sm transition ${
+                  onClick={() => onSelectItem(item)}
+                  className={`flex w-full cursor-pointer items-start justify-between gap-3 rounded-lg border px-4 py-3 text-left shadow-sm transition ${
                     isSelected
                       ? "border-indigo-300 bg-indigo-50"
                       : "border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-white"
                   }`}
                 >
-                  <button
-                    type="button"
-                    onClick={() => onSelectItem(item)}
-                    className="flex-1 text-left"
-                  >
-                    <div className="space-y-1">
+                    <div className="flex-1 space-y-1">
                       <p className="text-sm font-semibold text-gray-800">
                         {item.name}
                       </p>
@@ -100,14 +127,15 @@ export function ItemList({
                         </p>
                       )}
                     </div>
-                  </button>
 
                   <div className="flex flex-col items-end justify-between">
                     <button
                       type="button"
-                      onClick={async () => {
+                      onClick={async (e) => {
+                        e.stopPropagation(); // Impede que o clique selecione o item
+
                         const confirmed = window.confirm(
-                          `Remover o item "${item.name}"? Esta ação é permanente.`,
+                          `Remover o item "${item.name}"? Esta ação é permanente.`
                         );
                         if (!confirmed) return;
 
@@ -117,16 +145,16 @@ export function ItemList({
                           await mutateItems(
                             (prev) =>
                               prev?.filter(
-                                (existing) => existing.id !== item.id,
+                                (existing) => existing.id !== item.id
                               ) ?? [],
-                            { revalidate: false },
+                            { revalidate: false }
                           );
                           await mutateItemEffects(
                             (prev) =>
                               prev?.filter(
-                                (effect) => effect.itemId !== item.id,
+                                (effect) => effect.itemId !== item.id
                               ) ?? [],
-                            { revalidate: false },
+                            { revalidate: false }
                           );
                           toast.success(`Item "${item.name}" removido.`);
                           onItemDeleted(item.id);
