@@ -27,6 +27,7 @@ export function EffectList({
     mutateEffectModifiers,
   } = useEffectsTables();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const modifiersByEffect = useMemo(() => {
     const grouped = new Map<string, EffectModifierDTO[]>();
@@ -41,6 +42,19 @@ export function EffectList({
     return grouped;
   }, [effectModifiers]);
 
+  const filteredEffects = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return effects;
+    }
+    const lowercasedQuery = searchQuery.toLowerCase();
+    return effects.filter(
+      (effect) =>
+        effect.name.toLowerCase().includes(lowercasedQuery) ||
+        (effect.description &&
+          effect.description.toLowerCase().includes(lowercasedQuery)),
+    );
+  }, [effects, searchQuery]);
+
   if (loadingEffects) {
     return (
       <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
@@ -52,7 +66,7 @@ export function EffectList({
     );
   }
 
-  if (!effects || effects.length === 0) {
+  if (!effects || effects.length === 0) { // This handles the initial empty state
     return (
       <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
         <h2 className="text-xl font-semibold text-gray-800">
@@ -74,14 +88,25 @@ export function EffectList({
         <p className="text-sm text-gray-500">
           Clique em um efeito para ver ou editar suas informações.
         </p>
+        <div className="pt-2">
+          <input
+            type="text"
+            placeholder="Buscar efeito por nome ou descrição..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+          />
+        </div>
       </header>
 
       <ul
         className="space-y-3 overflow-y-auto pr-2"
-        style={{ maxHeight: "calc(100vh - 15rem)" }}
+        style={{ maxHeight: "calc(100vh - 18rem)" }}
       >
-        {effects
-          .slice()
+        {filteredEffects.length === 0 && (
+          <p className="px-4 py-6 text-center text-sm text-gray-500">Nenhum efeito encontrado para sua busca.</p>
+        )}
+        {filteredEffects
           .sort((a, b) => a.name.localeCompare(b.name))
           .map((effect) => {
             const isSelected = selectedEffectId === effect.id;
