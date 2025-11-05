@@ -75,9 +75,7 @@ export default function CharacterManagementPage({
   const [itemToEquip, setItemToEquip] = useState<CharacterHasItemDTO | null>(
     null,
   );
-  const [selectedEquipSlot, setSelectedEquipSlot] = useState<EquipSlot>(
-    EquipSlot.HAND,
-  );
+  const [selectedEquipSlot, setSelectedEquipSlot] = useState<EquipSlot>(EquipSlot.NONE);
   const [isUpdatingEquipment, setIsUpdatingEquipment] = useState(false);
   const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
 
@@ -373,11 +371,6 @@ export default function CharacterManagementPage({
     availableItems?.find((item) => item.id === itemId)?.name ?? itemId;
 
   const handleEquipItem = (item: CharacterHasItemDTO) => {
-    const initialSlot =
-      item.equipped_slot && item.equipped_slot !== EquipSlot.NONE
-        ? item.equipped_slot
-        : EquipSlot.HAND;
-    setSelectedEquipSlot(initialSlot);
     setItemToEquip(item);
   };
 
@@ -420,7 +413,7 @@ export default function CharacterManagementPage({
 
       toast.success("Item equipado com sucesso.");
       setItemToEquip(null);
-      setSelectedEquipSlot(EquipSlot.HAND);
+      setSelectedEquipSlot(EquipSlot.NONE);
       await mutate();
     } catch (err) {
       console.error("Erro ao equipar item:", err);
@@ -438,7 +431,7 @@ export default function CharacterManagementPage({
         equipped_slot: EquipSlot.NONE,
       });
       toast.success("Equipamento removido do personagem.");
-      setSelectedEquipSlot(EquipSlot.HAND);
+      setSelectedEquipSlot(EquipSlot.NONE);
       await mutate();
     } catch (err) {
       console.error("Erro ao remover equipamento:", err);
@@ -594,6 +587,7 @@ export default function CharacterManagementPage({
       <EquipItemDialog
         open={Boolean(itemToEquip)}
         inventoryItem={itemToEquip}
+        characterInventory={characterData.inventory}
         itemName={itemToEquip ? resolveItemName(itemToEquip.itemId) : undefined}
         isSubmitting={isUpdatingEquipment}
         selectedSlot={selectedEquipSlot}
@@ -601,7 +595,6 @@ export default function CharacterManagementPage({
         onClose={() => {
           if (isUpdatingEquipment) return;
           setItemToEquip(null);
-          setSelectedEquipSlot(EquipSlot.HAND);
         }}
         onConfirm={handleConfirmEquip}
       />

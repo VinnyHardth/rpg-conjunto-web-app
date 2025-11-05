@@ -1,10 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import type { CharacterHasItemDTO } from "@rpg/shared";
 import { EquipSlot } from "@/types/models";
 
 type EquipItemDialogProps = {
   open: boolean;
   inventoryItem: CharacterHasItemDTO | null;
+  characterInventory: CharacterHasItemDTO[];
   itemName?: string;
   isSubmitting: boolean;
   selectedSlot: EquipSlot;
@@ -24,6 +25,7 @@ const formatSlotLabel = (slot: EquipSlot) =>
 export function EquipItemDialog({
   open,
   inventoryItem,
+  characterInventory,
   itemName,
   isSubmitting,
   selectedSlot,
@@ -31,10 +33,29 @@ export function EquipItemDialog({
   onClose,
   onConfirm,
 }: EquipItemDialogProps) {
-  const availableSlots = useMemo(
-    () => EQUIP_SLOT_OPTIONS.filter((slot) => slot !== EquipSlot.NONE),
-    [],
-  );
+  const availableSlots = useMemo(() => {
+    // Pega todos os slots possíveis, exceto "NONE"
+    const allPossibleSlots = EQUIP_SLOT_OPTIONS.filter(
+      (slot) => slot !== EquipSlot.NONE,
+    );
+
+    // Identifica os slots já ocupados por outros itens equipados
+    const occupiedSlots = characterInventory
+      .filter((item) => item.is_equipped && item.id !== inventoryItem?.id)
+      .map((item) => item.equipped_slot);
+
+    // Retorna apenas os slots que não estão na lista de ocupados
+    return allPossibleSlots.filter((slot) => !occupiedSlots.includes(slot));
+  }, [characterInventory, inventoryItem]);
+
+  // Define o primeiro slot disponível como padrão ao abrir o diálogo
+  useEffect(() => {
+    if (open && availableSlots.length > 0) {
+      onSelectSlot(availableSlots[0]);
+    } else if (open && availableSlots.length === 0) {
+      onSelectSlot(EquipSlot.NONE); // Nenhum slot disponível
+    }
+  }, [open, availableSlots, onSelectSlot]);
 
   if (!open || !inventoryItem) return null;
 
@@ -75,6 +96,11 @@ export function EquipItemDialog({
             disabled={isSubmitting}
             onChange={(event) => onSelectSlot(event.target.value as EquipSlot)}
           >
+            {availableSlots.length === 0 ? (
+              <option value={EquipSlot.NONE} disabled>
+                Nenhum slot disponível
+              </option>
+            ) : null}
             {availableSlots.map((slot) => (
               <option key={slot} value={slot}>
                 {formatSlotLabel(slot)}
@@ -97,7 +123,7 @@ export function EquipItemDialog({
             onClick={() => {
               void onConfirm();
             }}
-            disabled={isSubmitting}
+            disabled={isSubmitting || availableSlots.length === 0}
             className="inline-flex items-center rounded-md bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isSubmitting ? "Equipando..." : "Confirmar"}
