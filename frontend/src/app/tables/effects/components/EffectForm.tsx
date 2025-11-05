@@ -314,7 +314,7 @@ export function EffectForm({
   };
 
   return (
-    <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+    <section className="flex h-full flex-col rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
       <header className="mb-4 space-y-1">
         <h2 className="text-xl font-semibold text-gray-800">
           {isEditing ? "Editar efeito" : "Cadastrar efeito"}
@@ -324,7 +324,7 @@ export function EffectForm({
         </p>
       </header>
 
-      <form className="space-y-5" onSubmit={handleSubmit}>
+      <form className="flex-1 space-y-5 overflow-y-auto pr-2" onSubmit={handleSubmit}>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1">
             <label

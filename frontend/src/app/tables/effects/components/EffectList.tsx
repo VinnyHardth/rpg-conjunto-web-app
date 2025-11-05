@@ -66,17 +66,20 @@ export function EffectList({
   }
 
   return (
-    <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+    <section className="flex h-full flex-col rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
       <header className="mb-4 space-y-1">
         <h2 className="text-xl font-semibold text-gray-800">
           Efeitos cadastrados
         </h2>
         <p className="text-sm text-gray-500">
-          Clique em um efeito para editar suas informações e modificadores.
+          Clique em um efeito para ver ou editar suas informações.
         </p>
       </header>
 
-      <ul className="space-y-3">
+      <ul
+        className="space-y-3 overflow-y-auto pr-2"
+        style={{ maxHeight: "calc(100vh - 15rem)" }}
+      >
         {effects
           .slice()
           .sort((a, b) => a.name.localeCompare(b.name))
@@ -87,18 +90,14 @@ export function EffectList({
             return (
               <li key={effect.id}>
                 <div
-                  className={`flex items-start justify-between gap-3 rounded-lg border px-4 py-3 shadow-sm transition ${
+                  onClick={() => onSelectEffect(effect)}
+                  className={`flex w-full cursor-pointer items-start justify-between gap-3 rounded-lg border px-4 py-3 text-left shadow-sm transition ${
                     isSelected
                       ? "border-emerald-300 bg-emerald-50"
                       : "border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-white"
                   }`}
                 >
-                  <button
-                    type="button"
-                    onClick={() => onSelectEffect(effect)}
-                    className="flex-1 text-left"
-                  >
-                    <div className="space-y-1">
+                    <div className="flex-1 space-y-1">
                       <p className="text-sm font-semibold text-gray-800">
                         {effect.name}
                       </p>
@@ -142,11 +141,14 @@ export function EffectList({
                         </div>
                       )}
                     </div>
-                  </button>
-                  <div className="flex flex-col items-end justify-between">
+                  <div className="flex flex-col items-end justify-start">
                     <button
                       type="button"
-                      onClick={async () => {
+                      onClick={async (e) => {
+                        e.stopPropagation(); // Impede que o clique selecione o item
+
+                        e.currentTarget.blur();
+
                         const confirmed = window.confirm(
                           `Remover o efeito "${effect.name}"? Esta ação é permanente.`,
                         );
