@@ -9,6 +9,7 @@ import type {
   Campaign,
   CreateCampaign,
   CampaignMember,
+  UpdateCampaignMember,
   CampaignMemberWithUser,
   CharacterPerCampaignWithCharacter,
   CreateCharacterPerCampaign,
@@ -336,6 +337,14 @@ export const addCampaignMember = async (
   return data;
 };
 
+export const updateCampaignMember = async (
+  memberId: string,
+  payload: UpdateCampaignMember,
+): Promise<CampaignMember> => {
+  const { data } = await api.put(`/campaignmembers/${memberId}`, payload);
+  return data;
+};
+
 export const fetchCampaignById = async (
   campaignId: string,
 ): Promise<Campaign> => {
@@ -354,6 +363,13 @@ export const fetchCampaignMembersByCampaign = async (
   campaignId: string,
 ): Promise<CampaignMemberWithUser[]> => {
   const { data } = await api.get(`/campaignmembers/campaign/${campaignId}`);
+  return data;
+};
+
+export const deleteCampaignMember = async (
+  memberId: string,
+): Promise<CampaignMember> => {
+  const { data } = await api.delete(`/campaignmembers/${memberId}`);
   return data;
 };
 

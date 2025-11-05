@@ -2,7 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element */
 
-import React, { use, useEffect, useMemo, useState } from "react";
+import React, { use, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import type { User } from "@/types/models";
@@ -16,6 +16,8 @@ import {
   addCampaignMember,
   fetchCampaignById,
   fetchCampaignMembersByCampaign,
+  updateCampaignMember,
+  deleteCampaignMember,
   fetchUserById,
 } from "@/lib/api";
 
@@ -37,6 +39,10 @@ export default function CampaignJoinPage({ params }: PageProps) {
   const [error, setError] = useState<string | null>(null);
   const [isJoining, setIsJoining] = useState(false);
   const [joinSuccess, setJoinSuccess] = useState(false);
+  const [promotingMemberId, setPromotingMemberId] = useState<string | null>(
+    null,
+  );
+  const [removingMemberId, setRemovingMemberId] = useState<string | null>(null);
 
   useEffect(() => {
     const loadCampaign = async () => {
@@ -63,6 +69,73 @@ export default function CampaignJoinPage({ params }: PageProps) {
 
     loadCampaign();
   }, [campaignId]);
+
+  const refreshMembers = useCallback(async () => {
+    try {
+      const updatedMembers = await fetchCampaignMembersByCampaign(campaignId);
+      setMembers(updatedMembers);
+      return updatedMembers;
+    } catch (err) {
+      console.error("Erro ao atualizar participantes da campanha:", err);
+      setError("Não foi possível atualizar a lista de participantes.");
+      return null;
+    }
+  }, [campaignId]);
+
+  const ensureMasterMemberExists = useCallback(async () => {
+    if (!campaign) return null;
+
+    const findMaster = (
+      list: CampaignMemberWithUser[] | null | undefined,
+    ): CampaignMemberWithUser | null => {
+      if (!list) return null;
+      const match = list.find(
+        (entry) =>
+          entry.role === CampaignMemberRole.MASTER &&
+          !entry.id.startsWith("creator-"),
+      );
+      return match ?? null;
+    };
+
+    const existingMaster = findMaster(members);
+    if (existingMaster) {
+      return existingMaster;
+    }
+
+    const refreshed = await refreshMembers();
+    const masterAfterRefresh = findMaster(refreshed);
+    if (masterAfterRefresh) {
+      return masterAfterRefresh;
+    }
+
+    try {
+      const created = await addCampaignMember({
+        campaignId: campaign.id,
+        userId: campaign.creatorId,
+        role: CampaignMemberRole.MASTER,
+        status: "ACTIVE",
+      });
+      const updatedMembers = (await refreshMembers()) ?? [];
+
+      return (
+        updatedMembers.find((entry) => entry.id === created.id) ??
+        findMaster(updatedMembers)
+      );
+    } catch (err) {
+      console.error("Erro ao garantir registro do mestre:", err);
+
+      const updatedMembers = await refreshMembers();
+      const master = findMaster(updatedMembers);
+      if (master) {
+        return master;
+      }
+
+      setError(
+        "Não foi possível preparar a transferência de liderança. Tente novamente.",
+      );
+      return null;
+    }
+  }, [campaign, members, refreshMembers]);
 
   const membership = useMemo(() => {
     if (!user) return null;
@@ -93,6 +166,14 @@ export default function CampaignJoinPage({ params }: PageProps) {
     if (!campaign) return members;
 
     const list = [...members];
+    const hasMaster = list.some(
+      (member) => member.role === CampaignMemberRole.MASTER,
+    );
+
+    if (hasMaster) {
+      return list;
+    }
+
     const hasCreator = list.some(
       (member) => member.userId === campaign.creatorId,
     );
@@ -127,8 +208,7 @@ export default function CampaignJoinPage({ params }: PageProps) {
         role: CampaignMemberRole.PLAYER,
         status: "ACTIVE",
       });
-      const updatedMembers = await fetchCampaignMembersByCampaign(campaign.id);
-      setMembers(updatedMembers);
+      await refreshMembers();
       setJoinSuccess(true);
     } catch (err) {
       console.error("Erro ao entrar na campanha:", err);
@@ -139,6 +219,76 @@ export default function CampaignJoinPage({ params }: PageProps) {
       setIsJoining(false);
     }
   };
+
+  const handlePromoteToMaster = useCallback(
+    async (member: CampaignMemberWithUser) => {
+      if (!campaign) return;
+      if (member.id.startsWith("creator-")) return;
+      if (member.role === CampaignMemberRole.MASTER) return;
+
+      setPromotingMemberId(member.id);
+      setError(null);
+
+      try {
+        const currentMaster = await ensureMasterMemberExists();
+        if (!currentMaster) {
+          throw new Error("Current master not found");
+        }
+
+        if (currentMaster.id === member.id) {
+          return;
+        }
+
+        const updates: Array<Promise<unknown>> = [];
+
+        if (!currentMaster.id.startsWith("creator-")) {
+          updates.push(
+            updateCampaignMember(currentMaster.id, {
+              role: CampaignMemberRole.PLAYER,
+            }),
+          );
+        }
+
+        updates.push(
+          updateCampaignMember(member.id, {
+            role: CampaignMemberRole.MASTER,
+          }),
+        );
+
+        await Promise.all(updates);
+        await refreshMembers();
+      } catch (err) {
+        console.error("Erro ao transferir liderança:", err);
+        setError("Não foi possível transferir a liderança da campanha.");
+      } finally {
+        setPromotingMemberId(null);
+      }
+    },
+    [campaign, ensureMasterMemberExists, refreshMembers, updateCampaignMember],
+  );
+
+  const handleRemoveMember = useCallback(
+    async (member: CampaignMemberWithUser) => {
+      if (!campaign) return;
+      if (member.id.startsWith("creator-")) return;
+      if (member.role === CampaignMemberRole.MASTER) return;
+      if (member.userId === campaign.creatorId) return;
+
+      setRemovingMemberId(member.id);
+      setError(null);
+
+      try {
+        await deleteCampaignMember(member.id);
+        await refreshMembers();
+      } catch (err) {
+        console.error("Erro ao remover jogador da campanha:", err);
+        setError("Não foi possível remover o jogador. Tente novamente.");
+      } finally {
+        setRemovingMemberId(null);
+      }
+    },
+    [campaign, deleteCampaignMember, refreshMembers],
+  );
 
   if (isLoading || userLoading) {
     return (
@@ -266,16 +416,69 @@ export default function CampaignJoinPage({ params }: PageProps) {
                   key={member.id}
                   className="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 px-4 py-2"
                 >
-                  <span>
-                    {member.user?.nickname ||
-                      member.user?.email ||
-                      member.userId}
-                  </span>
-                  <span className="text-xs uppercase tracking-wide text-gray-500">
-                    {member.role === CampaignMemberRole.MASTER
-                      ? "Mestre"
-                      : "Jogador"}
-                  </span>
+                  <div className="flex flex-col">
+                    <span>
+                      {member.user?.nickname ||
+                        member.user?.email ||
+                        member.userId}
+                    </span>
+                    <span className="text-xs uppercase tracking-wide text-gray-500">
+                      {member.role === CampaignMemberRole.MASTER
+                        ? "Mestre"
+                        : "Jogador"}
+                    </span>
+                  </div>
+                  {(() => {
+                    const isEligiblePlayer =
+                      member.role === CampaignMemberRole.PLAYER &&
+                      !member.id.startsWith("creator-");
+                    const canPromote =
+                      isMaster && isEligiblePlayer && member.userId !== user.id;
+                    const canRemove =
+                      isMaster &&
+                      isEligiblePlayer &&
+                      member.userId !== user.id &&
+                      member.userId !== campaign.creatorId;
+
+                    if (!canPromote && !canRemove) {
+                      return null;
+                    }
+
+                    return (
+                      <div className="flex flex-wrap items-center justify-end gap-2">
+                        {canPromote && (
+                          <button
+                            type="button"
+                            onClick={() => handlePromoteToMaster(member)}
+                            disabled={
+                              promotingMemberId === member.id ||
+                              removingMemberId === member.id
+                            }
+                            className="rounded bg-indigo-600 px-3 py-1 text-xs font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-indigo-300"
+                          >
+                            {promotingMemberId === member.id
+                              ? "Transferindo..."
+                              : "Tornar mestre"}
+                          </button>
+                        )}
+                        {canRemove && (
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveMember(member)}
+                            disabled={
+                              removingMemberId === member.id ||
+                              promotingMemberId === member.id
+                            }
+                            className="rounded bg-red-500 px-3 py-1 text-xs font-semibold text-white transition hover:bg-red-600 disabled:cursor-not-allowed disabled:bg-red-300"
+                          >
+                            {removingMemberId === member.id
+                              ? "Removendo..."
+                              : "Remover"}
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </li>
               ))}
             </ul>
