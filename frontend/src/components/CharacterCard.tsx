@@ -31,9 +31,23 @@ export default function CharacterCard({
 }: CharacterCardProps) {
   const { statusList, loading } = useStatus(character.id);
 
-  const hp = statusList.find((s) => s.name.toLowerCase() === "hp");
-  const mp = statusList.find((s) => s.name.toLowerCase() === "mp");
-  const tp = statusList.find((s) => s.name.toLowerCase() === "tp");
+  const normalizeStatusName = (value?: string) =>
+    value
+      ?.normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase() ?? "";
+
+  const findStatus = (target: string) =>
+    statusList.find(
+      (status) =>
+        normalizeStatusName(status.name) === normalizeStatusName(target),
+    );
+
+  const hp = findStatus("HP");
+  const mp = findStatus("MP");
+  const tp = findStatus("TP");
+  const physicalResistance = findStatus("Resistência Física");
+  const magicalResistance = findStatus("Resistência Mágica");
 
   if (loading) return <p className="p-4 text-gray-500">Carregando status...</p>;
 
@@ -74,6 +88,8 @@ export default function CharacterCard({
           tpMax={(tp?.valueMax ?? 0) + (tp?.valueBonus ?? 0)}
           avatarUrl={character.imageUrl || "/assets/placeholder.png"}
           rollSummary={rollSummary ?? undefined}
+          physicalResistance={physicalResistance?.valueActual}
+          magicalResistance={magicalResistance?.valueActual}
         />
       </div>
     </div>
