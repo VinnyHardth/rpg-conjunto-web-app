@@ -27,6 +27,7 @@ export function EffectList({
     mutateEffectModifiers,
   } = useEffectsTables();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const modifiersByEffect = useMemo(() => {
     const grouped = new Map<string, EffectModifierDTO[]>();
@@ -41,6 +42,19 @@ export function EffectList({
     return grouped;
   }, [effectModifiers]);
 
+  const filteredEffects = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return effects;
+    }
+    const lowercasedQuery = searchQuery.toLowerCase();
+    return effects.filter(
+      (effect) =>
+        effect.name.toLowerCase().includes(lowercasedQuery) ||
+        (effect.description &&
+          effect.description.toLowerCase().includes(lowercasedQuery)),
+    );
+  }, [effects, searchQuery]);
+
   if (loadingEffects) {
     return (
       <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
@@ -52,7 +66,7 @@ export function EffectList({
     );
   }
 
-  if (!effects || effects.length === 0) {
+  if (!effects || effects.length === 0) { // This handles the initial empty state
     return (
       <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
         <h2 className="text-xl font-semibold text-gray-800">
@@ -66,19 +80,33 @@ export function EffectList({
   }
 
   return (
-    <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+    <section className="flex h-full flex-col rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
       <header className="mb-4 space-y-1">
         <h2 className="text-xl font-semibold text-gray-800">
           Efeitos cadastrados
         </h2>
         <p className="text-sm text-gray-500">
-          Clique em um efeito para editar suas informações e modificadores.
+          Clique em um efeito para ver ou editar suas informações.
         </p>
+        <div className="pt-2">
+          <input
+            type="text"
+            placeholder="Buscar efeito por nome ou descrição..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+          />
+        </div>
       </header>
 
-      <ul className="space-y-3">
-        {effects
-          .slice()
+      <ul
+        className="space-y-3 overflow-y-auto pr-2"
+        style={{ maxHeight: "calc(100vh - 18rem)" }}
+      >
+        {filteredEffects.length === 0 && (
+          <p className="px-4 py-6 text-center text-sm text-gray-500">Nenhum efeito encontrado para sua busca.</p>
+        )}
+        {filteredEffects
           .sort((a, b) => a.name.localeCompare(b.name))
           .map((effect) => {
             const isSelected = selectedEffectId === effect.id;
@@ -87,18 +115,14 @@ export function EffectList({
             return (
               <li key={effect.id}>
                 <div
-                  className={`flex items-start justify-between gap-3 rounded-lg border px-4 py-3 shadow-sm transition ${
+                  onClick={() => onSelectEffect(effect)}
+                  className={`flex w-full cursor-pointer items-start justify-between gap-3 rounded-lg border px-4 py-3 text-left shadow-sm transition ${
                     isSelected
                       ? "border-emerald-300 bg-emerald-50"
                       : "border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-white"
                   }`}
                 >
-                  <button
-                    type="button"
-                    onClick={() => onSelectEffect(effect)}
-                    className="flex-1 text-left"
-                  >
-                    <div className="space-y-1">
+                    <div className="flex-1 space-y-1">
                       <p className="text-sm font-semibold text-gray-800">
                         {effect.name}
                       </p>
@@ -142,11 +166,14 @@ export function EffectList({
                         </div>
                       )}
                     </div>
-                  </button>
-                  <div className="flex flex-col items-end justify-between">
+                  <div className="flex flex-col items-end justify-start">
                     <button
                       type="button"
-                      onClick={async () => {
+                      onClick={async (e) => {
+                        e.stopPropagation(); // Impede que o clique selecione o item
+
+                        e.currentTarget.blur();
+
                         const confirmed = window.confirm(
                           `Remover o efeito "${effect.name}"? Esta ação é permanente.`,
                         );

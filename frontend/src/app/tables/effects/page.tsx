@@ -50,7 +50,7 @@ function EffectsTablesContent() {
   }, [effectModifiersError]);
 
   return (
-    <div className="space-y-6">
+    <div className="flex h-full flex-col">
       <header className="space-y-2">
         <h1 className="text-3xl font-semibold text-gray-900">
           Cadastro de Efeitos
@@ -61,7 +61,7 @@ function EffectsTablesContent() {
         </p>
       </header>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
+      <div className="mt-6 grid flex-1 gap-6 overflow-hidden lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
         <EffectForm
           selectedEffect={selectedEffect}
           selectedEffectModifiers={selectedEffectModifiers}
