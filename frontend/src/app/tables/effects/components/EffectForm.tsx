@@ -324,7 +324,10 @@ export function EffectForm({
         </p>
       </header>
 
-      <form className="flex-1 space-y-5 overflow-y-auto pr-2" onSubmit={handleSubmit}>
+      <form
+        className="flex-1 space-y-5 overflow-y-auto pr-2"
+        onSubmit={handleSubmit}
+      >
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1">
             <label

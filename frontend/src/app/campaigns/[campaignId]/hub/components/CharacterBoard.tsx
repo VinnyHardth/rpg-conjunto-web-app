@@ -77,10 +77,31 @@ export default function CharacterBoard() {
               const isOwner = character.userId === user?.id;
               const relation = relationsByCharacterId[character.id];
               const characterRoll = rollsByCharacter[character.id];
+              const d20Result = characterRoll?.rolls?.[0] ?? null;
+              const criticalType: "success" | "failure" | null =
+                d20Result === 1
+                  ? "failure"
+                  : d20Result === 20
+                    ? "success"
+                    : null;
+              const attributeLabel = characterRoll?.attributeAbbreviation ?? "";
+              const normalizedLabel = attributeLabel
+                ? attributeLabel.slice(0, 3).toUpperCase()
+                : attributeLabel;
               const cardRollSummary = characterRoll
                 ? {
-                    label: characterRoll.attributeAbbreviation,
+                    label: normalizedLabel,
                     total: characterRoll.total,
+                    detail:
+                      characterRoll.expertiseName ??
+                      characterRoll.attributeName,
+                    criticalLabel:
+                      criticalType === "failure"
+                        ? "Falha crítica"
+                        : criticalType === "success"
+                          ? "Crítico"
+                          : null,
+                    criticalType,
                     ...(difficultyTarget !== null
                       ? {
                           isSuccess: characterRoll.total >= difficultyTarget,
