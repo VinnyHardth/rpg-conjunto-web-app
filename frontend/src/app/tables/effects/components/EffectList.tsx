@@ -66,7 +66,8 @@ export function EffectList({
     );
   }
 
-  if (!effects || effects.length === 0) { // This handles the initial empty state
+  if (!effects || effects.length === 0) {
+    // This handles the initial empty state
     return (
       <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
         <h2 className="text-xl font-semibold text-gray-800">
@@ -104,7 +105,9 @@ export function EffectList({
         style={{ maxHeight: "calc(100vh - 18rem)" }}
       >
         {filteredEffects.length === 0 && (
-          <p className="px-4 py-6 text-center text-sm text-gray-500">Nenhum efeito encontrado para sua busca.</p>
+          <p className="px-4 py-6 text-center text-sm text-gray-500">
+            Nenhum efeito encontrado para sua busca.
+          </p>
         )}
         {filteredEffects
           .sort((a, b) => a.name.localeCompare(b.name))
@@ -122,50 +125,50 @@ export function EffectList({
                       : "border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-white"
                   }`}
                 >
-                    <div className="flex-1 space-y-1">
-                      <p className="text-sm font-semibold text-gray-800">
-                        {effect.name}
+                  <div className="flex-1 space-y-1">
+                    <p className="text-sm font-semibold text-gray-800">
+                      {effect.name}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Dano: {effect.damageType} • Acúmulo:{" "}
+                      {effect.stackingPolicy}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Duração base:{" "}
+                      {effect.baseDuration > 0
+                        ? `${effect.baseDuration} turno(s)`
+                        : "Instantâneo"}
+                    </p>
+                    {effect.description && (
+                      <p className="text-xs text-gray-600">
+                        {effect.description}
                       </p>
+                    )}
+                    {effect.removableBy && (
                       <p className="text-xs text-gray-500">
-                        Dano: {effect.damageType} • Acúmulo:{" "}
-                        {effect.stackingPolicy}
+                        Removível por: {effect.removableBy}
                       </p>
-                      <p className="text-xs text-gray-500">
-                        Duração base:{" "}
-                        {effect.baseDuration > 0
-                          ? `${effect.baseDuration} turno(s)`
-                          : "Instantâneo"}
-                      </p>
-                      {effect.description && (
-                        <p className="text-xs text-gray-600">
-                          {effect.description}
+                    )}
+                    {effectModifiersList.length > 0 && (
+                      <div className="rounded-md border border-dashed border-gray-300 bg-white px-3 py-2">
+                        <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+                          Modificadores ({effectModifiersList.length})
                         </p>
-                      )}
-                      {effect.removableBy && (
-                        <p className="text-xs text-gray-500">
-                          Removível por: {effect.removableBy}
-                        </p>
-                      )}
-                      {effectModifiersList.length > 0 && (
-                        <div className="rounded-md border border-dashed border-gray-300 bg-white px-3 py-2">
-                          <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
-                            Modificadores ({effectModifiersList.length})
-                          </p>
-                          <ul className="mt-1 space-y-1">
-                            {effectModifiersList.map((modifier) => (
-                              <li
-                                key={modifier.id}
-                                className="text-[11px] text-gray-600"
-                              >
-                                {modifier.componentName} •{" "}
-                                {modifier.componentType} •{" "}
-                                {modifier.operationType}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
+                        <ul className="mt-1 space-y-1">
+                          {effectModifiersList.map((modifier) => (
+                            <li
+                              key={modifier.id}
+                              className="text-[11px] text-gray-600"
+                            >
+                              {modifier.componentName} •{" "}
+                              {modifier.componentType} •{" "}
+                              {modifier.operationType}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
                   <div className="flex flex-col items-end justify-start">
                     <button
                       type="button"

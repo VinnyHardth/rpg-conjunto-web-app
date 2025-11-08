@@ -15,6 +15,9 @@ type CharacterCardProps = {
     label: string;
     total: number;
     isSuccess?: boolean;
+    detail?: string;
+    criticalLabel?: string | null;
+    criticalType?: "success" | "failure" | null;
   } | null;
 };
 

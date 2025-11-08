@@ -14,6 +14,9 @@ interface StatusProps {
     label: string;
     total: number;
     isSuccess?: boolean;
+    detail?: string;
+    criticalLabel?: string | null;
+    criticalType?: "success" | "failure" | null;
   };
 }
 
@@ -67,9 +70,25 @@ const StatusCard: React.FC<StatusProps> = ({
             <span className="mt-0.5 rounded bg-white/10 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-widest">
               {rollSummary.label}
             </span>
+            {rollSummary.detail && (
+              <span className="mt-0.5 text-[10px] font-semibold uppercase tracking-widest text-white/80">
+                {rollSummary.detail}
+              </span>
+            )}
             {rollSummary.isSuccess !== undefined && (
               <span className="mt-0.5 text-[10px] font-semibold uppercase tracking-widest text-white/80">
                 {rollSummary.isSuccess ? "Sucesso" : "Falha"}
+              </span>
+            )}
+            {rollSummary.criticalLabel && (
+              <span
+                className={`mt-0.5 text-[10px] font-bold uppercase tracking-widest ${
+                  rollSummary.criticalType === "failure"
+                    ? "text-rose-200"
+                    : "text-emerald-200"
+                }`}
+              >
+                {rollSummary.criticalLabel}
               </span>
             )}
           </div>
