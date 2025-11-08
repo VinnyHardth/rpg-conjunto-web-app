@@ -48,14 +48,23 @@ export function EquipItemDialog({
     return allPossibleSlots.filter((slot) => !occupiedSlots.includes(slot));
   }, [characterInventory, inventoryItem]);
 
-  // Define o primeiro slot disponível como padrão ao abrir o diálogo
+  // Define o primeiro slot disponível como padrão ao abrir o diálogo,
+  // mas mantém a seleção atual se ela ainda for válida.
   useEffect(() => {
-    if (open && availableSlots.length > 0) {
-      onSelectSlot(availableSlots[0]);
-    } else if (open && availableSlots.length === 0) {
-      onSelectSlot(EquipSlot.NONE); // Nenhum slot disponível
+    if (!open) return;
+
+    if (availableSlots.length === 0) {
+      onSelectSlot(EquipSlot.NONE);
+      return;
     }
-  }, [open, availableSlots, onSelectSlot]);
+
+    if (
+      selectedSlot !== EquipSlot.NONE &&
+      !availableSlots.includes(selectedSlot)
+    ) {
+      onSelectSlot(availableSlots[0]);
+    }
+  }, [open, availableSlots, selectedSlot, onSelectSlot]);
 
   if (!open || !inventoryItem) return null;
 
