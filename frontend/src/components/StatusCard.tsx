@@ -15,6 +15,8 @@ interface StatusProps {
     total: number;
     isSuccess?: boolean;
   };
+  physicalResistance?: number;
+  magicalResistance?: number;
 }
 
 const StatusCard: React.FC<StatusProps> = ({
@@ -26,6 +28,8 @@ const StatusCard: React.FC<StatusProps> = ({
   tpMax,
   avatarUrl,
   rollSummary,
+  physicalResistance,
+  magicalResistance,
 }) => {
   const computePercent = (current: number, max: number): number => {
     if (max <= 0) return 0;
@@ -41,6 +45,14 @@ const StatusCard: React.FC<StatusProps> = ({
   const hpDisplay = Math.round(hpCurrent);
   const mpDisplay = Math.round(mpCurrent);
   const tpDisplay = Math.round(tpCurrent);
+  const physicalResistanceDisplay =
+    physicalResistance === undefined || physicalResistance === null
+      ? null
+      : Math.round(physicalResistance);
+  const magicalResistanceDisplay =
+    magicalResistance === undefined || magicalResistance === null
+      ? null
+      : Math.round(magicalResistance);
 
   return (
     <div className="player-status-card">
@@ -114,8 +126,77 @@ const StatusCard: React.FC<StatusProps> = ({
           </div>
         </div>
       </div>
+
+      {physicalResistanceDisplay !== null && (
+        <ResistanceBadge position="left" value={physicalResistanceDisplay}>
+          <ShieldIcon className="h-3.5 w-3.5" />
+        </ResistanceBadge>
+      )}
+      {magicalResistanceDisplay !== null && (
+        <ResistanceBadge position="right" value={magicalResistanceDisplay}>
+          <MagicIcon className="h-3.5 w-3.5" />
+        </ResistanceBadge>
+      )}
     </div>
   );
 };
+
+const ShieldIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={1.8}
+    {...props}
+  >
+    <path
+      d="M12 3 5 5v6.5c0 4.2 2.9 8.1 7 9.5 4.1-1.4 7-5.3 7-9.5V5l-7-2Z"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path d="M12 7v8" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const MagicIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={1.6}
+    {...props}
+  >
+    <path
+      d="M12 3v4m6.36-.36-2.83 2.83M21 12h-4m.36 6.36-2.83-2.83M12 21v-4m-6.36.36 2.83-2.83M3 12h4m-.36-6.36 2.83 2.83"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M9.5 14.5 12 9l2.5 5.5L20 16l-5 2 2 5-5-3-5 3 2-5-5-2 5.5-1.5Z"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+type ResistanceBadgeProps = {
+  value: number;
+  position: "left" | "right";
+  children: React.ReactNode;
+};
+
+const ResistanceBadge = ({
+  value,
+  position,
+  children,
+}: ResistanceBadgeProps) => (
+  <div
+    className={`resistance-badge ${position === "left" ? "resistance-left" : "resistance-right"}`}
+    aria-label={`Resistência ${position === "left" ? "física" : "mágica"}`}
+  >
+    <span className="resistance-icon">{children}</span>
+    <span className="resistance-value">{value}</span>
+  </div>
+);
 
 export default StatusCard;

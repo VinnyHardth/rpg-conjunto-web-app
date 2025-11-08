@@ -36,7 +36,7 @@ export function ItemList({
       (item) =>
         item.name.toLowerCase().includes(lowercasedQuery) ||
         (item.description &&
-          item.description.toLowerCase().includes(lowercasedQuery))
+          item.description.toLowerCase().includes(lowercasedQuery)),
     );
   }, [items, searchQuery]);
 
@@ -109,24 +109,24 @@ export function ItemList({
                       : "border-gray-200 bg-gray-50 hover:border-gray-300 hover:bg-white"
                   }`}
                 >
-                    <div className="flex-1 space-y-1">
-                      <p className="text-sm font-semibold text-gray-800">
-                        {item.name}
-                      </p>
+                  <div className="flex-1 space-y-1">
+                    <p className="text-sm font-semibold text-gray-800">
+                      {item.name}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Tipo: {item.itemType}
+                    </p>
+                    {item.value != null && (
                       <p className="text-xs text-gray-500">
-                        Tipo: {item.itemType}
+                        Valor base: {item.value}
                       </p>
-                      {item.value != null && (
-                        <p className="text-xs text-gray-500">
-                          Valor base: {item.value}
-                        </p>
-                      )}
-                      {item.description && (
-                        <p className="text-xs text-gray-600">
-                          {item.description}
-                        </p>
-                      )}
-                    </div>
+                    )}
+                    {item.description && (
+                      <p className="text-xs text-gray-600">
+                        {item.description}
+                      </p>
+                    )}
+                  </div>
 
                   <div className="flex flex-col items-end justify-between">
                     <button
@@ -135,7 +135,7 @@ export function ItemList({
                         e.stopPropagation(); // Impede que o clique selecione o item
 
                         const confirmed = window.confirm(
-                          `Remover o item "${item.name}"? Esta ação é permanente.`
+                          `Remover o item "${item.name}"? Esta ação é permanente.`,
                         );
                         if (!confirmed) return;
 
@@ -145,16 +145,16 @@ export function ItemList({
                           await mutateItems(
                             (prev) =>
                               prev?.filter(
-                                (existing) => existing.id !== item.id
+                                (existing) => existing.id !== item.id,
                               ) ?? [],
-                            { revalidate: false }
+                            { revalidate: false },
                           );
                           await mutateItemEffects(
                             (prev) =>
                               prev?.filter(
-                                (effect) => effect.itemId !== item.id
+                                (effect) => effect.itemId !== item.id,
                               ) ?? [],
-                            { revalidate: false }
+                            { revalidate: false },
                           );
                           toast.success(`Item "${item.name}" removido.`);
                           onItemDeleted(item.id);

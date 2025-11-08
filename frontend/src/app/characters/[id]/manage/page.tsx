@@ -80,7 +80,9 @@ export default function CharacterManagementPage({
   const [itemToEquip, setItemToEquip] = useState<CharacterHasItemDTO | null>(
     null,
   );
-  const [selectedEquipSlot, setSelectedEquipSlot] = useState<EquipSlot>(EquipSlot.NONE);
+  const [selectedEquipSlot, setSelectedEquipSlot] = useState<EquipSlot>(
+    EquipSlot.NONE,
+  );
   const [isUpdatingEquipment, setIsUpdatingEquipment] = useState(false);
   const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
 
