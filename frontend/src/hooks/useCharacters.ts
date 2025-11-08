@@ -179,6 +179,8 @@ async function createCharacterStatus(
     { name: "MP", value: calculatedStatus.mp },
     { name: "TP", value: calculatedStatus.tp },
     { name: "Movimento", value: calculatedStatus.mov },
+    { name: "Resistência Física", value: calculatedStatus.rf },
+    { name: "Resistência Mágica", value: calculatedStatus.rm },
   ];
 
   const statusRequests = statusList.map((status) =>
