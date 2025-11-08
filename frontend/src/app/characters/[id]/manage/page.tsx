@@ -21,7 +21,12 @@ import {
 } from "@rpg/shared";
 import type { CharacterHasItemDTO, ItemsDTO } from "@rpg/shared";
 
-import { CharacterAttribute, Status, EquipSlot, Archetype } from "@/types/models";
+import {
+  CharacterAttribute,
+  Status,
+  EquipSlot,
+  Archetype,
+} from "@/types/models";
 
 import api from "@/lib/axios";
 import { AxiosResponse } from "axios";
@@ -89,17 +94,18 @@ export default function CharacterManagementPage({
     revalidateOnFocus: false,
   });
 
-  const {
-    data: archetypes,
-    error: archetypesError,
-  } = useSWR<Archetype[]>("archetypes", () => api.get("/archetypes").then(res => res.data));
+  const { data: archetypes, error: archetypesError } = useSWR<Archetype[]>(
+    "archetypes",
+    () => api.get("/archetypes").then((res) => res.data),
+  );
 
   const {
     data: attributesDefinitions,
     //isLoading: isLoadingAttributes,
     error: attributesError,
-  } = useSWR<AttributesDTO[]>("attributes", () => api.get("/attributes").then(res => res.data));
-
+  } = useSWR<AttributesDTO[]>("attributes", () =>
+    api.get("/attributes").then((res) => res.data),
+  );
 
   useEffect(() => {
     if (data) {
@@ -131,7 +137,10 @@ export default function CharacterManagementPage({
 
   useEffect(() => {
     if (!attributesError) return;
-    console.error("Falha ao carregar definições de atributos:", attributesError);
+    console.error(
+      "Falha ao carregar definições de atributos:",
+      attributesError,
+    );
     toast.error("Não foi possível carregar as definições de atributos.");
   }, [attributesError]);
 
@@ -149,16 +158,27 @@ export default function CharacterManagementPage({
     );
 
     // Recalcula os status em tempo real se o arquétipo foi alterado
-    if (updates.archetypeId !== undefined && archetypes && attributesDefinitions && localCharacterData) {
-      const newArchetype = archetypes.find(arch => arch.id === updates.archetypeId);
+    if (
+      updates.archetypeId !== undefined &&
+      archetypes &&
+      attributesDefinitions &&
+      localCharacterData
+    ) {
+      const newArchetype = archetypes.find(
+        (arch) => arch.id === updates.archetypeId,
+      );
 
       if (newArchetype) {
-        const attributeIdToNameMap = attributesDefinitions.reduce<Record<string, string>>((acc, attrDef) => {
+        const attributeIdToNameMap = attributesDefinitions.reduce<
+          Record<string, string>
+        >((acc, attrDef) => {
           acc[attrDef.id] = attrDef.name;
           return acc;
         }, {});
 
-        const attributeRecord = localCharacterData.attributes.reduce<Record<string, number>>((acc, attr) => {
+        const attributeRecord = localCharacterData.attributes.reduce<
+          Record<string, number>
+        >((acc, attr) => {
           const attrName = attributeIdToNameMap[attr.attributeId];
           if (attrName) {
             acc[attrName] = attr.valueBase + attr.valueInv;
@@ -168,28 +188,32 @@ export default function CharacterManagementPage({
 
         const newStatusValues = calculateStatus(attributeRecord, newArchetype);
 
-        const updatedStatus = localCharacterData.status.map(s => {
+        const updatedStatus = localCharacterData.status.map((s) => {
           let newMaxValue: number | undefined;
-          if (s.name === 'HP') newMaxValue = newStatusValues.hp;
-          if (s.name === 'MP') newMaxValue = newStatusValues.mp;
-          if (s.name === 'TP') newMaxValue = newStatusValues.tp;
+          if (s.name === "HP") newMaxValue = newStatusValues.hp;
+          if (s.name === "MP") newMaxValue = newStatusValues.mp;
+          if (s.name === "TP") newMaxValue = newStatusValues.tp;
 
           if (newMaxValue !== undefined) {
             const isAtMax = s.valueActual >= s.valueMax;
             return {
               ...s,
               valueMax: newMaxValue,
-              valueActual: isAtMax ? newMaxValue : Math.min(s.valueActual, newMaxValue),
+              valueActual: isAtMax
+                ? newMaxValue
+                : Math.min(s.valueActual, newMaxValue),
             };
           }
           return s;
         });
 
         // Adiciona os status atualizados às pendências para serem salvos
-        setPendingUpdates(prev => ({ ...prev, status: updatedStatus }));
+        setPendingUpdates((prev) => ({ ...prev, status: updatedStatus }));
 
         // Atualiza o estado local para refletir na UI imediatamente
-        setLocalCharacterData(prev => prev ? { ...prev, status: updatedStatus } : null);
+        setLocalCharacterData((prev) =>
+          prev ? { ...prev, status: updatedStatus } : null,
+        );
       }
     }
 
@@ -281,7 +305,7 @@ export default function CharacterManagementPage({
           );
         }
       }
-      
+
       // 3️⃣ Atualiza status
       const statusToUpdate = pendingUpdates.status || [];
       if (statusToUpdate.length > 0) {

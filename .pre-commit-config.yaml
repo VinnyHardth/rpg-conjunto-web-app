@@ -1,6 +1,15 @@
 repos:
   - repo: local
     hooks:
+
+      # --- Proteção principal ---
+      - id: rebuild-shared
+        name: rebuild-shared
+        entry: bash -c "cd shared && npm run build"
+        language: system
+        pass_filenames: false
+
+
       # --- Proteção principal ---
       - id: block-main-branch
         name: prevent commits to main

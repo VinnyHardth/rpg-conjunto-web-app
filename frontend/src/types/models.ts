@@ -13,6 +13,7 @@ import {
   CreateCampaignDTO,
   CampaignMemberDTO,
   CreateCampaignMemberDTO,
+  UpdateCampaignMemberDTO,
   CampaignMemberWithUserDTO,
   CharacterPerCampaignWithCharacterDTO,
   CreateCharacterPerCampaignDTO,
@@ -61,6 +62,7 @@ export type Campaign = CampaignDTO;
 export type CreateCampaign = CreateCampaignDTO;
 export type CampaignMember = CampaignMemberDTO;
 export type CreateCampaignMember = CreateCampaignMemberDTO;
+export type UpdateCampaignMember = UpdateCampaignMemberDTO;
 export type CampaignMemberWithUser = CampaignMemberWithUserDTO;
 export type CharacterPerCampaignWithCharacter =
   CharacterPerCampaignWithCharacterDTO;

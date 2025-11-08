@@ -35,13 +35,9 @@ const fetchUserCampaigns = async (
   memberships.forEach((member) => {
     const existing = campaignsMap.get(member.campaignId);
     if (existing) {
-      const role =
-        member.role === CampaignMemberRole.MASTER
-          ? CampaignMemberRole.MASTER
-          : existing.role;
       campaignsMap.set(member.campaignId, {
         campaign: existing.campaign,
-        role,
+        role: member.role,
       });
     } else if (!membershipRoles.has(member.campaignId)) {
       membershipRoles.set(member.campaignId, member.role);

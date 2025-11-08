@@ -147,7 +147,7 @@ export default function CharacterBasicInfo({
               ))}
             </select>
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Dinheiro
@@ -164,7 +164,6 @@ export default function CharacterBasicInfo({
               className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
-
         </div>
         <div className="sm:col-span-3">
           <label className="block text-sm font-medium text-gray-700 mb-2">
