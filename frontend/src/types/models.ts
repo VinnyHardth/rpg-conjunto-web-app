@@ -103,4 +103,6 @@ export const STATUS_NAMES: Record<string, string> = {
   mp: "MP",
   tp: "TP",
   mov: "Movimento",
+  rf: "Resistência Física",
+  rm: "Resistência Mágica",
 };

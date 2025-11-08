@@ -323,7 +323,10 @@ const recomputeDerivedStatuses = async (
   await Promise.all([
     applyMaxUpdate("HP", statusResult.hp),
     applyMaxUpdate("MP", statusResult.mp),
-    applyMaxUpdate("TP", statusResult.tp)
+    applyMaxUpdate("TP", statusResult.tp),
+    applyMaxUpdate("Movimento", statusResult.mov),
+    applyMaxUpdate("Resistência Física", statusResult.rf),
+    applyMaxUpdate("Resistência Mágica", statusResult.rm)
   ]);
 };
 
