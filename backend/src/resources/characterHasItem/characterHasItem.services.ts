@@ -499,6 +499,7 @@ export const createCharacterHasItem = async (
         }
       }
     });
+    const revivingDeleted = Boolean(existing?.deletedAt);
 
     const result = await tx.characterHasItem.upsert({
       where: {
@@ -509,7 +510,10 @@ export const createCharacterHasItem = async (
         }
       },
       update: {
-        quantity: { increment: quantityDelta },
+        ...(revivingDeleted
+          ? { quantity: quantityDelta }
+          : { quantity: { increment: quantityDelta } }),
+        deletedAt: null,
         ...(data.value !== undefined ? { value: data.value } : {}),
         ...(data.is_equipped !== undefined
           ? { is_equipped: data.is_equipped }
@@ -525,7 +529,7 @@ export const createCharacterHasItem = async (
       }
     });
 
-    if (!existing && result.is_equipped) {
+    if ((!existing || revivingDeleted) && result.is_equipped) {
       await applyEquipmentEffects(tx, {
         characterId: result.characterId,
         itemId: result.itemId,
@@ -546,19 +550,25 @@ export const createCharacterHasItem = async (
 export const getCharacterHasItemsByCharacterId = async (
   characterId: string
 ): Promise<CharacterHasItemDTO[]> => {
-  return prisma.characterHasItem.findMany({ where: { characterId } });
+  return prisma.characterHasItem.findMany({
+    where: { characterId, deletedAt: null }
+  });
 };
 
 export const getCharacterHasItemById = async (
   id: string
 ): Promise<CharacterHasItemDTO | null> => {
-  return prisma.characterHasItem.findUnique({ where: { id } });
+  return prisma.characterHasItem.findFirst({
+    where: { id, deletedAt: null }
+  });
 };
 
 export const getCharacterHasItems = async (): Promise<
   CharacterHasItemDTO[]
 > => {
-  return prisma.characterHasItem.findMany();
+  return prisma.characterHasItem.findMany({
+    where: { deletedAt: null }
+  });
 };
 
 export const updateCharacterHasItem = async (
