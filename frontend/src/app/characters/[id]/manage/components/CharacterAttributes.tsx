@@ -137,16 +137,12 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
         deletedAt: null,
       };
 
-      console.log("Editando atributo:", editingId, "novo valor:", editValue);
-
       // 1. Atualizar apenas o atributo base que foi editado
       const updatedBaseAttributes = localAttributes.map((attr) =>
         attr.attributeId === editingId
           ? { ...attr, valueBase: editValue }
           : attr,
       );
-
-      console.log("Base attributes atualizados:", updatedBaseAttributes);
 
       // 2. Criar record de atributos para cálculos
       const attributeRecord = baseAttributes.reduce<Record<string, number>>(
@@ -167,8 +163,6 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
         {},
       );
 
-      console.log("Attribute record para cálculo:", attributeRecord);
-
       let updatedStatus: Status[] = [...status]; // Começa com o status atual
 
       // Apenas recalcula o status se NÃO for um NPC
@@ -178,7 +172,6 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
           attributeRecord,
           archetypeForCalculation,
         );
-        console.log("Novo status calculado:", newStatus);
 
         // 4.2 Atualizar o status
         updatedStatus = status.map((s) => {
@@ -216,12 +209,7 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
           return s;
         });
 
-        console.log("Status atualizado:", updatedStatus);
-      } else {
-        console.log("Cálculo de status ignorado para NPC.");
       }
-
-      console.log("Atributos finais para update:", updatedBaseAttributes);
 
       // Encontrar o atributo específico que foi alterado
       const attributeToUpdate = updatedBaseAttributes.find(

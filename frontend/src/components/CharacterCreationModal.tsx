@@ -114,8 +114,6 @@ export default function CharacterCreationModal({
 
   const { addCharacter } = useCharacters(userId);
 
-  console.log("CharacterData:", characterData);
-
   // ATTRIBUTE_KEYS será definido dinamicamente com base no fetch
   const [attributeKeys, setAttributeKeys] = useState<string[]>([]);
 
@@ -147,12 +145,6 @@ export default function CharacterCreationModal({
         // Definir ATTRIBUTE_KEYS dinamicamente com base nos nomes dos atributos do banco
         const dynamicAttributeKeys = attributesData.map((attr) => attr.name);
         setAttributeKeys(dynamicAttributeKeys);
-
-        console.log("Atributos carregados:", dynamicAttributeKeys);
-        console.log(
-          "Perícias carregadas:",
-          expertisesData.map((exp) => exp.name),
-        );
 
         // Inicializar atributos básicos com estrutura CORRETA
         const initialAttributes = attributesData.map((attribute) =>
@@ -418,11 +410,8 @@ export default function CharacterCreationModal({
       type: characterData.info.type ?? CharacterType.PC,
     };
 
-
-    console.log("📝 Dados do personagem:", characterData);
-
     try {
-      const createdCharacter = await addCharacter({
+      await addCharacter({
         info: baseInfo,
         archetype: characterData.archetype,
         attributes: characterData.attributes,
@@ -432,8 +421,6 @@ export default function CharacterCreationModal({
         manualStats:
           baseInfo.type === CharacterType.NPC ? finalStats : undefined,
     });
-
-      console.log("Personagem criado com sucesso:", createdCharacter);
 
       resetForm();
       onClose();

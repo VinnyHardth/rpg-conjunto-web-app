@@ -310,8 +310,6 @@ export default function CharacterManagementPage({
   const handleSave = async () => {
     if (!localCharacterData || Object.keys(pendingUpdates).length === 0) return;
 
-    console.log("📝 Dados do personagem:", localCharacterData);
-    console.log("📝 Atualizações pendentes:", pendingUpdates);
 
     try {
       const promises: Promise<AxiosResponse>[] = [];
@@ -380,9 +378,8 @@ export default function CharacterManagementPage({
       }
 
       // Executa todas as atualizações em paralelo
-      const responses = await Promise.all(promises);
-      console.log("✅ Atualizações realizadas com sucesso:", responses);
-
+      await Promise.all(promises);
+    
       // Limpa as pendências e revalida os dados do SWR para buscar o estado mais recente do servidor
       setPendingUpdates({});
       mutate();
