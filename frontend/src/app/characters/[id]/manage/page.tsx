@@ -294,6 +294,7 @@ export default function CharacterManagementPage({
   };
 
   const handleStatusUpdate = (updates: Status[]) => {
+    console.log("📊 Status atualizado:", updates);
     setPendingUpdates((prev) => ({ ...prev, status: updates }));
 
     // Atualiza o estado local para refletir na UI imediatamente

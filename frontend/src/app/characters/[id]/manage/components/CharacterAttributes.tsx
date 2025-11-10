@@ -35,6 +35,10 @@ const REVERSE_STATUS_MAPPING: Record<string, string> = Object.entries(
   {} as Record<string, string>,
 );
 
+// Função auxiliar para normalizar nomes de status para chaves
+const normalizeStatusName = (name: string) =>
+  name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/ /g, "");
+
 const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
   attributes,
   status,
@@ -48,19 +52,25 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
   const [editValue, setEditValue] = useState<number>(0);
   const [localAttributes, setLocalAttributes] =
     useState<CharacterAttribute[]>(attributes);
+  const [localStatus, setLocalStatus] = useState<Status[]>(status);
 
   // Atualizar localAttributes quando attributes mudar
   useEffect(() => {
     setLocalAttributes(attributes);
   }, [attributes]);
 
+  // Atualizar localStatus quando status mudar
+  useEffect(() => {
+    setLocalStatus(status);
+  }, [status]);
+
   const isNpc = character.type === CharacterType.NPC;
 
   // Transforma o array de status em um objeto para fácil acesso
   const statsObject = useMemo(() => {
-    const statusMap: Record<string, number> = {};
-    (status || []).forEach((s: Status) => {
-      const key = s.name.toLowerCase().replace(/ /g, "").replace("í", "i");
+    const statusMap: Record<string, number> = {}; // Use localStatus para refletir as edições
+    (localStatus || []).forEach((s: Status) => {
+      const key = normalizeStatusName(s.name);
       statusMap[key] = s.valueMax;
     });
 
@@ -72,7 +82,7 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
       rf: statusMap["resistenciafisica"] || 0,
       rm: statusMap["resistenciamagica"] || 0,
     };
-  }, [status]);
+  }, [localStatus]);
 
   if (!attributesData) {
     return (
@@ -315,8 +325,11 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
       {isNpc && (
         <EditableStatusDisplay
           stats={statsObject}
-          fullStatus={status}
-          onManualStatChange={onStatusUpdate}
+          fullStatus={localStatus}
+          onManualStatChange={(updatedStatus) => {
+            setLocalStatus(updatedStatus); // Atualiza o estado local para refletir na UI
+            onStatusUpdate(updatedStatus); // Notifica o pai para salvar
+          }}
         />
       )}
       {/* Resumo Estatístico */}
@@ -375,14 +388,14 @@ function EditableStatusDisplay({
       icon: "👟",
     },
     {
-      key: "rf",
+      key: "resistenciafisica", // Chave alterada para corresponder ao nome normalizado
       label: "Resistência Física",
       value: stats.rf,
       color: "purple",
       icon: "🛡️",
     },
     {
-      key: "rm",
+      key: "resistenciamagica", // Chave alterada para corresponder ao nome normalizado
       label: "Resistência Mágica",
       value: stats.rm,
       color: "pink",
@@ -392,8 +405,7 @@ function EditableStatusDisplay({
 
   const handleChange = (statKey: string, value: number) => {
     const updatedStatus = fullStatus.map((s) => {
-      const key = s.name.toLowerCase().replace(/ /g, "").replace("í", "i");
-      if (key === statKey) {
+      if (normalizeStatusName(s.name) === statKey) {
         const isAtMax = s.valueActual >= s.valueMax;
         return {
           ...s,
