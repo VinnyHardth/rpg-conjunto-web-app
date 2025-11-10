@@ -24,6 +24,23 @@ interface StatusData {
   value: number;
 }
 
+interface AddCharacterPayload {
+  info: CreateCharacter;
+  archetype: Archetype;
+  attributes: CreateCharacterAttribute[];
+  expertises: CreateCharacterAttribute[];
+  dbExpertises: DatabaseAttribute[];
+  dbAttributes: DatabaseAttribute[];
+  manualStats?: {
+    hp: number;
+    mp: number;
+    tp: number;
+    movimento: number;
+    rf: number;
+    rm: number;
+  };
+}
+
 type CharactersMutator = KeyedMutator<Character[]>;
 
 export function useCharacters(userId?: string) {
@@ -42,14 +59,18 @@ export function useCharacters(userId?: string) {
   );
 
   const addCharacter = async (
-    characterData: CreateCharacter,
-    archetype: Archetype,
-    attributes: CreateCharacterAttribute[],
-    expertises: CreateCharacterAttribute[],
-    expertisesDb: DatabaseAttribute[],
-    attributesDb: DatabaseAttribute[],
+    payload: AddCharacterPayload,
   ): Promise<Character> => {
     try {
+      const {
+        info: characterData,
+        archetype,
+        attributes,
+        expertises,
+        dbExpertises: expertisesDb,
+        dbAttributes: attributesDb,
+        manualStats,
+      } = payload;
       // 1. Validação dos dados de entrada
       if (!characterData.name?.trim()) {
         throw new Error("Nome do personagem é obrigatório");
@@ -62,7 +83,17 @@ export function useCharacters(userId?: string) {
       // 2. Calcula stats derivadas
       const attributeMap = buildAttributeMap(attributes, attributesDb);
       const expertiseMap = buildAttributeMap(expertises, expertisesDb);
+
+      // Calcula os status base. Para NPCs, isso serve como um fallback ou para
+      // status que não são sobrescritos manualmente (como movimento, rf, rm).
       const calculatedStatus = calculateStatus(attributeMap, archetype);
+
+      // Se for um NPC e tiver status manuais, eles têm prioridade.
+      // Caso contrário, usa os status calculados.
+      const finalStatus =
+        characterData.type === "NPC" && manualStats
+          ? { ...calculatedStatus, ...manualStats }
+          : calculatedStatus;
 
       // 3. Logs de debug (apenas em desenvolvimento)
       if (process.env.NODE_ENV === "development") {
@@ -70,7 +101,7 @@ export function useCharacters(userId?: string) {
           characterData,
           attributeMap,
           expertiseMap,
-          calculatedStatus,
+          finalStatus,
           expertisesDb,
         );
       }
@@ -85,7 +116,7 @@ export function useCharacters(userId?: string) {
       await Promise.all([
         createCharacterAttributes(createdCharacter.id, attributes),
         createCharacterAttributes(createdCharacter.id, expertises),
-        createCharacterStatus(createdCharacter.id, calculatedStatus),
+        createCharacterStatus(createdCharacter.id, finalStatus),
       ]);
 
       // 6. Atualiza cache SWR
@@ -172,15 +203,15 @@ async function createCharacterAttributes(
 
 async function createCharacterStatus(
   characterId: string,
-  calculatedStatus: ReturnType<typeof calculateStatus>,
+  finalStatus: ReturnType<typeof calculateStatus>,
 ): Promise<void> {
   const statusList: StatusData[] = [
-    { name: "HP", value: calculatedStatus.hp },
-    { name: "MP", value: calculatedStatus.mp },
-    { name: "TP", value: calculatedStatus.tp },
-    { name: "Movimento", value: calculatedStatus.mov },
-    { name: "Resistência Física", value: calculatedStatus.rf },
-    { name: "Resistência Mágica", value: calculatedStatus.rm },
+    { name: "HP", value: finalStatus.hp },
+    { name: "MP", value: finalStatus.mp },
+    { name: "TP", value: finalStatus.tp },
+    { name: "Movimento", value: finalStatus.mov },
+    { name: "Resistência Física", value: finalStatus.rf },
+    { name: "Resistência Mágica", value: finalStatus.rm },
   ];
 
   const statusRequests = statusList.map((status) =>

@@ -60,6 +60,18 @@ const initialCharacterData: CreateFullCharacter = {
   },
 };
 
+type CharacterStatus = {
+  hp: number;
+  mp: number;
+  tp: number;
+  movimento: number;
+  rf: number;
+  rm: number;
+};
+
+
+const initialOverriddenStats:  Partial<CharacterStatus> = {};
+
 interface CharacterCreationModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -96,10 +108,13 @@ export default function CharacterCreationModal({
   const [characterData, setCharacterData] =
     useState<CreateFullCharacter>(initialCharacterData);
   const [attributes, setAttributes] = useState<Attributes[]>([]);
+  const [overriddenStats, setOverriddenStats] = useState<Partial<CharacterStatus>>(initialOverriddenStats);
   const [expertises, setExpertises] = useState<Attributes[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const { addCharacter } = useCharacters(userId);
+
+  console.log("CharacterData:", characterData);
 
   // ATTRIBUTE_KEYS será definido dinamicamente com base no fetch
   const [attributeKeys, setAttributeKeys] = useState<string[]>([]);
@@ -168,6 +183,7 @@ export default function CharacterCreationModal({
   const resetForm = () => {
     setCharacterData(initialCharacterData);
     setCurrentStep(0);
+    setOverriddenStats(initialOverriddenStats);
     setAttributeKeys([]);
   };
 
@@ -208,9 +224,9 @@ export default function CharacterCreationModal({
     return { expertises: {}, status };
   }, [attributesAsNumbers, characterData.archetype]);
 
-  // Combinar com os modificadores do arquétipo
-  const derivedStats = useMemo(() => {
-    return {
+  // Status finais para exibição e salvamento. Para NPCs, combina calculados com overrides.
+  const finalStats = useMemo(() => {
+    const baseStats = {
       hp: calculatedStats.status.hp || 0,
       mp: calculatedStats.status.mp || 0,
       tp: calculatedStats.status.tp || 0,
@@ -218,7 +234,12 @@ export default function CharacterCreationModal({
       rf: calculatedStats.status.rf || 0,
       rm: calculatedStats.status.rm || 0,
     };
-  }, [calculatedStats]);
+
+    if (characterData.info.type === CharacterType.NPC) {
+      return { ...baseStats, ...overriddenStats };
+    }
+    return baseStats;
+  }, [calculatedStats, characterData.info.type, overriddenStats]);
 
   // Resetar o formulário quando o modal abrir
   useEffect(() => {
@@ -313,6 +334,14 @@ export default function CharacterCreationModal({
     }
   };
 
+  const handleManualStatChange = (stat: string, value: number) => {
+    // Atualiza apenas os status que foram manualmente alterados para o NPC
+    setOverriddenStats((prev) => ({
+      ...prev,
+      [stat]: value,
+    }));
+  };
+
   const handleExpertiseChange = (expertiseId: string, newValue: number) => {
     setCharacterData((prev) => {
       const updatedExpertises = prev.expertises.map((exp) => {
@@ -356,7 +385,10 @@ export default function CharacterCreationModal({
       return "Defina uma altura válida (zero ou maior).";
     }
 
-    if (!characterData.archetype.id) {
+    if (
+      characterData.info.type === CharacterType.PC &&
+      !characterData.archetype.id
+    ) {
       return "Selecione um arquétipo para continuar.";
     }
 
@@ -386,15 +418,20 @@ export default function CharacterCreationModal({
       type: characterData.info.type ?? CharacterType.PC,
     };
 
+
+    console.log("📝 Dados do personagem:", characterData);
+
     try {
-      const createdCharacter = await addCharacter(
-        baseInfo, // dados básicos
-        characterData.archetype, // arquétipo selecionado
-        characterData.attributes, // atributos do personagem
-        characterData.expertises, // perícias do personagem
-        expertises, // perícias do banco
-        attributes,
-      );
+      const createdCharacter = await addCharacter({
+        info: baseInfo,
+        archetype: characterData.archetype,
+        attributes: characterData.attributes,
+        expertises: characterData.expertises,
+        dbExpertises: expertises,
+        dbAttributes: attributes,
+        manualStats:
+          baseInfo.type === CharacterType.NPC ? finalStats : undefined,
+    });
 
       console.log("Personagem criado com sucesso:", createdCharacter);
 
@@ -456,8 +493,9 @@ export default function CharacterCreationModal({
         return (
           <StepTwo
             characterData={characterData}
-            derivedStats={derivedStats}
+            derivedStats={finalStats}
             onDataChange={handleDataChange}
+            onManualStatChange={handleManualStatChange}
             onArchetypeSelect={handleArchetypeSelect}
             getAttributeValue={getAttributeValue}
             attributes={attributes}
@@ -476,7 +514,7 @@ export default function CharacterCreationModal({
         );
       case 3:
         return (
-          <StepFour characterData={characterData} derivedStats={derivedStats} />
+          <StepFour characterData={characterData} derivedStats={finalStats} />
         );
       default:
         return null;
