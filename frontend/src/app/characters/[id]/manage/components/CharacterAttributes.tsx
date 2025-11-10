@@ -1,12 +1,16 @@
 "use client";
 
 import AttributeRow, { AttributeRowData } from "./AttributeRow";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
 import { useAttributes } from "../hooks/useAttributes";
+import {
+  STATUS_NAMES,
+  Status,
+  Character,
+  CharacterType,
+} from "@/types/models";
 import type { Archetype, CharacterAttribute } from "@/types/models";
-
-import { STATUS_NAMES, Status } from "@/types/models";
 
 import { calculateStatus } from "@/lib/characterCalculations";
 import type { StatusCalculationResult } from "@rpg/shared";
@@ -14,6 +18,7 @@ import type { StatusCalculationResult } from "@rpg/shared";
 interface CharacterAttributeProps {
   attributes: CharacterAttribute[];
   status: Status[];
+  character: Character;
   archetype: Archetype | null;
   onAttributesUpdate: (attribute: CharacterAttribute) => void;
   onStatusUpdate: (status: Status[]) => void;
@@ -33,6 +38,7 @@ const REVERSE_STATUS_MAPPING: Record<string, string> = Object.entries(
 const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
   attributes,
   status,
+  character,
   archetype,
   onAttributesUpdate,
   onStatusUpdate,
@@ -47,6 +53,26 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
   useEffect(() => {
     setLocalAttributes(attributes);
   }, [attributes]);
+
+  const isNpc = character.type === CharacterType.NPC;
+
+  // Transforma o array de status em um objeto para fácil acesso
+  const statsObject = useMemo(() => {
+    const statusMap: Record<string, number> = {};
+    (status || []).forEach((s: Status) => {
+      const key = s.name.toLowerCase().replace(/ /g, "").replace("í", "i");
+      statusMap[key] = s.valueMax;
+    });
+
+    return {
+      hp: statusMap["hp"] || 0,
+      mp: statusMap["mp"] || 0,
+      tp: statusMap["tp"] || 0,
+      movimento: statusMap["movimento"] || 0,
+      rf: statusMap["resistenciafisica"] || 0,
+      rm: statusMap["resistenciamagica"] || 0,
+    };
+  }, [status]);
 
   if (!attributesData) {
     return (
@@ -98,7 +124,19 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
   };
 
   const handleEditSave = () => {
-    if (editingId && editValue >= 0 && archetype) {
+    if (editingId && editValue >= 0) {
+      // Define um arquétipo padrão para garantir que `archetype` nunca seja nulo na chamada de cálculo.
+      const archetypeForCalculation: Archetype = archetype || {
+        id: "none-placeholder",
+        name: "None",
+        hp: 0,
+        mp: 0,
+        tp: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null,
+      };
+
       console.log("Editando atributo:", editingId, "novo valor:", editValue);
 
       // 1. Atualizar apenas o atributo base que foi editado
@@ -131,59 +169,73 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
 
       console.log("Attribute record para cálculo:", attributeRecord);
 
-      // 3.2 Calcular novo status
-      const newStatus = calculateStatus(attributeRecord, archetype);
-      console.log("Novo status calculado:", newStatus);
+      let updatedStatus: Status[] = [...status]; // Começa com o status atual
 
-      // 4.2 Atualizar o status
-      const updatedStatus: Status[] = status.map((s) => {
-        const statusKey = REVERSE_STATUS_MAPPING[s.name];
+      // Apenas recalcula o status se NÃO for um NPC
+      if (character.type !== CharacterType.NPC) {
+        // 3.2 Calcular novo status
+        const newStatus = calculateStatus(
+          attributeRecord,
+          archetypeForCalculation,
+        );
+        console.log("Novo status calculado:", newStatus);
 
-        if (statusKey) {
-          const typedKey = statusKey as keyof StatusCalculationResult;
-          const calculatedValue = newStatus[typedKey];
-          if (typeof calculatedValue !== "number") {
-            return s;
+        // 4.2 Atualizar o status
+        updatedStatus = status.map((s) => {
+          const statusKey = REVERSE_STATUS_MAPPING[s.name];
+
+          if (statusKey) {
+            const typedKey = statusKey as keyof StatusCalculationResult;
+            const calculatedValue = newStatus[typedKey];
+            if (typeof calculatedValue !== "number") {
+              return s;
+            }
+            const originalStatus = status.find((a) => a.id === s.id);
+
+            return {
+              id: s.id || "",
+              characterId: originalStatus?.characterId || "",
+              name: s.name,
+              valueMax: calculatedValue,
+              valueBonus: originalStatus?.valueBonus || 0,
+              // Lógica corrigida:
+              // 1. Se o status estava no máximo, o valor atual se torna o novo máximo.
+              // 2. Senão, mantém o valor atual, mas o limita ao novo máximo (caso o máximo tenha diminuído).
+              valueActual:
+                (originalStatus?.valueActual ?? 0) >=
+                (originalStatus?.valueMax ?? 0)
+                  ? calculatedValue
+                  : Math.min(originalStatus?.valueActual ?? 0, calculatedValue),
+              createdAt: originalStatus?.createdAt || new Date(),
+              updatedAt: new Date(),
+              deletedAt: null,
+            };
           }
-          const originalStatus = status.find((a) => a.id === s.id);
 
-          return {
-            id: s.id || "",
-            characterId: originalStatus?.characterId || "",
-            name: s.name,
-            valueMax: calculatedValue,
-            valueBonus: originalStatus?.valueBonus || 0,
-            // Lógica corrigida:
-            // 1. Se o status estava no máximo, o valor atual se torna o novo máximo.
-            // 2. Senão, mantém o valor atual, mas o limita ao novo máximo (caso o máximo tenha diminuído).
-            valueActual:
-              (originalStatus?.valueActual ?? 0) >=
-              (originalStatus?.valueMax ?? 0)
-                ? calculatedValue
-                : Math.min(originalStatus?.valueActual ?? 0, calculatedValue),
-            createdAt: originalStatus?.createdAt || new Date(),
-            updatedAt: new Date(),
-            deletedAt: null,
-          };
-        }
+          // Se o status não foi recalculado, apenas retorne o original.
+          return s;
+        });
 
-        // Se o status não foi recalculado, apenas retorne o original.
-        return s;
-      });
-
-      console.log("Status atualizado:", updatedStatus);
+        console.log("Status atualizado:", updatedStatus);
+      } else {
+        console.log("Cálculo de status ignorado para NPC.");
+      }
 
       console.log("Atributos finais para update:", updatedBaseAttributes);
 
-      // 6. Encontrar o atributo específico que foi alterado
+      // Encontrar o atributo específico que foi alterado
       const attributeToUpdate = updatedBaseAttributes.find(
         (attr) => attr.attributeId === editingId,
       );
 
-      // 7. Atualizar estado local E chamar callback com o objeto alterado
+      // Atualizar estado local E chamar callback com o objeto alterado
       setLocalAttributes(updatedBaseAttributes);
       if (attributeToUpdate) onAttributesUpdate(attributeToUpdate);
-      onStatusUpdate(updatedStatus);
+
+      // Chama o update de status apenas se ele foi de fato recalculado
+      if (character.type !== CharacterType.NPC) {
+        onStatusUpdate(updatedStatus);
+      }
     }
     setEditingId(null);
     setEditValue(0);
@@ -271,6 +323,14 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
         editable={true}
       />
 
+      {/* Status Editáveis para NPCs */}
+      {isNpc && (
+        <EditableStatusDisplay
+          stats={statsObject}
+          fullStatus={status}
+          onManualStatChange={onStatusUpdate}
+        />
+      )}
       {/* Resumo Estatístico */}
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
         <h3 className="text-lg font-semibold text-gray-800 mb-3">
@@ -304,5 +364,86 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
     </div>
   );
 };
+
+function EditableStatusDisplay({
+  stats,
+  fullStatus,
+  onManualStatChange,
+}: {
+  stats: Record<string, number>;
+  fullStatus: Status[];
+  onManualStatChange: (status: Status[]) => void;
+}) {
+  const resources = [
+    { key: "hp", label: "HP", value: stats.hp, color: "red", icon: "❤️" },
+    { key: "mp", label: "MP", value: stats.mp, color: "blue", icon: "✨" },
+    { key: "tp", label: "TP", value: stats.tp, color: "orange", icon: "⚡" },
+    {
+      key: "movimento",
+      label: "Movimento",
+      value: stats.movimento,
+      unit: "m",
+      color: "green",
+      icon: "👟",
+    },
+    {
+      key: "rf",
+      label: "Resistência Física",
+      value: stats.rf,
+      color: "purple",
+      icon: "🛡️",
+    },
+    {
+      key: "rm",
+      label: "Resistência Mágica",
+      value: stats.rm,
+      color: "pink",
+      icon: "🔮",
+    },
+  ];
+
+  const handleChange = (statKey: string, value: number) => {
+    const updatedStatus = fullStatus.map((s) => {
+      const key = s.name.toLowerCase().replace(/ /g, "").replace("í", "i");
+      if (key === statKey) {
+        const isAtMax = s.valueActual >= s.valueMax;
+        return {
+          ...s,
+          valueMax: value,
+          valueActual: isAtMax ? value : Math.min(s.valueActual, value),
+        };
+      }
+      return s;
+    });
+    onManualStatChange(updatedStatus);
+  };
+
+  return (
+    <div className="p-4 border border-teal-200 rounded-lg bg-teal-50">
+      <h3 className="font-bold text-xl mb-3 text-teal-700 flex items-center">
+        <span className="mr-2">❤️‍🔥</span> Status (Editável)
+      </h3>
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        {resources.map(({ key, label, value,  color, icon }) => (
+          <div
+            key={key}
+            className={`bg-white border-l-4 border-${color}-500 p-3 rounded shadow-sm`}
+          >
+            <div className="text-sm font-semibold text-gray-500 flex items-center mb-1">
+              {icon} {label}
+            </div>
+            <input
+              type="number"
+              value={value}
+              onChange={(e) => handleChange(key, parseInt(e.target.value) || 0)}
+              className={`w-full text-2xl font-extrabold text-${color}-800 bg-transparent focus:outline-none p-0`}
+              placeholder="0"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default CharacterAttributes;
