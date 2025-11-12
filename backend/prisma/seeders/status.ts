@@ -1,4 +1,4 @@
-import type { PrismaClient } from "@prisma/client";
+/*import type { PrismaClient } from "@prisma/client";
 export const seedStatus = async (prisma: PrismaClient) => {
   const chars = await prisma.character.findMany({
     include: {
@@ -76,3 +76,4 @@ export const seedStatus = async (prisma: PrismaClient) => {
     }
   }
 };
+*/

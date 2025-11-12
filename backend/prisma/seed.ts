@@ -11,7 +11,7 @@ import { seedCharacter } from "./seeders/character";
 import { seedCharacterAttributes } from "./seeders/characterAttribute";
 import { seedCharacterHasItem } from "./seeders/characterHasItem";
 import { seedAppliedEffects } from "./seeders/appliedEffects";
-import { seedStatus } from "./seeders/status";
+//import { seedStatus } from "./seeders/status";
 import { seedSkills } from "./seeders/skills";
 import { seedAbilityEffects } from "./seeders/abilityEffect";
 import { seedCampaigns } from "./seeders/campaigns";
@@ -55,7 +55,7 @@ async function main() {
     // 1. Atributos do personagem devem ser criados primeiro.
     await seedCharacterAttributes(prisma);
     // 2. Status (HP, MP) depende dos atributos para o cálculo.
-    await seedStatus(prisma);
+    //await seedStatus(prisma);
 
     // 3. O restante pode rodar em paralelo.
     await Promise.all([
