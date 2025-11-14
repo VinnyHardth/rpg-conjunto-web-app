@@ -111,6 +111,7 @@ export default function CharacterCreationModal({
   const [overriddenStats, setOverriddenStats] = useState<Partial<CharacterStatus>>(initialOverriddenStats);
   const [expertises, setExpertises] = useState<Attributes[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { addCharacter } = useCharacters(userId);
 
@@ -369,6 +370,8 @@ export default function CharacterCreationModal({
       return;
     }
 
+    setIsSubmitting(true);
+
     const baseInfo = {
       ...characterData.info,
       name: characterData.info.name.trim(),
@@ -406,6 +409,9 @@ export default function CharacterCreationModal({
         axiosError.response?.data?.error ??
         "Erro ao criar personagem. Verifique os dados e tente novamente.";
       alert(serverMessage);
+    }
+ finally {
+      setIsSubmitting(false);
     }
   }, [addCharacter, characterData, expertises, attributes, finalStats, onClose, userId, resetForm, validateCharacterInfo]);
 
@@ -510,7 +516,7 @@ export default function CharacterCreationModal({
           onBack={handleBack}
           onNext={handleNext}
           onFinish={handleFinish}
-          // isLoading={isLoading}
+          isSubmitting={isSubmitting}
         />
       </div>
     </div>
