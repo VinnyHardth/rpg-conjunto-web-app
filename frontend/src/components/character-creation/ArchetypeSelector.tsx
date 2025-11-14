@@ -7,6 +7,7 @@ import { Archetype } from "@/types/models";
 interface ArchetypeSelectorProps {
   onSelectArchetype: (archetype: Archetype | null) => void;
   selectedArchetypeId: string | null;
+  isNpc?: boolean;
 }
 
 export default function ArchetypeSelector({
@@ -22,8 +23,16 @@ export default function ArchetypeSelector({
       try {
         setIsLoading(true);
         const data = await fetchArchetypes();
-        // Ordena os arquétipos em ordem alfabética pelo nome
-        setArchetypes(data.sort((a, b) => a.name.localeCompare(b.name)));
+        const sortedData = data.sort((a, b) => a.name.localeCompare(b.name));
+        setArchetypes(sortedData);
+
+        // Se nenhum arquétipo estiver selecionado, define "None" como padrão
+        if (!selectedArchetypeId) {
+          const noneArchetype = sortedData.find(
+            (arch) => arch.name.toLowerCase() === "none",
+          );
+          if (noneArchetype) onSelectArchetype(noneArchetype);
+        }
       } catch (err) {
         console.error("Erro ao carregar arquétipos:", err);
         setError("Não foi possível carregar os arquétipos do servidor.");
@@ -31,8 +40,8 @@ export default function ArchetypeSelector({
         setIsLoading(false);
       }
     };
-    loadArchetypes();
-  }, []);
+    void loadArchetypes();
+  }, [ onSelectArchetype, selectedArchetypeId ]);
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedId = event.target.value;
@@ -90,10 +99,8 @@ export default function ArchetypeSelector({
         value={selectedArchetypeId || ""}
         onChange={handleChange}
         disabled={archetypes.length === 0}
-        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border bg-white focus:border-purple-500 focus:ring-purple-500 text-base"
+        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-3 border bg-white focus:border-purple-500 focus:ring-purple-500 text-base disabled:bg-gray-200 disabled:cursor-not-allowed"
       >
-        <option value="">None</option>
-
         {archetypes.map((archetype) => (
           <option key={archetype.id} value={archetype.id}>
             {archetype.name}

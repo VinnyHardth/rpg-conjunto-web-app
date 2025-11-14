@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 
 // Types
 import {
@@ -60,6 +60,18 @@ const initialCharacterData: CreateFullCharacter = {
   },
 };
 
+type CharacterStatus = {
+  hp: number;
+  mp: number;
+  tp: number;
+  movimento: number;
+  rf: number;
+  rm: number;
+};
+
+
+const initialOverriddenStats:  Partial<CharacterStatus> = {};
+
 interface CharacterCreationModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -96,8 +108,10 @@ export default function CharacterCreationModal({
   const [characterData, setCharacterData] =
     useState<CreateFullCharacter>(initialCharacterData);
   const [attributes, setAttributes] = useState<Attributes[]>([]);
+  const [overriddenStats, setOverriddenStats] = useState<Partial<CharacterStatus>>(initialOverriddenStats);
   const [expertises, setExpertises] = useState<Attributes[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { addCharacter } = useCharacters(userId);
 
@@ -109,51 +123,56 @@ export default function CharacterCreationModal({
     [expertises],
   );
 
+  // Efeito para travar o scroll da página quando o modal estiver aberto
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+    return () => document.body.classList.remove("overflow-hidden");
+  }, [isOpen]);
+
+  // Função para resetar completamente o formulário
+  const resetForm = useCallback(() => {
+    setCharacterData(initialCharacterData);
+    setCurrentStep(0);
+    setOverriddenStats(initialOverriddenStats);
+    setAttributeKeys([]);
+  }, []);
+
   // Buscar atributos e perícias do banco
   useEffect(() => {
     const fetchData = async () => {
-      if (!isOpen) return;
-
       setIsLoading(true);
       try {
         const [attributesData, expertisesData] = await Promise.all([
           fetchAttributeKinds(AttributeKind.ATTRIBUTE),
           fetchAttributeKinds(AttributeKind.EXPERTISE),
         ]);
-
-        setAttributes(attributesData);
+ 
+        const sortedAttributes = attributesData.sort((a, b) => a.name.localeCompare(b.name));
+        const dynamicAttributeKeys = sortedAttributes.map((attr) => attr.name);
+ 
+        setAttributes(sortedAttributes);
         setExpertises(expertisesData);
-
-        // Ordenar os atributos e perícias
-        setAttributes(
-          attributesData.sort((a, b) => a.name.localeCompare(b.name)),
-        );
-
-        // Definir ATTRIBUTE_KEYS dinamicamente com base nos nomes dos atributos do banco
-        const dynamicAttributeKeys = attributesData.map((attr) => attr.name);
         setAttributeKeys(dynamicAttributeKeys);
-
-        console.log("Atributos carregados:", dynamicAttributeKeys);
-        console.log(
-          "Perícias carregadas:",
-          expertisesData.map((exp) => exp.name),
-        );
-
-        // Inicializar atributos básicos com estrutura CORRETA
-        const initialAttributes = attributesData.map((attribute) =>
+ 
+        const initialAttributes = sortedAttributes.map((attribute) =>
           createCharacterAttribute(attribute.id, attribute.name, 0),
         );
-
+ 
         const initialExpertises = expertisesData.map((expertise) =>
           createCharacterAttribute(expertise.id, expertise.name, 0),
         );
-
-        setCharacterData((prev) => ({
-          ...prev,
+ 
+        // Define o estado inicial completo de uma só vez para evitar re-renderizações
+        setCharacterData({
+          ...initialCharacterData,
+          info: { ...initialCharacterData.info, userId },
           attributes: initialAttributes,
-          // Inicializa as perícias do personagem com valor 0
           expertises: initialExpertises,
-        }));
+        });
       } catch (error) {
         console.error("Erro ao buscar dados:", error);
       } finally {
@@ -161,15 +180,11 @@ export default function CharacterCreationModal({
       }
     };
 
-    fetchData();
-  }, [isOpen]);
-
-  // Função para resetar completamente o formulário
-  const resetForm = () => {
-    setCharacterData(initialCharacterData);
-    setCurrentStep(0);
-    setAttributeKeys([]);
-  };
+    if (isOpen) {
+      resetForm(); // Garante que o estado está limpo antes de buscar novos dados
+      fetchData();
+    }
+  }, [isOpen, userId, resetForm]);
 
   // Converter atributos para números no formato esperado pelas funções de cálculo
   const attributesAsNumbers = useMemo(() => {
@@ -208,9 +223,9 @@ export default function CharacterCreationModal({
     return { expertises: {}, status };
   }, [attributesAsNumbers, characterData.archetype]);
 
-  // Combinar com os modificadores do arquétipo
-  const derivedStats = useMemo(() => {
-    return {
+  // Status finais para exibição e salvamento. Para NPCs, combina calculados com overrides.
+  const finalStats = useMemo(() => {
+    const baseStats = {
       hp: calculatedStats.status.hp || 0,
       mp: calculatedStats.status.mp || 0,
       tp: calculatedStats.status.tp || 0,
@@ -218,114 +233,92 @@ export default function CharacterCreationModal({
       rf: calculatedStats.status.rf || 0,
       rm: calculatedStats.status.rm || 0,
     };
-  }, [calculatedStats]);
 
-  // Resetar o formulário quando o modal abrir
-  useEffect(() => {
-    if (isOpen) {
-      resetForm();
+    if (characterData.info.type === CharacterType.NPC) {
+      return { ...baseStats, ...overriddenStats };
     }
-  }, [isOpen]);
-
-  if (!isOpen) return null;
+    return baseStats;
+  }, [calculatedStats, characterData.info.type, overriddenStats]);
 
   const totalSteps = STEPS_NAMES.length;
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (currentStep < totalSteps - 1) {
       setCurrentStep(currentStep + 1);
     }
-  };
+  }, [currentStep, totalSteps]);
 
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
-  };
+  }, [currentStep]);
 
   // Atualizar informações básicas
-  const handleDataChange = (
-    section: "base" | "atributos",
-    key: string,
-    value: string | number,
-  ) => {
-    if (section === "base") {
-      setCharacterData((prev) => ({
-        ...prev,
-        info: {
-          ...prev.info,
-          [key]: value,
-        },
-      }));
-    } else if (section === "atributos") {
-      setCharacterData((prev) => {
-        const existingAttributeIndex = prev.attributes.findIndex((attr) => {
-          // Encontrar pelo nome do atributo através do ID
-          const attributeDef = attributes.find(
-            (a) => a.id === attr.attributeId,
+  const handleDataChange = useCallback(
+    (
+      section: "base" | "atributos",
+      keyOrId: string,
+      value: string | number,
+    ) => {
+      if (section === "base") {
+        setCharacterData((prev) => ({
+          ...prev,
+          info: { ...prev.info, [keyOrId]: value },
+        }));
+      } else if (section === "atributos") {
+        setCharacterData((prev) => {
+          const existingAttributeIndex = prev.attributes.findIndex(
+            (attr) => attr.attributeId === keyOrId,
           );
-          return attributeDef?.name === key;
-        });
 
-        if (existingAttributeIndex >= 0) {
-          const updatedAttributes = [...prev.attributes];
-          updatedAttributes[existingAttributeIndex] = {
-            ...updatedAttributes[existingAttributeIndex],
-            valueBase: Number(value) || 0,
-          };
-          return { ...prev, attributes: updatedAttributes };
-        } else {
-          // Encontrar o atributo no banco pelo nome
-          const attributeFromDB = attributes.find((attr) => attr.name === key);
-          if (attributeFromDB) {
-            const newAttribute = createCharacterAttribute(
-              attributeFromDB.id,
-              key,
-              Number(value) || 0,
-            );
-            return { ...prev, attributes: [...prev.attributes, newAttribute] };
+          if (existingAttributeIndex >= 0) {
+            const updatedAttributes = [...prev.attributes];
+            updatedAttributes[existingAttributeIndex] = {
+              ...updatedAttributes[existingAttributeIndex],
+              valueBase: Number(value) || 0,
+            };
+            return { ...prev, attributes: updatedAttributes };
           }
           return prev;
-        }
+        });
+      }
+    },
+    [],
+  );
+
+  const handleArchetypeSelect = useCallback((archetype: Archetype | null) => {
+    setCharacterData((prev) => ({
+      ...prev,
+      archetype: archetype || initialCharacterData.archetype,
+      info: {
+        ...prev.info,
+        archetypeId: archetype ? archetype.id : "",
+      },
+    }));
+  }, []);
+
+  const handleManualStatChange = useCallback((stat: string, value: number) => {
+    // Atualiza apenas os status que foram manualmente alterados para o NPC
+    setOverriddenStats((prev) => ({
+      ...prev,
+      [stat]: value,
+    }));
+  }, []);
+
+  const handleExpertiseChange = useCallback(
+    (expertiseId: string, newValue: number) => {
+      setCharacterData((prev) => {
+        const updatedExpertises = prev.expertises.map((exp) =>
+          exp.attributeId === expertiseId ? { ...exp, valueBase: newValue } : exp,
+        );
+        return { ...prev, expertises: updatedExpertises };
       });
-    }
-  };
+    },
+    [],
+  );
 
-  const handleArchetypeSelect = (archetype: Archetype | null) => {
-    if (archetype) {
-      setCharacterData((prev) => ({
-        ...prev,
-        archetype,
-        info: {
-          ...prev.info,
-          archetypeId: archetype.id,
-        },
-      }));
-    } else {
-      setCharacterData((prev) => ({
-        ...prev,
-        archetype: initialCharacterData.archetype,
-        info: {
-          ...prev.info,
-          archetypeId: "",
-        },
-      }));
-    }
-  };
-
-  const handleExpertiseChange = (expertiseId: string, newValue: number) => {
-    setCharacterData((prev) => {
-      const updatedExpertises = prev.expertises.map((exp) => {
-        if (exp.attributeId === expertiseId) {
-          return { ...exp, valueBase: newValue };
-        }
-        return exp;
-      });
-      return { ...prev, expertises: updatedExpertises };
-    });
-  };
-
-  const validateCharacterInfo = (): string | null => {
+  const validateCharacterInfo = useCallback((): string | null => {
     const trimmedName = characterData.info.name?.trim() ?? "";
     if (trimmedName.length < 2) {
       return "Defina um nome com pelo menos 2 caracteres.";
@@ -356,7 +349,10 @@ export default function CharacterCreationModal({
       return "Defina uma altura válida (zero ou maior).";
     }
 
-    if (!characterData.archetype.id) {
+    if (
+      characterData.info.type === CharacterType.PC &&
+      !characterData.archetype.id
+    ) {
       return "Selecione um arquétipo para continuar.";
     }
 
@@ -365,14 +361,16 @@ export default function CharacterCreationModal({
     }
 
     return null;
-  };
+  }, [characterData, userId]);
 
-  const handleFinish = async () => {
+  const handleFinish = useCallback(async () => {
     const validationError = validateCharacterInfo();
     if (validationError) {
       alert(validationError);
       return;
     }
+
+    setIsSubmitting(true);
 
     const baseInfo = {
       ...characterData.info,
@@ -387,16 +385,16 @@ export default function CharacterCreationModal({
     };
 
     try {
-      const createdCharacter = await addCharacter(
-        baseInfo, // dados básicos
-        characterData.archetype, // arquétipo selecionado
-        characterData.attributes, // atributos do personagem
-        characterData.expertises, // perícias do personagem
-        expertises, // perícias do banco
-        attributes,
-      );
-
-      console.log("Personagem criado com sucesso:", createdCharacter);
+      await addCharacter({
+        info: baseInfo,
+        archetype: characterData.archetype,
+        attributes: characterData.attributes,
+        expertises: characterData.expertises,
+        dbExpertises: expertises,
+        dbAttributes: attributes,
+        manualStats:
+          baseInfo.type === CharacterType.NPC ? finalStats : undefined,
+    });
 
       resetForm();
       onClose();
@@ -412,23 +410,27 @@ export default function CharacterCreationModal({
         "Erro ao criar personagem. Verifique os dados e tente novamente.";
       alert(serverMessage);
     }
-  };
+ finally {
+      setIsSubmitting(false);
+    }
+  }, [addCharacter, characterData, expertises, attributes, finalStats, onClose, userId, resetForm, validateCharacterInfo]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     resetForm();
     onClose();
-  };
+  }, [onClose, resetForm]);
 
   // Função auxiliar para obter valor de atributo pelo nome
-  const getAttributeValue = (attributeName: string): number => {
-    const attributeDef = attributes.find((attr) => attr.name === attributeName);
-    if (!attributeDef) return 0;
+  const getAttributeValue = useCallback(
+    (attributeName: string): number => {
+      const attributeDef = attributes.find((attr) => attr.name === attributeName);
+      if (!attributeDef) return 0;
+      const characterAttribute = characterData.attributes.find((attr) => attr.attributeId === attributeDef.id);
+      return characterAttribute?.valueBase || 0;
+    }, [attributes, characterData.attributes],
+  );
 
-    const characterAttribute = characterData.attributes.find(
-      (attr) => attr.attributeId === attributeDef.id,
-    );
-    return characterAttribute?.valueBase || 0;
-  };
+  if (!isOpen) return null;
 
   const renderCurrentStep = () => {
     if (isLoading) {
@@ -456,8 +458,9 @@ export default function CharacterCreationModal({
         return (
           <StepTwo
             characterData={characterData}
-            derivedStats={derivedStats}
+            derivedStats={finalStats}
             onDataChange={handleDataChange}
+            onManualStatChange={handleManualStatChange}
             onArchetypeSelect={handleArchetypeSelect}
             getAttributeValue={getAttributeValue}
             attributes={attributes}
@@ -476,7 +479,7 @@ export default function CharacterCreationModal({
         );
       case 3:
         return (
-          <StepFour characterData={characterData} derivedStats={derivedStats} />
+          <StepFour characterData={characterData} derivedStats={finalStats} />
         );
       default:
         return null;
@@ -513,7 +516,7 @@ export default function CharacterCreationModal({
           onBack={handleBack}
           onNext={handleNext}
           onFinish={handleFinish}
-          // isLoading={isLoading}
+          isSubmitting={isSubmitting}
         />
       </div>
     </div>

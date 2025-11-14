@@ -2,7 +2,12 @@
 "use client";
 
 import AvatarUpload from "@/components/character-creation/AvatarUpload";
-import { Archetype, Character, GENEROS_MOCK } from "@/types/models";
+import {
+  Archetype,
+  Character,
+  CharacterType,
+  GENEROS_MOCK,
+} from "@/types/models";
 
 import { CharacterBasicInfoUpdate } from "@rpg/shared";
 
@@ -57,20 +62,20 @@ export default function CharacterBasicInfo({
         </div>
 
         {/* Coluna dos Campos de Informação */}
-        <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div>
+        <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-6 gap-6">
+          <div className="sm:col-span-3">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Nome
             </label>
             <input
               type="text"
-              value={character.name}
+              value={character.name || ""}
               onChange={(e) => handleInputChange("name", e.target.value)}
               className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
-          <div>
+          <div className="sm:col-span-3">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Raça
             </label>
@@ -82,7 +87,7 @@ export default function CharacterBasicInfo({
             />
           </div>
 
-          <div>
+          <div className="sm:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Idade
             </label>
@@ -105,7 +110,7 @@ export default function CharacterBasicInfo({
             </div>
           </div>
 
-          <div>
+          <div className="sm:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Altura (cm)
             </label>
@@ -128,7 +133,24 @@ export default function CharacterBasicInfo({
             </div>
           </div>
 
-          <div>
+          <div className="sm:col-span-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Dinheiro
+            </label>
+            <input
+              type="number"
+              value={character.money?.toString() || ""}
+              onChange={(e) =>
+                handleInputChange(
+                  "money",
+                  e.target.value ? parseFloat(e.target.value) : null,
+                )
+              }
+              className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+
+          <div className="sm:col-span-3">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Gênero
             </label>
@@ -148,24 +170,21 @@ export default function CharacterBasicInfo({
             </select>
           </div>
 
-          <div>
+          <div className="sm:col-span-3">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Dinheiro
+              Tipo
             </label>
-            <input
-              type="number"
-              value={character.money?.toString() || ""}
-              onChange={(e) =>
-                handleInputChange(
-                  "money",
-                  e.target.value ? parseFloat(e.target.value) : null,
-                )
-              }
+            <select
+              value={character.type || CharacterType.PC}
+              onChange={(e) => handleInputChange("type", e.target.value)}
               className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+            >
+              <option value={CharacterType.PC}>Jogador (PC)</option>
+              <option value={CharacterType.NPC}>Não-Jogador (NPC)</option>
+            </select>
           </div>
         </div>
-        <div className="sm:col-span-3">
+        <div className="md:col-span-3">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Notas do Personagem
           </label>

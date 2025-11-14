@@ -4,6 +4,7 @@ interface NavigationButtonsProps {
   onBack: () => void;
   onNext: () => void;
   onFinish: () => void;
+  isSubmitting?: boolean;
 }
 
 export default function NavigationButtons({
@@ -12,6 +13,7 @@ export default function NavigationButtons({
   onBack,
   onNext,
   onFinish,
+  isSubmitting = false,
 }: NavigationButtonsProps) {
   return (
     <div className="flex justify-between mt-6">
@@ -40,9 +42,10 @@ export default function NavigationButtons({
       ) : (
         <button
           onClick={onFinish}
-          className="bg-green-600 text-white px-8 py-2 rounded-lg font-bold hover:bg-green-700 shadow-xl transition-colors transform hover:scale-[1.02]"
+          disabled={isSubmitting}
+          className="bg-green-600 text-white px-8 py-2 rounded-lg font-bold hover:bg-green-700 shadow-xl transition-colors transform hover:scale-[1.02] disabled:bg-green-400 disabled:cursor-not-allowed"
         >
-          Finalizar Criação
+          {isSubmitting ? "Criando..." : "Finalizar Criação"}
         </button>
       )}
     </div>

@@ -158,6 +158,63 @@ export default function CharacterManagementPage({
     );
 
     // Recalcula os status em tempo real se o arquétipo foi alterado
+    let newCalculatedStatus: Status[] | undefined;
+    let newCalculatedArchetype: Archetype | undefined;
+
+    // Lógica para quando o tipo muda de NPC para PC
+    // Isso deve recalcular os status e exibi-los imediatamente
+    if (
+      updates.type === "PC" &&
+      localCharacterData?.info.type === "NPC" &&
+      archetypes &&
+      attributesDefinitions &&
+      localCharacterData
+    ) {
+      console.log("🔄 Personagem convertido para PC. Recalculando status base...");
+      const currentArchetype: Archetype =
+        archetypes.find(
+          (arch) => arch.id === localCharacterData.info.archetypeId,
+        ) ||
+        localCharacterData.archetype || {
+          id: "none-placeholder",
+          name: "None",
+          hp: 0,
+          mp: 0,
+          tp: 0,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null,
+        };
+
+      const attributeIdToNameMap = attributesDefinitions.reduce<
+        Record<string, string>
+      >((acc, attrDef) => {
+        acc[attrDef.id] = attrDef.name;
+        return acc;
+      }, {});
+
+      const attributeRecord = localCharacterData.attributes.reduce<
+        Record<string, number>
+      >((acc, attr) => {
+        const attrName = attributeIdToNameMap[attr.attributeId];
+        if (attrName) {
+          acc[attrName] = attr.valueBase + attr.valueInv;
+        }
+        return acc;
+      }, {});
+
+      const newStatusValues = calculateStatus(attributeRecord, currentArchetype);
+      const updatedStatus = mapStatusValues(
+        localCharacterData.status,
+        newStatusValues,
+      );
+
+      newCalculatedStatus = updatedStatus;
+      setPendingUpdates((prev) => ({ ...prev, status: newCalculatedStatus }));
+      toast.success("Status recalculados para o tipo PC.");
+    }
+
+    // Lógica para quando o arquétipo é alterado
     if (
       updates.archetypeId !== undefined &&
       archetypes &&
@@ -166,7 +223,7 @@ export default function CharacterManagementPage({
     ) {
       const newArchetype = archetypes.find(
         (arch) => arch.id === updates.archetypeId,
-      );
+      ) || localCharacterData.archetype; // Fallback para o arquétipo atual se o novo não for encontrado
 
       if (newArchetype) {
         const attributeIdToNameMap = attributesDefinitions.reduce<
@@ -186,34 +243,12 @@ export default function CharacterManagementPage({
           return acc;
         }, {});
 
-        const newStatusValues = calculateStatus(attributeRecord, newArchetype);
-
-        const updatedStatus = localCharacterData.status.map((s) => {
-          let newMaxValue: number | undefined;
-          if (s.name === "HP") newMaxValue = newStatusValues.hp;
-          if (s.name === "MP") newMaxValue = newStatusValues.mp;
-          if (s.name === "TP") newMaxValue = newStatusValues.tp;
-
-          if (newMaxValue !== undefined) {
-            const isAtMax = s.valueActual >= s.valueMax;
-            return {
-              ...s,
-              valueMax: newMaxValue,
-              valueActual: isAtMax
-                ? newMaxValue
-                : Math.min(s.valueActual, newMaxValue),
-            };
-          }
-          return s;
-        });
-
-        // Adiciona os status atualizados às pendências para serem salvos
-        setPendingUpdates((prev) => ({ ...prev, status: updatedStatus }));
-
-        // Atualiza o estado local para refletir na UI imediatamente
-        setLocalCharacterData((prev) =>
-          prev ? { ...prev, status: updatedStatus } : null,
+        const newStatusValues = calculateStatus(attributeRecord, newArchetype); // Use newArchetype aqui
+        newCalculatedStatus = mapStatusValues(
+          localCharacterData.status,
+          newStatusValues,
         );
+        setPendingUpdates((prev) => ({ ...prev, status: newCalculatedStatus }));
       }
     }
 
@@ -225,9 +260,14 @@ export default function CharacterManagementPage({
           ...prevData.info,
           ...updates,
         },
+        // Atualiza o status e arquétipo no estado local se eles foram recalculados
+        ...(newCalculatedStatus ? { status: newCalculatedStatus } : {}),
+        ...(newCalculatedArchetype ? { archetype: newCalculatedArchetype } : {}),
+
       };
     });
   };
+
 
   const handleAttributesUpdate = (updatedAttribute: CharacterAttribute) => {
     setPendingUpdates((prev) => {
@@ -254,7 +294,13 @@ export default function CharacterManagementPage({
   };
 
   const handleStatusUpdate = (updates: Status[]) => {
+    console.log("📊 Status atualizado:", updates);
     setPendingUpdates((prev) => ({ ...prev, status: updates }));
+
+    // Atualiza o estado local para refletir na UI imediatamente
+    setLocalCharacterData((prev) =>
+      prev ? { ...prev, status: updates } : null,
+    );
   };
 
   const handleTabChange = (tabId: ManagementTab) => {
@@ -265,8 +311,6 @@ export default function CharacterManagementPage({
   const handleSave = async () => {
     if (!localCharacterData || Object.keys(pendingUpdates).length === 0) return;
 
-    console.log("📝 Dados do personagem:", localCharacterData);
-    console.log("📝 Atualizações pendentes:", pendingUpdates);
 
     try {
       const promises: Promise<AxiosResponse>[] = [];
@@ -335,9 +379,8 @@ export default function CharacterManagementPage({
       }
 
       // Executa todas as atualizações em paralelo
-      const responses = await Promise.all(promises);
-      console.log("✅ Atualizações realizadas com sucesso:", responses);
-
+      await Promise.all(promises);
+    
       // Limpa as pendências e revalida os dados do SWR para buscar o estado mais recente do servidor
       setPendingUpdates({});
       mutate();
@@ -578,6 +621,7 @@ export default function CharacterManagementPage({
             archetype={characterData.archetype}
             onAttributesUpdate={handleAttributesUpdate}
             onStatusUpdate={handleStatusUpdate}
+            character={characterData.info}
           />
         )}
 
@@ -664,4 +708,26 @@ export default function CharacterManagementPage({
       )}
     </div>
   );
+}
+
+function mapStatusValues(
+  statusList: Status[],
+  newStatusValues: ReturnType<typeof calculateStatus>,
+): Status[] {
+  return statusList.map((s) => {
+    let newMaxValue: number | undefined;
+    if (s.name === "HP") newMaxValue = newStatusValues.hp;
+    if (s.name === "MP") newMaxValue = newStatusValues.mp;
+    if (s.name === "TP") newMaxValue = newStatusValues.tp;
+
+    if (newMaxValue !== undefined) {
+      const isAtMax = s.valueActual >= s.valueMax;
+      return {
+        ...s,
+        valueMax: newMaxValue,
+        valueActual: isAtMax ? newMaxValue : Math.min(s.valueActual, newMaxValue),
+      };
+    }
+    return s;
+  });
 }
