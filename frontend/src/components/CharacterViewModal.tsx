@@ -1,6 +1,6 @@
 // components/CharacterViewModal.tsx
 
-import React from "react";
+import React, { useEffect } from "react";
 // Assumindo que você tem o tipo Character definido
 import { Character } from "@/types/models";
 
@@ -15,6 +15,16 @@ export default function CharacterViewModal({
   onClose,
   character,
 }: CharacterViewModalProps) {
+  // Efeito para travar o scroll da página quando o modal estiver aberto
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+    return () => document.body.classList.remove("overflow-hidden");
+  }, [isOpen]);
+
   if (!isOpen || !character) return null;
 
   // --- UI/UX: Estrutura do Modal de Visualização/Edição ---

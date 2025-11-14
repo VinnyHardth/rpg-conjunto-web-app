@@ -20,7 +20,7 @@ interface StepTwoProps {
   };
   onDataChange: (
     section: "atributos",
-    key: string,
+    attributeId: string,
     value: string | number,
   ) => void;
   onManualStatChange: (stat: string, value: number) => void;
@@ -38,6 +38,7 @@ export default function StepTwo({
   onManualStatChange,
   onArchetypeSelect,
   getAttributeValue,
+  attributes,
   attributeKeys,
 }: StepTwoProps) {
   const isNpc = characterData.info.type === CharacterType.NPC;
@@ -52,9 +53,10 @@ export default function StepTwo({
 
         <AttributeInputs
           attributeKeys={attributeKeys}
+          attributes={attributes}
           getAttributeValue={getAttributeValue}
-          onAttributeChange={(attr, value) =>
-            onDataChange("atributos", attr, value)
+          onAttributeChange={(attributeId, value) =>
+            onDataChange("atributos", attributeId, value)
           }
         />
 
