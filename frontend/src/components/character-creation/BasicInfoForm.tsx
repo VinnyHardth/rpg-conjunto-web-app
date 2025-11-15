@@ -105,9 +105,7 @@ export default function BasicInfoForm({
         </select>
       </div>
       <div className="sm:col-span-3">
-        <label className="block text-sm font-medium text-gray-700">
-          Tipo:
-        </label>
+        <label className="block text-sm font-medium text-gray-700">Tipo:</label>
         <select
           value={characterData.info.type || CharacterType.PC}
           onChange={(e) => onDataChange("base", "type", e.target.value)}
