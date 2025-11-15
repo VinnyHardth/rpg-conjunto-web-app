@@ -235,7 +235,7 @@ export function useCampaignHubPage(campaignId: string | undefined) {
     effectsLoading,
     focusedCharacterId: focusedCardId,
   });
-  const { setSelectedTargetId, clearState } = damagePanel;
+  const { setSelectedTargetId, handleReset } = damagePanel;
 
   const handleToggleDamage = useCallback(() => {
     if (!isDamageOpen) {
@@ -310,8 +310,8 @@ export function useCampaignHubPage(campaignId: string | undefined) {
 
   useEffect(() => {
     if (isDamageOpen) return;
-    clearState();
-  }, [isDamageOpen, clearState]);
+    handleReset();
+  }, [isDamageOpen, handleReset]);
 
   const sidebarCharacter = useMemo(() => {
     if (!sidebarCharacterId) {
@@ -430,6 +430,12 @@ export function useCampaignHubPage(campaignId: string | undefined) {
   });
 
   const activeRollsContent = useMemo(() => {
+    const formatModifierValue = (value: number): string => {
+      if (value > 0) return `+${value}`;
+      if (value < 0) return `${value}`;
+      return "0";
+    };
+
     if (activeRollEntries.length === 0) {
       return (
         <p className="text-sm text-slate-300">
@@ -454,18 +460,31 @@ export function useCampaignHubPage(campaignId: string | undefined) {
 
         <ul className="space-y-2">
           {activeRollEntries.map(({ character, roll }) => {
-            const rollWithPoolData = roll as {
-              diceCount?: number;
-              threshold?: number;
+            const deriveAbbreviation = (name: string | null | undefined) => {
+              if (!name) return null;
+              return name.trim().slice(0, 3).toUpperCase();
             };
-            const hasPoolData =
-              typeof rollWithPoolData.diceCount === "number" &&
-              typeof rollWithPoolData.threshold === "number";
-            const dtValue =
-              (roll as { dt?: number | null }).dt ??
-              (roll as { difficulty?: number | null }).difficulty ??
-              (roll as { target?: number | null }).target ??
-              null;
+            const attributeAbbreviation =
+              roll.attributeAbbreviation ??
+              deriveAbbreviation(roll.attributeName);
+            const attributeLabel = (() => {
+              if (roll.attributeName && attributeAbbreviation) {
+                return `${roll.attributeName} (${attributeAbbreviation})`;
+              }
+              return roll.attributeName ?? attributeAbbreviation ?? "ATR";
+            })();
+            const modifiers = roll.modifiers ?? {
+              attribute: roll.attributeValue ?? 0,
+              expertise: roll.expertiseValue ?? 0,
+              misc: roll.miscBonus ?? 0,
+            };
+            const hasExpertiseInfo = !!roll.expertiseName;
+            const hasMiscBonus = modifiers.misc !== 0;
+            const difficultyValue = difficultyTarget;
+            const hasDifficulty = typeof difficultyValue === "number";
+            const passedDifficulty = hasDifficulty
+              ? roll.total >= (difficultyValue ?? 0)
+              : null;
 
             return (
               <li
@@ -480,18 +499,48 @@ export function useCampaignHubPage(campaignId: string | undefined) {
                     {roll.attributeAbbreviation}
                   </span>
                 </div>
-                <div className="mt-1 text-xs text-slate-300">
+                <div className="mt-1 space-y-1 text-xs text-slate-300">
                   <p>
-                    Sucessos: {roll.successes}
-                    {hasPoolData
-                      ? `/${rollWithPoolData.diceCount} • Limiar ≥ ${rollWithPoolData.threshold}`
-                      : ""}
+                    d20:{" "}
+                    {roll.rolls.length > 0
+                      ? roll.rolls.join(", ")
+                      : roll.baseRoll}
+                  </p>
+                  <p className="text-white">
+                    Total: {roll.total}
+                    {hasDifficulty && (
+                      <>
+                        {" "}
+                        • DT {difficultyValue}{" "}
+                        <span
+                          className={
+                            passedDifficulty
+                              ? "text-emerald-300"
+                              : "text-rose-300"
+                          }
+                        >
+                          {passedDifficulty ? "Sucesso" : "Falha"}
+                        </span>
+                      </>
+                    )}
+                  </p>
+                  <p className="text-white/70">
+                    Expressão: {roll.renderedExpression}
                   </p>
                   <p>
-                    Rolagens:{" "}
-                    {roll.rolls.length > 0 ? roll.rolls.join(", ") : "—"}
+                    Modificadores: {attributeLabel}{" "}
+                    {formatModifierValue(modifiers.attribute)}
+                    {hasExpertiseInfo && (
+                      <>
+                        {" "}
+                        • {roll.expertiseName}:{" "}
+                        {formatModifierValue(modifiers.expertise)}
+                      </>
+                    )}
+                    {hasMiscBonus && (
+                      <> • Bônus: {formatModifierValue(modifiers.misc)}</>
+                    )}
                   </p>
-                  {dtValue !== null && <p>DT {dtValue}</p>}
                 </div>
               </li>
             );
@@ -499,7 +548,13 @@ export function useCampaignHubPage(campaignId: string | undefined) {
         </ul>
       </div>
     );
-  }, [activeRollEntries, handleClearRolls, isMaster, rollError]);
+  }, [
+    activeRollEntries,
+    difficultyTarget,
+    handleClearRolls,
+    isMaster,
+    rollError,
+  ]);
 
   const providerValue = useMemo(
     () => ({

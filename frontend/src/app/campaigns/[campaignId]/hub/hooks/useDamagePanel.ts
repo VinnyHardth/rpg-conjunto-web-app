@@ -94,12 +94,16 @@ export function useDamagePanel({
     }
   }, [formula]);
 
-  const handleReset = useCallback(() => {
+  const clearRollState = useCallback(() => {
     setRoll(null);
     setMessage(null);
     setError(null);
-    setFormula("");
   }, []);
+
+  const handleReset = useCallback(() => {
+    clearRollState();
+    setFormula("");
+  }, [clearRollState]);
 
   const handleApply = useCallback(async () => {
     //if (!isMaster) return;
@@ -262,7 +266,7 @@ export function useDamagePanel({
       handleRoll,
       handleReset,
       handleApply,
-      clearState: handleReset,
+      clearState: clearRollState,
     }),
     [
       selectedTargetId,
@@ -277,6 +281,7 @@ export function useDamagePanel({
       handleRoll,
       handleReset,
       handleApply,
+      clearRollState,
     ],
   );
 }

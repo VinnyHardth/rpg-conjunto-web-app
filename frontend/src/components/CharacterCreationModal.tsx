@@ -69,8 +69,7 @@ type CharacterStatus = {
   rm: number;
 };
 
-
-const initialOverriddenStats:  Partial<CharacterStatus> = {};
+const initialOverriddenStats: Partial<CharacterStatus> = {};
 
 interface CharacterCreationModalProps {
   isOpen: boolean;
@@ -108,7 +107,9 @@ export default function CharacterCreationModal({
   const [characterData, setCharacterData] =
     useState<CreateFullCharacter>(initialCharacterData);
   const [attributes, setAttributes] = useState<Attributes[]>([]);
-  const [overriddenStats, setOverriddenStats] = useState<Partial<CharacterStatus>>(initialOverriddenStats);
+  const [overriddenStats, setOverriddenStats] = useState<
+    Partial<CharacterStatus>
+  >(initialOverriddenStats);
   const [expertises, setExpertises] = useState<Attributes[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -150,22 +151,24 @@ export default function CharacterCreationModal({
           fetchAttributeKinds(AttributeKind.ATTRIBUTE),
           fetchAttributeKinds(AttributeKind.EXPERTISE),
         ]);
- 
-        const sortedAttributes = attributesData.sort((a, b) => a.name.localeCompare(b.name));
+
+        const sortedAttributes = attributesData.sort((a, b) =>
+          a.name.localeCompare(b.name),
+        );
         const dynamicAttributeKeys = sortedAttributes.map((attr) => attr.name);
- 
+
         setAttributes(sortedAttributes);
         setExpertises(expertisesData);
         setAttributeKeys(dynamicAttributeKeys);
- 
+
         const initialAttributes = sortedAttributes.map((attribute) =>
           createCharacterAttribute(attribute.id, attribute.name, 0),
         );
- 
+
         const initialExpertises = expertisesData.map((expertise) =>
           createCharacterAttribute(expertise.id, expertise.name, 0),
         );
- 
+
         // Define o estado inicial completo de uma só vez para evitar re-renderizações
         setCharacterData({
           ...initialCharacterData,
@@ -310,7 +313,9 @@ export default function CharacterCreationModal({
     (expertiseId: string, newValue: number) => {
       setCharacterData((prev) => {
         const updatedExpertises = prev.expertises.map((exp) =>
-          exp.attributeId === expertiseId ? { ...exp, valueBase: newValue } : exp,
+          exp.attributeId === expertiseId
+            ? { ...exp, valueBase: newValue }
+            : exp,
         );
         return { ...prev, expertises: updatedExpertises };
       });
@@ -394,7 +399,7 @@ export default function CharacterCreationModal({
         dbAttributes: attributes,
         manualStats:
           baseInfo.type === CharacterType.NPC ? finalStats : undefined,
-    });
+      });
 
       resetForm();
       onClose();
@@ -409,11 +414,20 @@ export default function CharacterCreationModal({
         axiosError.response?.data?.error ??
         "Erro ao criar personagem. Verifique os dados e tente novamente.";
       alert(serverMessage);
-    }
- finally {
+    } finally {
       setIsSubmitting(false);
     }
-  }, [addCharacter, characterData, expertises, attributes, finalStats, onClose, userId, resetForm, validateCharacterInfo]);
+  }, [
+    addCharacter,
+    characterData,
+    expertises,
+    attributes,
+    finalStats,
+    onClose,
+    userId,
+    resetForm,
+    validateCharacterInfo,
+  ]);
 
   const handleClose = useCallback(() => {
     resetForm();
@@ -423,11 +437,16 @@ export default function CharacterCreationModal({
   // Função auxiliar para obter valor de atributo pelo nome
   const getAttributeValue = useCallback(
     (attributeName: string): number => {
-      const attributeDef = attributes.find((attr) => attr.name === attributeName);
+      const attributeDef = attributes.find(
+        (attr) => attr.name === attributeName,
+      );
       if (!attributeDef) return 0;
-      const characterAttribute = characterData.attributes.find((attr) => attr.attributeId === attributeDef.id);
+      const characterAttribute = characterData.attributes.find(
+        (attr) => attr.attributeId === attributeDef.id,
+      );
       return characterAttribute?.valueBase || 0;
-    }, [attributes, characterData.attributes],
+    },
+    [attributes, characterData.attributes],
   );
 
   if (!isOpen) return null;

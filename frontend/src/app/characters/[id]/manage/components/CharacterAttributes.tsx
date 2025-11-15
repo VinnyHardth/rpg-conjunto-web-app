@@ -4,12 +4,7 @@ import AttributeRow, { AttributeRowData } from "./AttributeRow";
 import React, { useState, useEffect, useMemo } from "react";
 
 import { useAttributes } from "../hooks/useAttributes";
-import {
-  STATUS_NAMES,
-  Status,
-  Character,
-  CharacterType,
-} from "@/types/models";
+import { STATUS_NAMES, Status, Character, CharacterType } from "@/types/models";
 import type { Archetype, CharacterAttribute } from "@/types/models";
 
 import { calculateStatus } from "@/lib/characterCalculations";
@@ -37,7 +32,11 @@ const REVERSE_STATUS_MAPPING: Record<string, string> = Object.entries(
 
 // Função auxiliar para normalizar nomes de status para chaves
 const normalizeStatusName = (name: string) =>
-  name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/ /g, "");
+  name
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/ /g, "");
 
 const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
   attributes,
@@ -218,7 +217,6 @@ const CharacterAttributes: React.FC<CharacterAttributeProps> = ({
           // Se o status não foi recalculado, apenas retorne o original.
           return s;
         });
-
       }
 
       // Encontrar o atributo específico que foi alterado
@@ -424,7 +422,7 @@ function EditableStatusDisplay({
         <span className="mr-2">❤️‍🔥</span> Status (Editável)
       </h3>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        {resources.map(({ key, label, value,  color, icon }) => (
+        {resources.map(({ key, label, value, color, icon }) => (
           <div
             key={key}
             className={`bg-white border-l-4 border-${color}-500 p-3 rounded shadow-sm`}

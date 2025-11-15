@@ -41,7 +41,7 @@ export default function ArchetypeSelector({
       }
     };
     void loadArchetypes();
-  }, [ onSelectArchetype, selectedArchetypeId ]);
+  }, [onSelectArchetype, selectedArchetypeId]);
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedId = event.target.value;

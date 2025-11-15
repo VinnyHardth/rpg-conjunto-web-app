@@ -170,11 +170,12 @@ export default function CharacterManagementPage({
       attributesDefinitions &&
       localCharacterData
     ) {
-      console.log("🔄 Personagem convertido para PC. Recalculando status base...");
-      const currentArchetype: Archetype =
-        archetypes.find(
-          (arch) => arch.id === localCharacterData.info.archetypeId,
-        ) ||
+      console.log(
+        "🔄 Personagem convertido para PC. Recalculando status base...",
+      );
+      const currentArchetype: Archetype = archetypes.find(
+        (arch) => arch.id === localCharacterData.info.archetypeId,
+      ) ||
         localCharacterData.archetype || {
           id: "none-placeholder",
           name: "None",
@@ -203,7 +204,10 @@ export default function CharacterManagementPage({
         return acc;
       }, {});
 
-      const newStatusValues = calculateStatus(attributeRecord, currentArchetype);
+      const newStatusValues = calculateStatus(
+        attributeRecord,
+        currentArchetype,
+      );
       const updatedStatus = mapStatusValues(
         localCharacterData.status,
         newStatusValues,
@@ -221,9 +225,9 @@ export default function CharacterManagementPage({
       attributesDefinitions &&
       localCharacterData
     ) {
-      const newArchetype = archetypes.find(
-        (arch) => arch.id === updates.archetypeId,
-      ) || localCharacterData.archetype; // Fallback para o arquétipo atual se o novo não for encontrado
+      const newArchetype =
+        archetypes.find((arch) => arch.id === updates.archetypeId) ||
+        localCharacterData.archetype; // Fallback para o arquétipo atual se o novo não for encontrado
 
       if (newArchetype) {
         const attributeIdToNameMap = attributesDefinitions.reduce<
@@ -262,12 +266,12 @@ export default function CharacterManagementPage({
         },
         // Atualiza o status e arquétipo no estado local se eles foram recalculados
         ...(newCalculatedStatus ? { status: newCalculatedStatus } : {}),
-        ...(newCalculatedArchetype ? { archetype: newCalculatedArchetype } : {}),
-
+        ...(newCalculatedArchetype
+          ? { archetype: newCalculatedArchetype }
+          : {}),
       };
     });
   };
-
 
   const handleAttributesUpdate = (updatedAttribute: CharacterAttribute) => {
     setPendingUpdates((prev) => {
@@ -310,7 +314,6 @@ export default function CharacterManagementPage({
 
   const handleSave = async () => {
     if (!localCharacterData || Object.keys(pendingUpdates).length === 0) return;
-
 
     try {
       const promises: Promise<AxiosResponse>[] = [];
@@ -380,7 +383,7 @@ export default function CharacterManagementPage({
 
       // Executa todas as atualizações em paralelo
       await Promise.all(promises);
-    
+
       // Limpa as pendências e revalida os dados do SWR para buscar o estado mais recente do servidor
       setPendingUpdates({});
       mutate();
@@ -725,7 +728,9 @@ function mapStatusValues(
       return {
         ...s,
         valueMax: newMaxValue,
-        valueActual: isAtMax ? newMaxValue : Math.min(s.valueActual, newMaxValue),
+        valueActual: isAtMax
+          ? newMaxValue
+          : Math.min(s.valueActual, newMaxValue),
       };
     }
     return s;

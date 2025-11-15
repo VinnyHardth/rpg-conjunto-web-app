@@ -29,6 +29,6 @@ export const resolveAbbreviation = (label: string): string => {
     return ATTRIBUTE_ABBREVIATIONS[key];
   }
   const compact = key.replace(/[^a-z0-9]/g, "");
-  const fallback = compact.slice(0, 4) || "ROL";
+  const fallback = compact.slice(0, 3) || "ROL";
   return fallback.toUpperCase();
 };

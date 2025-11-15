@@ -48,7 +48,8 @@ export default function StepTwo({
       {/* COLUNA 1: INPUTS DE ATRIBUTOS */}
       <div className="p-4 border border-indigo-200 rounded-lg bg-indigo-50 h-full">
         <h3 className="font-bold text-xl mb-4 text-indigo-700 flex items-center">
-          <span className="mr-2">📝</span> Defina seus {attributeKeys.length} Atributos
+          <span className="mr-2">📝</span> Defina seus {attributeKeys.length}{" "}
+          Atributos
         </h3>
 
         <AttributeInputs

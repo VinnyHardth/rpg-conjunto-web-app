@@ -32,7 +32,7 @@ const StatusValuePanel = ({
       handleRoll,
       handleReset,
       handleApply,
-      clearState,
+      clearState: clearRollState,
     },
     useRestActions: { isResting, restError, restMessage, handleRest },
     useHubInterface: { isDamageOpen, damagePanelRef: panelRef },
@@ -75,7 +75,7 @@ const StatusValuePanel = ({
                     value={selectedTargetId ?? ""}
                     onChange={(e) => {
                       setSelectedTargetId(e.target.value || null);
-                      clearState();
+                      clearRollState();
                     }}
                     className="w-full rounded-lg border border-white/10 bg-slate-900/60 px-3 py-2 text-sm text-white shadow focus:border-rose-400 focus:outline-none focus:ring-2 focus:ring-rose-400"
                   >
@@ -102,7 +102,7 @@ const StatusValuePanel = ({
                     value={selectedAction}
                     onChange={(e) => {
                       setSelectedAction(e.target.value as StatusAction);
-                      clearState();
+                      clearRollState();
                     }}
                     className="w-full rounded-lg border border-white/10 bg-slate-900/60 px-3 py-2 text-sm text-white shadow focus:border-rose-400 focus:outline-none focus:ring-2 focus:ring-rose-400"
                   >
